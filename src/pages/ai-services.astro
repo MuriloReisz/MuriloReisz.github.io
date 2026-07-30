@@ -1,0 +1,593 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+
+const bookHref = site.calendlyUrl || '#ai-services-book';
+const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
+---
+
+<Layout title="AI services">
+
+  <!-- ===================== Pricing ladder — assessment hero + two step cards ===================== -->
+  <section class="tile tile--black center" id="ai-services-plans-v2" data-spotlight>
+    <div class="offers-bg-grid" aria-hidden="true"></div>
+    <div class="offers-bg-dots reveal" aria-hidden="true" style="transition-delay:3.2s"></div>
+    <div class="offers-bg-topglow reveal" aria-hidden="true" style="transition-delay:3s"></div>
+
+    <div class="inner reveal" style="position:relative;z-index:1;transition-delay:0s">
+      <div class="eyebrow eyebrow--dark">AI services</div>
+      <h1 class="metrics__h2" data-reveal-words style="color:#fff;max-width:820px;margin-left:auto;margin-right:auto;font-size:clamp(29px,4.2vw,44px)">Your team loses hours every week to work AI can already do.<br />Let&rsquo;s find them and take them back.</h1>
+    </div>
+
+    <div class="oa">
+      <!-- STEP 1 — assessment hero -->
+      <div class="oa-hero reveal" style="transition-delay:0.5s">
+        <div class="oa-hero__main">
+          <h2 class="oa-hero__title">AI Opportunity Assessment</h2>
+          <p class="oa-hero__desc">Find at least 5 hours of recurring work AI can remove from your week &mdash; and get a prioritised plan showing exactly what to do next.</p>
+          <div class="oa-price"><span class="oa-price__cur">&euro;</span>500<span class="oa-price__suf">one-off</span></div>
+          <a class="oa-cta oa-cta--primary" data-magnetic data-magnetic-strength="8" href={bookHref} {...bookAttrs}>Book your assessment</a>
+          <a class="oa-samplelink" href="#ai-services-report">View a sample report <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+        </div>
+        <div class="oa-hero__side">
+          <div class="oa-side__head">What you get</div>
+          <ul class="oa-checks">
+            <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>45-minute workflow audit</span></li>
+            <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>3&ndash;7 tools and automations matched to your work</span></li>
+            <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Cost, setup effort and hours saved for each</span></li>
+            <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Personalised 4-day action plan</span></li>
+            <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>30-minute results walkthrough</span></li>
+          </ul>
+        </div>
+        <div class="oa-morewrap">
+          <button class="oa-learn" type="button" aria-expanded="false" aria-controls="oa-more-assess"><span>Learn more</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="oa-more" id="oa-more-assess"><div class="oa-more__clip"><div class="oa-more__pad">
+            <p class="oa-more__best"><strong>Best for:</strong> a busy owner or team lead who knows they should be using AI, but has no time to test 40 tools to find the three that matter.</p>
+            <p class="oa-more__payoff">Reclaim 5&ndash;10 hours a week, and most clients earn it back in the first week.</p>
+            <div>
+              <div class="oa-sublabel">Includes</div>
+              <ul class="oa-more__list">
+                <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>A 45-minute discovery call where I pull out exactly where your week goes</span></li>
+                <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Three to seven off-the-shelf AI tools matched to your specific bottlenecks</span></li>
+                <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>For each tool: what it fixes, the monthly cost, setup time, and hours saved</span></li>
+                <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>A short written report with a 4-day quick-start plan and the ROI in <em>your</em> numbers</span></li>
+                <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>A 30-minute review call to walk it through together</span></li>
+              </ul>
+            </div>
+          </div></div></div>
+        </div>
+        <div class="oa-hero__guar">
+          <span class="oa-hero__guar-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg></span>
+          <div>
+            <div class="oa-hero__guar-t">Find 5+ hours a week or your money back.</div>
+            <div class="oa-hero__guar-d">&euro;500 credited in full towards an implementation.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEPS 2 & 3 -->
+      <div class="oa-steps">
+        <div class="oa-rail" aria-hidden="true"></div>
+
+        <div class="oa-block reveal" style="transition-delay:0.95s">
+          <div class="oa-divlabel">If you want it built</div>
+          <div class="oa-step" data-tilt data-tilt-max="4">
+            <span class="oa-node" aria-hidden="true">2</span>
+            <div class="oa-step__main">
+              <h3 class="oa-step__title">Implementation</h3>
+              <p class="oa-step__desc">Your chosen workflow built, tested and handed over.</p>
+              <div class="oa-sublabel">Build types</div>
+              <dl class="oa-buildlist">
+                <div class="oa-buildrow"><dt>AI tool &amp; knowledge-system setup</dt><dd>&euro;1,500&ndash;&euro;3,000</dd></div>
+                <div class="oa-buildrow"><dt>Custom workflow automation</dt><dd>&euro;3,000&ndash;&euro;8,000+</dd></div>
+              </dl>
+              <a class="oa-morelink" href="#ai-services-frameworks">See examples below <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></a>
+            </div>
+            <div class="oa-step__side">
+              <div class="oa-price"><span class="oa-price__cur">&euro;</span>1,500&ndash;<span class="oa-price__cur">&euro;</span>8,000</div>
+              <div class="oa-price__per">fixed scope</div>
+              <a class="oa-cta oa-cta--ghost" data-magnetic href={bookHref} {...bookAttrs}>Discuss a build <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+              <p class="oa-step__foot">Your assessment fee comes off the price.</p>
+            </div>
+            <div class="oa-morewrap">
+              <button class="oa-learn" type="button" aria-expanded="false" aria-controls="oa-more-impl"><span>Learn more</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <div class="oa-more" id="oa-more-impl"><div class="oa-more__clip"><div class="oa-more__pad">
+                <p class="oa-more__best"><strong>Best for:</strong> you&rsquo;ve seen the plan, you want the time back now, and you&rsquo;d rather not spend your evenings wiring up tools yourself.</p>
+                <div>
+                  <div class="oa-sublabel">Includes</div>
+                  <ul class="oa-more__list">
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Automations that run the repetitive multi-step work for you</span></li>
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>A knowledge system or custom GPT trained on your own documents</span></li>
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Custom skills for a process that&rsquo;s specific to how you work</span></li>
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Process cleanup first, so you&rsquo;re not automating a mess</span></li>
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Your &euro;500 assessment fee credited against the work</span></li>
+                  </ul>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="oa-block reveal" style="transition-delay:1.2s">
+          <div class="oa-divlabel">If you want to keep improving</div>
+          <div class="oa-step" data-tilt data-tilt-max="4">
+            <span class="oa-node" aria-hidden="true">3</span>
+            <div class="oa-step__main">
+              <h3 class="oa-step__title">Ongoing AI Support</h3>
+              <p class="oa-step__desc">One defined workflow improved or automated each month, with senior support between sessions.</p>
+              <div class="oa-sublabel">Includes</div>
+              <ul class="oa-checks">
+                <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Two working sessions</span></li>
+                <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Async support within 1 business day</span></li>
+                <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Running documentation of everything built</span></li>
+              </ul>
+              <a class="oa-morelink" href="#ai-services-concierge">See more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></a>
+            </div>
+            <div class="oa-step__side">
+              <div class="oa-price"><span class="oa-price__cur">&euro;</span>999<span class="oa-price__suf">/ month</span></div>
+              <div class="oa-price__per">Month-to-month &middot; capped availability</div>
+              <a class="oa-cta oa-cta--ghost" data-magnetic href={bookHref} {...bookAttrs}>Check availability <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+            </div>
+            <div class="oa-morewrap">
+              <button class="oa-learn" type="button" aria-expanded="false" aria-controls="oa-more-support"><span>Learn more</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <div class="oa-more" id="oa-more-support"><div class="oa-more__clip"><div class="oa-more__pad">
+                <p class="oa-more__best"><strong>Best for:</strong> a founder or team that wants to keep finding and fixing time drains every month, without hiring for it.</p>
+                <p class="oa-more__payoff">A fresh bottleneck found and automated every month.</p>
+                <div>
+                  <div class="oa-sublabel">Includes</div>
+                  <ul class="oa-more__list">
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Two 45-minute calls a month, you share your screen and I coach you live</span></li>
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>Always-on access during the month, 12-business-hour response</span></li>
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>One workflow audited, trimmed and automated on every call</span></li>
+                    <li class="oa-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg><span>A running record of everything we build, so the value stays visible</span></li>
+                  </ul>
+                </div>
+                <p class="oa-more__note"><strong>Good to know:</strong> larger one-off builds beyond the calls are scoped separately.</p>
+              </div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BUILD FRAMEWORKS ===================== -->
+  <section class="tile center" id="ai-services-frameworks">
+    <div class="inner center sreveal">
+      <div class="eyebrow">Frameworks</div>
+      <h2 class="metrics__h2" data-reveal-words style="max-width:660px"><span style="color:var(--color-ink-48)">Built to automate.</span><br />Designed to perform.</h2>
+      <p class="hero__sub" style="max-width:660px">Each framework is a building block of your AI infrastructure, designed to automate, connect, and scale your operations with precision.</p>
+    </div>
+
+    <div class="fw">
+      <!-- Framework 01 — AI Receptionist -->
+      <div class="fw__row sreveal">
+        <div class="fw__visual">
+          <div class="fw__stage">
+            <div class="fw__mock fw__mock--voice" data-mock>
+              <div class="fw__voice-top">
+                <span class="fw__wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                <span>AI&nbsp;Voice</span>
+                <span class="fw__voice-time">00:00</span>
+              </div>
+              <div class="fw__feed" data-feed>
+                <div class="fw__line" data-step><span class="fw__line-hd"><span class="fw__line-av fw__line-av--logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8 L11 25 L16 14 L21 25 L27 8" stroke="currentColor" stroke-width="3"></path><path d="M6.5 23 C 11 22, 14 18, 18 16 S 25 10.5, 28.5 6" stroke="#a78bfa" stroke-width="2.8"></path><path d="M23.8 5.6 L29 5 L28.6 10.2" stroke="#a78bfa" stroke-width="2.8"></path></svg></span><span class="fw__line-who">Riverside Auto</span></span><p class="fw__line-txt">Thanks for calling Riverside Auto! Who am I speaking with?</p></div>
+                <div class="fw__line fw__line--caller" data-step><span class="fw__line-hd"><span class="fw__line-av" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span><span class="fw__line-who">Patrick</span></span><p class="fw__line-txt">Hi, it&rsquo;s Patrick.</p></div>
+                <div class="fw__line" data-step><span class="fw__line-hd"><span class="fw__line-av fw__line-av--logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8 L11 25 L16 14 L21 25 L27 8" stroke="currentColor" stroke-width="3"></path><path d="M6.5 23 C 11 22, 14 18, 18 16 S 25 10.5, 28.5 6" stroke="#a78bfa" stroke-width="2.8"></path><path d="M23.8 5.6 L29 5 L28.6 10.2" stroke="#a78bfa" stroke-width="2.8"></path></svg></span><span class="fw__line-who">Riverside Auto</span></span><p class="fw__line-txt">Great to meet you, Patrick. Are you calling about your service booking?</p></div>
+                <div class="fw__line fw__line--caller" data-step><span class="fw__line-hd"><span class="fw__line-av" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span><span class="fw__line-who">Patrick</span></span><p class="fw__line-txt">Yeah, is tomorrow morning still good?</p></div>
+                <div class="fw__line" data-step><span class="fw__line-hd"><span class="fw__line-av fw__line-av--logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8 L11 25 L16 14 L21 25 L27 8" stroke="currentColor" stroke-width="3"></path><path d="M6.5 23 C 11 22, 14 18, 18 16 S 25 10.5, 28.5 6" stroke="#a78bfa" stroke-width="2.8"></path><path d="M23.8 5.6 L29 5 L28.6 10.2" stroke="#a78bfa" stroke-width="2.8"></path></svg></span><span class="fw__line-who">Riverside Auto</span></span><p class="fw__line-txt">You&rsquo;re booked in for 10 AM tomorrow. I&rsquo;ll text a reminder tonight.</p></div>
+              </div>
+              <div class="fw__success" data-success>
+                <span class="fw__success-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                <div class="fw__success-h">Appointment confirmed</div>
+                <div class="fw__success-s">Tomorrow, 10 AM</div>
+              </div>
+              <div class="fw__voice-end">
+                <span class="fw__endbtn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fw__text">
+          <div class="fw__label">AI Receptionist</div>
+          <h3 class="fw__title">Intelligent voice agents that engage, qualify, and convert in real time.</h3>
+          <div class="fw__grid">
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span><div class="fw__feat-h">Natural Conversations</div><p class="fw__feat-p">Understands context and tone, providing human-like voice responses instantly.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg></span><div class="fw__feat-h">Smart Lead Routing</div><p class="fw__feat-p">Identifies caller needs and directs them to the right team automatically.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span><div class="fw__feat-h">Real-Time Insights</div><p class="fw__feat-p">Logs every call, sentiment, and action directly into your dashboard for review.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg></span><div class="fw__feat-h">Always Available</div><p class="fw__feat-p">Handles inbound inquiries 24/7 with consistent quality and zero downtime.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Framework 02 — AI Chat Assistant -->
+      <div class="fw__row fw__row--reverse sreveal">
+        <div class="fw__visual">
+          <div class="fw__stage">
+            <div class="fw__mock fw__mock--chat" data-mock>
+              <div class="fw__feed" data-feed>
+                <div class="fw__track" data-track>
+                  <div class="fw__msg fw__msg--in" data-step><p class="fw__bubble">Hi &#128075; I&rsquo;m your AI assistant. How can I help today?</p></div>
+                  <div class="fw__msg fw__msg--out" data-step><p class="fw__bubble">Do you have any slots free tomorrow around noon?</p></div>
+                  <div class="fw__msg fw__msg--in" data-step><p class="fw__bubble">We do! 12 PM tomorrow is open. Can I take your address?</p></div>
+                  <div class="fw__msg fw__msg--out" data-step><p class="fw__bubble">Sure, 22 Main Street, {site.location}.</p></div>
+                  <div class="fw__msg fw__msg--in" data-step><p class="fw__bubble">Perfect, you&rsquo;re booked in. See you at noon tomorrow!</p></div>
+                </div>
+              </div>
+              <div class="fw__success" data-success>
+                <span class="fw__success-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                <div class="fw__success-h">Booking confirmed</div>
+                <div class="fw__success-s">Tomorrow, 12 PM</div>
+              </div>
+              <div class="fw__chat-input">
+                <span class="fw__chat-ph">Message</span>
+                <span class="fw__sendbtn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fw__text">
+          <div class="fw__label">AI Chat Assistant</div>
+          <h3 class="fw__title">Conversational AI built to automate support and boost conversions.</h3>
+          <div class="fw__grid">
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L3 21l1.95-5.6A8.5 8.5 0 1 1 21 11.5z"></path></svg></span><div class="fw__feat-h">Human-Like Replies</div><p class="fw__feat-p">Responds naturally across channels while maintaining your brand&rsquo;s tone.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span><div class="fw__feat-h">Smart Knowledge Base</div><p class="fw__feat-p">Uses trained data to answer questions instantly and reduce support workload.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></span><div class="fw__feat-h">Context Retention</div><p class="fw__feat-p">Remembers interactions to create smooth, continuous customer experiences.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></span><div class="fw__feat-h">Performance Tracking</div><p class="fw__feat-p">Measures chat volume, response rate, and satisfaction inside one unified dashboard.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Framework 03 — Workflow Automations -->
+      <div class="fw__row sreveal">
+        <div class="fw__visual">
+          <div class="fw__stage">
+            <div class="fw__mock fw__mock--flow" data-mock>
+              <div class="fw__feed" data-feed>
+                <div class="fw__pipe" data-step><span class="fw__pipe-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></span><span class="fw__pipe-tx"><span class="fw__pipe-k">Voice agent</span><span class="fw__pipe-v">Call completed</span></span><span class="fw__pipe-status" aria-hidden="true"><span class="fw__pipe-load"></span><span class="fw__pipe-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></span></div>
+                <div class="fw__pipe" data-step><span class="fw__pipe-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 9h10M7 13h6"></path></svg></span><span class="fw__pipe-tx"><span class="fw__pipe-k">Transcription &amp; intent engine</span><span class="fw__pipe-v">Summarize and extract details</span></span><span class="fw__pipe-status" aria-hidden="true"><span class="fw__pipe-load"></span><span class="fw__pipe-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></span></div>
+                <div class="fw__pipe" data-step><span class="fw__pipe-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"></path></svg></span><span class="fw__pipe-tx"><span class="fw__pipe-k">CRM / spreadsheet sync</span><span class="fw__pipe-v">Update customer record</span></span><span class="fw__pipe-status" aria-hidden="true"><span class="fw__pipe-load"></span><span class="fw__pipe-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></span></div>
+                <div class="fw__pipe" data-step><span class="fw__pipe-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"></path><path d="M4 6l8 6 8-6"></path></svg></span><span class="fw__pipe-tx"><span class="fw__pipe-k">Email / messaging API</span><span class="fw__pipe-v">Send follow-up message</span></span><span class="fw__pipe-status" aria-hidden="true"><span class="fw__pipe-load"></span><span class="fw__pipe-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></span></div>
+                <div class="fw__pipe" data-step><span class="fw__pipe-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2"></rect><path d="M8 2.5v4M16 2.5v4M3 9.5h18"></path></svg></span><span class="fw__pipe-tx"><span class="fw__pipe-k">Calendar / dashboard</span><span class="fw__pipe-v">Auto-schedule and confirm</span></span><span class="fw__pipe-status" aria-hidden="true"><span class="fw__pipe-load"></span><span class="fw__pipe-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fw__text">
+          <div class="fw__label">Workflow Automations</div>
+          <h3 class="fw__title">Connected systems that eliminate manual work and drive efficiency.</h3>
+          <div class="fw__grid">
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></span><div class="fw__feat-h">Seamless Integrations</div><p class="fw__feat-p">Connects CRMs, forms, and apps to automate repetitive business operations.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span><div class="fw__feat-h">Custom Triggers</div><p class="fw__feat-p">Executes precise actions automatically based on data changes or user activity.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 1.5"></path><line x1="9.5" y1="2" x2="14.5" y2="2"></line></svg></span><div class="fw__feat-h">Time Optimization</div><p class="fw__feat-p">Replaces hours of manual tasks with intelligent end-to-end workflow logic.</p></div>
+            <div class="fw__feat" data-tilt data-tilt-max="5"><span class="fw__feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="11" width="7" height="10" rx="1"></rect><rect x="3" y="15" width="7" height="6" rx="1"></rect></svg></span><div class="fw__feat-h">Unified Dashboard</div><p class="fw__feat-p">Monitors automation status, success rates, and ROI metrics in one place.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pipeline demo — the five-stage run that sits under every framework above -->
+    <div class="hm-pipe sreveal" data-pipeline-demo>
+      <div class="hm-pipe__head">
+        <div class="eyebrow eyebrow--mono">Under the bonnet</div>
+        <h3 class="hm-pipe__title">Every framework runs on the same five-stage pipeline.</h3>
+        <p class="hm-pipe__lead">Extract, validate, transform, load, publish &mdash; safe to re-run, with rejected rows quarantined rather than quietly dropped. Start a run and watch each stage report in.</p>
+      </div>
+
+      <div class="hm-pipe__controls">
+        <button class="pill pill--primary pill--sm" type="button" data-pipeline-run>Run the pipeline</button>
+        <button class="pill pill--ghost pill--sm" type="button" data-pipeline-reset>Reset</button>
+        <span class="hm-pipe__state">Stage: <b data-pipeline-out="stage">Idle</b></span>
+      </div>
+
+      <ol class="hm-pipe__stages">
+        <li class="hm-pipe__stage pg-pipe__stage" data-pipeline-stage="extract"><span class="hm-pipe__stage-n" aria-hidden="true">01</span><span class="hm-pipe__stage-t">Extract</span><span class="hm-pipe__stage-d">Warehouse read replica, since the last watermark.</span></li>
+        <li class="hm-pipe__stage pg-pipe__stage" data-pipeline-stage="validate"><span class="hm-pipe__stage-n" aria-hidden="true">02</span><span class="hm-pipe__stage-t">Validate</span><span class="hm-pipe__stage-d">Schema contract checked; bad rows quarantined.</span></li>
+        <li class="hm-pipe__stage pg-pipe__stage" data-pipeline-stage="transform"><span class="hm-pipe__stage-n" aria-hidden="true">03</span><span class="hm-pipe__stage-t">Transform</span><span class="hm-pipe__stage-d">Currency, labels and grain normalised.</span></li>
+        <li class="hm-pipe__stage pg-pipe__stage" data-pipeline-stage="load"><span class="hm-pipe__stage-n" aria-hidden="true">04</span><span class="hm-pipe__stage-t">Load</span><span class="hm-pipe__stage-d">Idempotent upsert into the reporting mart.</span></li>
+        <li class="hm-pipe__stage pg-pipe__stage" data-pipeline-stage="publish"><span class="hm-pipe__stage-n" aria-hidden="true">05</span><span class="hm-pipe__stage-t">Publish</span><span class="hm-pipe__stage-d">Dashboards refreshed, run logged, team notified.</span></li>
+      </ol>
+
+      <dl class="hm-pipe__outs">
+        <div class="hm-pipe__out"><dt class="hm-pipe__out-k">Rows read</dt><dd class="hm-pipe__out-v" data-pipeline-out="rows">&mdash;</dd></div>
+        <div class="hm-pipe__out"><dt class="hm-pipe__out-k">Rows loaded</dt><dd class="hm-pipe__out-v" data-pipeline-out="loaded">&mdash;</dd></div>
+        <div class="hm-pipe__out"><dt class="hm-pipe__out-k">Quarantined</dt><dd class="hm-pipe__out-v" data-pipeline-out="rejected">&mdash;</dd></div>
+        <div class="hm-pipe__out"><dt class="hm-pipe__out-k">Tables</dt><dd class="hm-pipe__out-v" data-pipeline-out="tables">&mdash;</dd></div>
+        <div class="hm-pipe__out"><dt class="hm-pipe__out-k">Run time</dt><dd class="hm-pipe__out-v" data-pipeline-out="duration">&mdash;</dd></div>
+      </dl>
+
+      <div class="hm-pipe__log pg-pipe__log" data-pipeline-log></div>
+      <p class="ix-sr" data-pipeline-status></p>
+
+      <p class="hm-pipe__foot">This is the run pattern behind the <a class="textlink" href="/work/freelance-automation-bi">automation &amp; BI build</a> in my case studies &mdash; and you can take it apart yourself in the <a class="textlink" href="/playground">playground</a>.</p>
+    </div>
+
+    <div class="fw__cta sreveal">
+      <a class="textlink" href={bookHref} {...bookAttrs}>Discuss a build &rsaquo;</a>
+      <a class="textlink" href="/work">See the delivered work &rsaquo;</a>
+    </div>
+  </section>
+
+  <!-- ===================== AI COMMAND CENTRE ===================== -->
+  <section class="tile center" id="ai-services-command">
+    <div class="inner center sreveal">
+      <div class="eyebrow">Command centre</div>
+      <h2 class="metrics__h2" data-reveal-words style="max-width:660px"><span style="color:var(--color-ink-48)">Everything it does,</span><br />in one clear view.</h2>
+      <p class="hero__sub" style="max-width:648px">A single dashboard for every call answered, message handled, and hour your team gets back &mdash; so every decision is backed by what&rsquo;s actually happening.</p>
+    </div>
+
+    <div class="ccd-stage" data-scroll-scale="0.96">
+      <div class="ccd" data-dash>
+        <div class="ccd__frame">
+          <div class="ccd__bar" aria-hidden="true">
+            <span class="ccd__dots"><i></i><i></i><i></i></span>
+            <span class="ccd__url">app.example.com</span>
+          </div>
+          <div class="ccd__body">
+            <div class="ccd__head">
+              <img class="ccd__logo ccd__logo--light" src="/images/logo-mark.svg" alt={site.brand} width="240" height="170" />
+              <img class="ccd__logo ccd__logo--dark" src="/images/logo-mark-dark.svg" alt={site.brand} width="240" height="170" />
+              <div class="ccd__head-tx">
+                <div class="ccd__title">AI Command Centre</div>
+                <div class="ccd__sub"><span class="ccd__live" aria-hidden="true"></span>This week &middot; live</div>
+              </div>
+            </div>
+
+            <div class="ccd__row ccd__row--hero">
+              <div class="ccd__card ccd__card--wide">
+                <div class="ccd__k">Hours saved</div>
+                <div class="ccd__big"><span data-counter-to="6.4" data-counter-dec="1">6.4</span><span class="ccd__unit">/wk</span></div>
+                <div class="ccd__spark" aria-hidden="true"><i style="height:32%"></i><i style="height:50%"></i><i style="height:42%"></i><i style="height:68%"></i><i style="height:84%"></i><i style="height:100%"></i></div>
+                <div class="ccd__delta">&#9650; 18% vs last week</div>
+              </div>
+              <div class="ccd__card">
+                <div class="ccd__k">Handled by AI</div>
+                <ul class="ccd__list">
+                  <li><span>Calls answered</span><b data-counter-to="128">128</b></li>
+                  <li><span>Messages replied</span><b data-counter-to="342">342</b></li>
+                  <li><span>Bookings made</span><b data-counter-to="57">57</b></li>
+                  <li><span>Escalated to you</span><b data-counter-to="6">6</b></li>
+                </ul>
+              </div>
+              <div class="ccd__card ccd__card--live">
+                <div class="ccd__k">Live now</div>
+                <div class="ccd__big ccd__big--sm"><span data-counter-to="3">3</span></div>
+                <div class="ccd__muted">automations running</div>
+                <svg class="ccd__area" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true">
+                  <defs><linearGradient id="dashGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a78bfa" stop-opacity="0.28"></stop><stop offset="1" stop-color="#a78bfa" stop-opacity="0"></stop></linearGradient></defs>
+                  <path d="M0 38 C 18 36, 26 28, 40 28 S 66 20, 80 15 S 104 6, 120 4 L120 46 L0 46 Z" fill="url(#dashGrad)"></path>
+                  <path d="M0 38 C 18 36, 26 28, 40 28 S 66 20, 80 15 S 104 6, 120 4" fill="none" stroke="#a78bfa" stroke-width="2"></path>
+                </svg>
+              </div>
+            </div>
+
+            <div class="ccd__row ccd__row--stats">
+              <div class="ccd__stat"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span><div class="ccd__stat-k">Tasks automated</div><div class="ccd__stat-v"><span data-counter-to="47">47</span></div></div>
+              <div class="ccd__stat"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg></span><div class="ccd__stat-k">Avg. response</div><div class="ccd__stat-v"><span data-counter-to="1.2" data-counter-dec="1">1.2</span>s</div></div>
+              <div class="ccd__stat"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span><div class="ccd__stat-k">Automations live</div><div class="ccd__stat-v"><span data-counter-to="9">9</span></div></div>
+              <div class="ccd__stat"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 1.5"></path><line x1="9.5" y1="2" x2="14.5" y2="2"></line></svg></span><div class="ccd__stat-k">Hours saved (MTD)</div><div class="ccd__stat-v"><span data-counter-to="26">26</span>h</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ccd__feats" data-stagger>
+      <div class="ccd__feat sreveal" data-tilt data-tilt-max="5"><span class="ccd__feat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg></span><div class="ccd__feat-h">Unified intelligence</div><p class="ccd__feat-p">Every agent, automation, and data source in one place &mdash; nothing left for you to stitch together.</p></div>
+      <div class="ccd__feat sreveal" data-tilt data-tilt-max="5"><span class="ccd__feat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span><div class="ccd__feat-h">Real-time insights</div><p class="ccd__feat-p">Response times, volumes, and hours saved &mdash; updated the moment they change.</p></div>
+      <div class="ccd__feat sreveal" data-tilt data-tilt-max="5"><span class="ccd__feat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg></span><div class="ccd__feat-h">Total control</div><p class="ccd__feat-p">Pause, adjust, or hand any automation back to a human &mdash; all from one screen.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== ENGAGEMENT TIMELINE ===================== -->
+  <section class="tile tile--parchment center" id="ai-services-timeline">
+    <div class="inner center sreveal svct__head">
+      <div class="eyebrow">Step by step</div>
+      <h2 class="metrics__h2" data-reveal-words style="color:var(--color-ink)">From first message to hours back in your week.</h2>
+      <p class="hero__sub">Every stage of working together, so you know what to expect before you commit.</p>
+    </div>
+
+    <div class="tl">
+      <div class="tl__rail" aria-hidden="true"><span class="tl__fill"></span></div>
+
+      <div class="tl__group sreveal">
+        <div class="tl__group-inner">
+          <h3 class="tl__group-t"><span class="tl__gnum">1</span>The AI Tools Assessment</h3>
+          <p class="tl__group-d">The €500 front door. Everything here is covered by the 5-hour guarantee.</p>
+        </div>
+      </div>
+
+      <div class="tl__node sreveal">
+        <span class="tl__dot" aria-hidden="true"></span>
+        <div class="tl__aside"><span class="tl__num">a</span></div>
+        <div class="tl__content">
+          <h3 class="tl__title">Discovery call</h3>
+          <p class="tl__body">You pick a slot and pay the €500. That's the only commitment. If the assessment doesn't find you at least five hours a week, you get it all back, so the worst case is a free 45-minute conversation about your business.</p>
+          <p class="tl__body">We spend 45 minutes on where your week actually goes. I ask, you talk, and I don't pitch anything. The point is to surface the tasks that eat your time and the ones you'd happily never do again.</p>
+          <div class="tl__links"><a href={bookHref} {...bookAttrs}>Book the discovery call</a></div>
+          <div class="tl__visual tl__agenda">
+            <div class="tl__vhead">What I'll ask</div>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span><strong>The fork</strong> &mdash; If AI could fix one thing in your business in the next 30 days, would you want it to make you more money, give you back hours, or make your customers happier?</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span><strong>Repetition</strong> &mdash; What&rsquo;s the task you or your team repeat most often every week?</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span><strong>Friction</strong> &mdash; Where do things most often slow down, get stuck, or fall through the cracks?</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span><strong>Quantify</strong> &mdash; How many hours a week does that eat, and who&rsquo;s doing it?</span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span><strong>Magic wand</strong> &mdash; If that one thing ran itself, what would change for you?</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl__node sreveal" id="ai-services-report">
+        <span class="tl__dot" aria-hidden="true"></span>
+        <div class="tl__aside"><span class="tl__num">b</span></div>
+        <div class="tl__content">
+          <h3 class="tl__title">Review call</h3>
+          <p class="tl__body">I take the call away and work through it properly: every pain point pulled out, then off-the-shelf AI tools researched and matched to each one. I right-size every pick to your business, so a four-person team isn't sold enterprise software it doesn't need.</p>
+          <p class="tl__body">A short, plain-language plan arrives before we next speak: your main time drains, the tools that fix them, and the hours and money you get back. It ends with a 4-day quick start, one small action a day, so an overwhelmed week isn't a reason to stall.</p>
+          <p class="tl__body">Then we go through the report together, recommendation by recommendation. You decide what's most urgent, and whether you want to run with it yourself or have me build it. If we're done here, you still walk away with a plan worth more than you paid.</p>
+          <div class="tl__links"><a href={bookHref} {...bookAttrs}>Book the review call</a></div>
+          <div class="tl__visual tl__agenda">
+            <div class="tl__vhead">What's in the report</div>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Quick wins, one pain to one tool</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Cost, setup time and hours saved</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Your monthly ROI, in real numbers</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>A 4-day plan to get started</li>
+            </ul>
+          </div>
+          <div class="cs-gallery" data-carousel>
+            <div class="cs-gallery__track carousel__track">
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-01.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="AI Tools Assessment report cover" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">AI Tools Assessment — cover</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-02.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Financial impact page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Financial impact — the ROI in your numbers</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-03.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Executive summary page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Executive summary</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-04.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Impact-effort matrix" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Impact vs effort matrix</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-05.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Quick wins page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Quick wins</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-06.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Recommended solutions page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Recommended solutions</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-07.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Four-day quick-start plan" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Your 4-day quick-start plan</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-08.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="What comes after page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">What comes after</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-09.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Next steps page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Your next steps</p></figcaption></figure>
+            </div>
+            <div class="carousel__nav">
+              <button class="carousel__btn carousel__prev" type="button" aria-label="Previous report page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+              <button class="carousel__btn carousel__next" type="button" aria-label="Next report page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl__group sreveal">
+        <div class="tl__group-inner">
+          <h3 class="tl__group-t"><span class="tl__gnum">2</span>Implementation <span class="tl__group-opt">(optional)</span></h3>
+          <p class="tl__group-d">Done for you, from €1,500. Your €500 assessment fee comes off the price.</p>
+        </div>
+      </div>
+
+      <div class="tl__node sreveal" id="ai-services-build">
+        <span class="tl__dot" aria-hidden="true"></span>
+        <div class="tl__aside"></div>
+        <div class="tl__content">
+          <h3 class="tl__title">I build it for you</h3>
+          <p class="tl__body">Want it done rather than done-yourself? I build the automations, knowledge systems and custom workflows on your real work, test them, and train your team to run them. Your €500 comes off the price.</p>
+          <p class="tl__body">The frameworks above are the shape most builds take. The assessment tells you which one fits, and most clients start with just one.</p>
+          <div class="tl__links"><a href={bookHref} {...bookAttrs}>Discuss a build</a></div>
+        </div>
+      </div>
+
+      <div class="tl__group sreveal" id="ai-services-concierge">
+        <div class="tl__group-inner">
+          <h3 class="tl__group-t"><span class="tl__gnum">3</span>AI Concierge <span class="tl__group-opt">(optional)</span></h3>
+          <p class="tl__group-d">Senior help on tap, €999 a month. Two working calls, capped roster.</p>
+        </div>
+      </div>
+
+      <div class="tl__node sreveal">
+        <span class="tl__dot" aria-hidden="true"></span>
+        <div class="tl__aside"></div>
+        <div class="tl__content">
+          <h3 class="tl__title">Keep the momentum</h3>
+          <p class="tl__body">The first win is rarely the last. The concierge keeps it going: an intake questionnaire that finds the wins before we even talk, two working calls a month where we build live, always-on access between sessions, and a running record of everything we ship. Senior help every month, without a hire.</p>
+          <div class="tl__links"><a href={bookHref} {...bookAttrs}>Book a call now</a></div>
+          <ul class="tl__pillars">
+            <li class="tl__pillar" data-tilt data-tilt-max="4">
+              <div class="tl__pillar__media"><img src="/images/concierge-01-questionnaire.svg" width="816" height="1258" loading="lazy" decoding="async" alt="Pre-call intake questionnaire" /></div>
+              <div class="tl__pillar__body"><h4 class="tl__pillar__t">Pre-call questionnaire</h4><p class="tl__pillar__tag">Surfaces your bottlenecks and time-heavy workflows.</p><div class="tl__links"><a href="#ai-services-book">Fill in the intake form <span aria-hidden="true">&#8599;</span></a></div></div>
+            </li>
+            <li class="tl__pillar" data-tilt data-tilt-max="4">
+              <div class="tl__pillar__media"><img src="/images/concierge-02-strategy-calls.svg" width="872" height="700" loading="lazy" decoding="async" alt="Booking a 45-minute strategy call" /></div>
+              <div class="tl__pillar__body"><h4 class="tl__pillar__t">Two 45-min calls a month</h4><p class="tl__pillar__tag">Working sessions where we build automated workflows, live.</p><div class="tl__pillar__cta"><a class="pill pill--primary pill--sm" href={bookHref} {...bookAttrs}>Book a call</a></div></div>
+            </li>
+            <li class="tl__pillar" data-tilt data-tilt-max="4">
+              <div class="tl__pillar__media"><img src="/images/concierge-04-notion.svg" width="1362" height="1696" loading="lazy" decoding="async" alt="Documentation hub logging every call and build" /></div>
+              <div class="tl__pillar__body"><h4 class="tl__pillar__t">Documentation hub</h4><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>All recordings and transcripts</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Top takeaways and action items per call</li></ul></div>
+            </li>
+            <li class="tl__pillar" data-tilt data-tilt-max="4">
+              <div class="tl__pillar__media"><img src="/images/concierge-03-voxer.svg" width="995" height="483" loading="lazy" decoding="async" alt="Unlimited voice-and-text access between sessions" /></div>
+              <div class="tl__pillar__body"><h4 class="tl__pillar__t">Always-on messaging access</h4><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Voice and text, like a walkie-talkie</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>No waiting two weeks for help</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>12-business-hour response</li></ul></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="tl__cta sreveal">It all starts with the assessment. <a href={bookHref} {...bookAttrs}>Book the assessment</a></p>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section class="tile tile--white center" id="ai-services-faq">
+    <div class="inner center reveal">
+      <div class="eyebrow">Questions</div>
+      <h2 class="metrics__h2" data-reveal-words style="color:var(--color-ink)">Straight answers, before you ask.</h2>
+    </div>
+    <div class="svcp-faq cs-qa" data-stagger>
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="aifaq-q-1" type="button" aria-expanded="false" aria-controls="aifaq-a-1"><span class="cs-qa__qtext">What if you can't find 5 hours a week?</span><svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <div class="cs-qa__panel" id="aifaq-a-1" role="region" aria-labelledby="aifaq-q-1"><div class="cs-qa__panel-inner"><p>Then you get every cent back. The guarantee is simple: if the assessment doesn't find you at least <strong>five hours a week</strong> of opportunity, you pay nothing. All you've risked is a 45-minute call.</p></div></div>
+      </div>
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="aifaq-q-2" type="button" aria-expanded="false" aria-controls="aifaq-a-2"><span class="cs-qa__qtext">Do I need to be technical?</span><svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <div class="cs-qa__panel" id="aifaq-a-2" role="region" aria-labelledby="aifaq-q-2"><div class="cs-qa__panel-inner"><p>No. You talk about your business the way you'd explain it to a friend. The technical part is my job. The report is written in plain language, and if you choose implementation, I set everything up and train your team.</p></div></div>
+      </div>
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="aifaq-q-3" type="button" aria-expanded="false" aria-controls="aifaq-a-3"><span class="cs-qa__qtext">We already use ChatGPT. Is this still worth it?</span><svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <div class="cs-qa__panel" id="aifaq-a-3" role="region" aria-labelledby="aifaq-q-3"><div class="cs-qa__panel-inner"><p>Usually yes. A chat window is a tiny slice of what's out there. The assessment looks at your actual workflows and finds the specific tools and automations that do the repetitive work for you, which is where the real hours come back.</p></div></div>
+      </div>
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="aifaq-q-4" type="button" aria-expanded="false" aria-controls="aifaq-a-4"><span class="cs-qa__qtext">Do you set the tools up, or just recommend them?</span><svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <div class="cs-qa__panel" id="aifaq-a-4" role="region" aria-labelledby="aifaq-q-4"><div class="cs-qa__panel-inner"><p>The €500 assessment recommends and shows you how, with a 4-day plan you can follow yourself. If you'd rather have it done, that's <strong>implementation</strong>, and your assessment fee comes off the price. Plenty of clients do the quick wins themselves and hire me for the bigger builds.</p></div></div>
+      </div>
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="aifaq-q-5" type="button" aria-expanded="false" aria-controls="aifaq-a-5"><span class="cs-qa__qtext">How soon will we see results?</span><svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <div class="cs-qa__panel" id="aifaq-a-5" role="region" aria-labelledby="aifaq-q-5"><div class="cs-qa__panel-inner"><p>Fast. The report ends with a 4-day quick start, one small action a day, so most clients have something working within the first week or two. The bigger automations take longer, but the early wins usually pay for the assessment on their own.</p></div></div>
+      </div>
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="aifaq-q-6" type="button" aria-expanded="false" aria-controls="aifaq-a-6"><span class="cs-qa__qtext">Why you, and not a cheaper AI course or agency?</span><svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <div class="cs-qa__panel" id="aifaq-a-6" role="region" aria-labelledby="aifaq-q-6"><div class="cs-qa__panel-inner"><p>A course leaves you to do the work. An agency hands you juniors. You get one senior practitioner applying real, shipped experience to your business — you work directly with the person doing the thinking.</p></div></div>
+      </div>
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="aifaq-q-7" type="button" aria-expanded="false" aria-controls="aifaq-a-7"><span class="cs-qa__qtext">Is the AI Concierge a contract? Can I cancel?</span><svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <div class="cs-qa__panel" id="aifaq-a-7" role="region" aria-labelledby="aifaq-q-7"><div class="cs-qa__panel-inner"><p>No lock-in. The concierge is <strong>€999 a month, month-to-month</strong> &mdash; cancel any time. The only limit is spots: it runs on a capped roster so everyone gets senior attention, so a place isn't always open.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT CTA — AI Services ===================== -->
+  <section class="tile tile--dark cta" id="ai-services-book">
+    <div class="inner center reveal">
+      <h2 class="cta__h2" data-reveal-words>Find your first <span class="accent">5 hours</span> a week.</h2>
+      <p class="cta__sub">Book the €500 assessment, or tell me a bit about your business first and I'll let you know honestly whether it's a fit.</p>
+      <div class="cta__book">
+        <a class="pill pill--primary cta__submit" data-magnetic data-magnetic-strength="8" href={site.calendlyUrl || '#contactFormAI'} {...bookAttrs}>Book the assessment</a>
+        <p class="cta__reassure">€500, credited in full if you go on to a build. If I can't find you at least five hours a week, you pay nothing.</p>
+      </div>
+      <div class="cta__or" aria-hidden="true"><span class="cta__or-line"></span>or send a message<span class="cta__or-line"></span></div>
+      <form class="cta__form" id="contactFormAI" action="https://formsubmit.co/muriloarielreis@gmail.com" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="New AI services enquiry from your portfolio site" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <input class="cta__field" type="text" name="name" placeholder="Your name" aria-label="Your name" autocomplete="name" required />
+        <span class="cta__err" data-err="name" aria-live="polite"></span>
+        <input class="cta__field" type="email" name="email" placeholder="Work email" aria-label="Work email" autocomplete="email" required />
+        <span class="cta__err" data-err="email" aria-live="polite"></span>
+        <input class="cta__field" type="text" name="role" placeholder="Your business (what you do, roughly how many people)" aria-label="Your business" autocomplete="organization" />
+        <select class="cta__field" name="budget" aria-label="Which fits best (optional)">
+          <option value="">Which fits best? (optional)</option>
+          <option value="AI Tools Assessment (€500)">AI Tools Assessment (€500)</option>
+          <option value="Implementation (from €1,500)">Implementation (from €1,500)</option>
+          <option value="AI Concierge (€999/mo)">AI Concierge (€999/mo)</option>
+          <option value="Not sure yet">Not sure yet</option>
+        </select>
+        <select class="cta__field" name="timeline" aria-label="Timeline (optional)">
+          <option value="">Timeline (optional)</option>
+          <option value="Now / this month">Now / this month</option>
+          <option value="This quarter">This quarter</option>
+          <option value="Just exploring">Just exploring</option>
+        </select>
+        <textarea class="cta__field" name="message" placeholder="What eats most of your time right now, and what you've tried so far." aria-label="Message" required></textarea>
+        <span class="cta__err" data-err="message" aria-live="polite"></span>
+        <button class="pill pill--ghost-dark cta__submit" type="submit">Send a message</button>
+        <div class="cta__status" id="contactStatusAI" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+</Layout>

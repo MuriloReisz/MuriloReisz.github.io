@@ -1,0 +1,80 @@
+---
+import { site } from '../data/site';
+---
+
+<!-- Cookie consent -->
+<div class="consent" id="consentBanner" role="dialog" aria-label="Cookie consent" hidden>
+  <p class="consent__text">I use privacy-friendly analytics to see which pages are useful and keep improving the site. No ads, and no tracking across other sites. <a href="#" data-legal-open>Privacy &amp; cookies</a>.</p>
+  <div class="consent__actions">
+    <button class="pill pill--ghost consent__btn" type="button" id="consentDecline">Decline</button>
+    <button class="pill pill--primary consent__btn" type="button" id="consentAccept">Accept</button>
+  </div>
+</div>
+
+<!-- Privacy & cookies -->
+<div class="legal-scrim" id="legalScrim" role="dialog" aria-modal="true" aria-labelledby="legalTitle">
+  <div class="legal" id="legalBox" tabindex="-1">
+    <div class="legal__head">
+      <h2 class="legal__title" id="legalTitle">Privacy &amp; cookies</h2>
+      <button class="legal__close" id="legalClose" type="button" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </div>
+    <div class="legal__body">
+      <p class="legal__updated">Last updated {site.year}</p>
+      <p>Short and plain. This explains what happens to your information when you use this site or get in touch. <em>(Placeholder text — replace with your own policy before launch.)</em></p>
+      <h3>Who I am</h3>
+      <p>This site belongs to {site.name}, trading as {site.brand}, based in {site.location}. Reach me at <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+      <h3>What I collect, and why</h3>
+      <p>When you send an enquiry, the contact form asks for your name, email and message. I use this only to reply and to talk about working together.</p>
+      <h3>Cookies and similar storage</h3>
+      <p>No analytics run until you click Accept. The site stores your theme choice and cookie decision in your browser — these stay on your device and don't track you. Change your choice any time from "Cookie settings" in the footer.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Command palette (⌘K) -->
+<div class="cmdk-scrim" id="cmdk" role="dialog" aria-modal="true" aria-label="Search the site">
+  <div class="cmdk-panel" role="document">
+    <div class="cmdk-inputwrap">
+      <svg class="cmdk-inputicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+      <input id="cmdkInput" class="cmdk-input" type="text" role="combobox" aria-expanded="true" aria-controls="cmdkList" autocomplete="off" spellcheck="false" placeholder="Jump to a page, link, or action…" aria-label="Jump to a page, link, or action" />
+    </div>
+    <ul id="cmdkList" class="cmdk-list" role="listbox" aria-label="Search results"></ul>
+    <div class="cmdk-hint" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> select</span>
+      <span><kbd>esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- Ask the AI Advisor -->
+<a class="advisor-fab" id="advisorFab" href={site.advisorUrl || '#contact'} target={site.advisorUrl ? '_blank' : undefined} rel={site.advisorUrl ? 'noopener' : undefined} aria-label="Ask the AI Advisor">
+  <span class="advisor-fab__icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9a1.5 1.5 0 0 1-1.5 1.5H9l-4 3.5V16H5.5A1.5 1.5 0 0 1 4 14.5v-9Z" fill="currentColor"></path></svg>
+  </span>
+  <span class="advisor-fab__label">Ask the AI Advisor</span>
+</a>
+
+<!-- Back to top — revealed by motion.ts past the first viewport -->
+<button class="totop" type="button" data-back-to-top aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg>
+</button>
+
+<!-- Image lightbox — opened by interactive.ts for [data-lightbox-group] images -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lightbox__close" type="button" id="lightboxClose" aria-label="Close image viewer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+  </button>
+  <button class="lightbox__nav lightbox__prev" type="button" id="lightboxPrev" aria-label="Previous image">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+  </button>
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" id="lightboxImg" src="" alt="" />
+    <figcaption class="lightbox__cap" id="lightboxCap"></figcaption>
+  </figure>
+  <button class="lightbox__nav lightbox__next" type="button" id="lightboxNext" aria-label="Next image">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+  </button>
+</div>

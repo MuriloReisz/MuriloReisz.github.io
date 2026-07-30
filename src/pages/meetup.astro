@@ -1,0 +1,237 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+
+const rsvpHref = site.calendlyUrl || '/#contact';
+const rsvpExternal = Boolean(site.calendlyUrl);
+---
+
+<Layout title="Meetup">
+
+  <!-- HERO -->
+  <section class="tile tile--white center mt-hero" id="meetup-hero">
+    <div class="inner center">
+      <div class="eyebrow reveal">{site.location} &middot; AI for Business</div>
+      <h1 class="mt-hero__title reveal" data-reveal-words>Give your team back <span class="accent">5+ hours a week</span> with AI.</h1>
+      <p class="mt-hero__lead reveal">A free monthly meetup for owner-run businesses across {site.location}. No jargon, no sales pitch. Just the practical AI tools that cut the admin eating your week, shown working on real business tasks.</p>
+      <div class="mt-cta reveal">
+        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...(rsvpExternal ? { target: '_blank', rel: 'noopener' } : {})}>Reserve your seat</a>
+        <a class="pill pill--ghost" href="#meetup-format">See how a night runs</a>
+      </div>
+      <p class="mt-note reveal" data-rsvp-note>The next date and venue are being confirmed. Reserve your seat now and we&rsquo;ll email you the details first.</p>
+      <div class="mt-meta reveal">
+        <span class="mt-meta__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12V7a2 2 0 0 0-2-2h-5L3 15l6 6L18 12z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>Free to attend</span>
+        <span class="mt-meta__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.5s7-5.5 7-11.5a7 7 0 0 0-14 0c0 6 7 11.5 7 11.5z"/><circle cx="12" cy="10" r="3"/></svg>Monthly in {site.location}</span>
+        <span class="mt-meta__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Around 90 minutes</span>
+        <span class="mt-meta__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg>Bring a laptop</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU LEAVE WITH -->
+  <section class="tile tile--parchment center" id="meetup-value">
+    <div class="inner center">
+      <div class="eyebrow sreveal">Why come</div>
+      <h2 class="mt-h2 sreveal" data-reveal-words>Leave with something you can use the next morning.</h2>
+      <p class="mt-sub sreveal">Every month we pick one thing and do it well. You watch it work on the kind of tasks that fill your own week, then take it home.</p>
+      <div class="metrics__row sreveal">
+        <div class="stat">
+          <span class="stat__n" data-counter-to="5" data-counter-suffix="+">5+</span>
+          <span class="stat__l">hours a week owners get back after putting the workflow in</span>
+        </div>
+        <div class="stat">
+          <span class="stat__n" data-counter-to="3">3</span>
+          <span class="stat__l">tools a night, each shown working on a real business task</span>
+        </div>
+        <div class="stat">
+          <span class="stat__n" data-counter-to="90" data-counter-suffix=" min">90 min</span>
+          <span class="stat__l">start to finish, once a month, free to attend</span>
+        </div>
+      </div>
+      <div class="mt-feats" data-stagger>
+        <div class="mt-feat sreveal" data-tilt>
+          <span class="mt-feat__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-2.4z"/></svg></span>
+          <h3 class="mt-feat__h">Tools worth your time</h3>
+          <p class="mt-feat__p">The short list of AI tools actually worth using, each one shown doing a real job. Not fifty tabs to go and test on your own time.</p>
+        </div>
+        <div class="mt-feat sreveal" data-tilt>
+          <span class="mt-feat__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
+          <h3 class="mt-feat__h">A workflow for Monday</h3>
+          <p class="mt-feat__p">One practical workflow you can put to work the very next morning, set up in front of you, step by step.</p>
+        </div>
+        <div class="mt-feat sreveal" data-tilt>
+          <span class="mt-feat__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M16.5 5.6a3 3 0 0 1 0 5.8"/><path d="M18.2 20a6.2 6.2 0 0 0-3-5.3"/></svg></span>
+          <h3 class="mt-feat__h">Your local AI network</h3>
+          <p class="mt-feat__p">A room of local owners solving the same problems you are. The conversation after the talk is where the good stuff happens.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE FORMAT -->
+  <section class="tile tile--dark center" id="meetup-format" data-spotlight>
+    <div class="inner center">
+      <div class="eyebrow eyebrow--dark sreveal">The format</div>
+      <h2 class="mt-h2 sreveal" data-reveal-words>Simple, practical, and over in about 90 minutes.</h2>
+      <p class="mt-sub sreveal">Same shape every month, so you always know what you&rsquo;re walking into.</p>
+      <div class="mt-steps" data-stagger>
+        <div class="mt-step sreveal">
+          <div class="mt-step__n">01</div>
+          <h3 class="mt-step__h">A short, practical teach</h3>
+          <p class="mt-step__p">Around twenty minutes on one useful thing, usually how to actually use AI, shown live on a real business task.</p>
+        </div>
+        <div class="mt-step sreveal">
+          <div class="mt-step__n">02</div>
+          <h3 class="mt-step__h">Open questions</h3>
+          <p class="mt-step__p">Bring your biggest weekly time-sink. We talk through the tool that handles it, together, in plain language.</p>
+        </div>
+        <div class="mt-step sreveal">
+          <div class="mt-step__n">03</div>
+          <h3 class="mt-step__h">Stay and chat</h3>
+          <p class="mt-step__p">The room stays on for a while afterwards. Meet other local owners over the practical stuff you just saw. Bring a laptop for hands-on help with something of your own.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT MEETUP (editable details) -->
+  <section class="tile tile--white center" id="meetup-details">
+    <div class="inner center">
+      <div class="eyebrow sreveal">Next meetup</div>
+      <h2 class="mt-h2 sreveal" data-reveal-words>{site.location}, once a month. The next date is on its way.</h2>
+      <p class="mt-sub sreveal">Reserve a seat and you&rsquo;ll be first to hear the date and venue, and first in line for one of the early spots.</p>
+      <div class="mt-card sreveal">
+        <div class="mt-row">
+          <span class="mt-row__k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="17" rx="2"/><path d="M8 2.5v4M16 2.5v4M3 9.5h18"/></svg>Date</span>
+          <span class="mt-row__v"><span class="mt-tbc">Announced soon</span></span>
+        </div>
+        <div class="mt-row">
+          <span class="mt-row__k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Time</span>
+          <span class="mt-row__v"><span class="mt-tbc">Evening, to be confirmed</span></span>
+        </div>
+        <div class="mt-row">
+          <span class="mt-row__k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.5s7-5.5 7-11.5a7 7 0 0 0-14 0c0 6 7 11.5 7 11.5z"/><circle cx="12" cy="10" r="3"/></svg>Venue</span>
+          <span class="mt-row__v"><span class="mt-tbc">City centre, announced soon</span></span>
+        </div>
+        <div class="mt-row">
+          <span class="mt-row__k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12V7a2 2 0 0 0-2-2h-5L3 15l6 6L18 12z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>Cost</span>
+          <span class="mt-row__v">Free</span>
+        </div>
+      </div>
+      <div class="mt-cta sreveal">
+        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...(rsvpExternal ? { target: '_blank', rel: 'noopener' } : {})}>Reserve your seat</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- YOUR HOSTS -->
+  <section class="tile tile--parchment center" id="meetup-hosts">
+    <div class="inner center">
+      <div class="eyebrow sreveal">Your hosts</div>
+      <h2 class="mt-h2 sreveal" data-reveal-words>Two local consultants who do this for a living.</h2>
+      <p class="mt-sub sreveal">On our paid work we guarantee 5+ hours a week saved, or your money back. The meetup is where we show a slice of that, for free.</p>
+      <div class="mt-hosts" data-stagger>
+        <div class="mt-host sreveal" data-tilt>
+          <img class="mt-host__photo" src="/images/image03.svg" alt={site.name} width="84" height="84" loading="lazy" />
+          <div>
+            <p class="mt-host__name">{site.name}</p>
+            <p class="mt-host__role">Data &amp; AI Consultant</p>
+            <p class="mt-host__bio">{site.name} has shipped agentic AI inside a large enterprise and now helps local businesses put the same tools to work. Runs the AI Tools Assessment behind {site.brand}.</p>
+            <a class="mt-host__link" href={site.socials.linkedin} target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>LinkedIn</a>
+          </div>
+        </div>
+        <div class="mt-host sreveal" data-tilt>
+          <span class="mt-host__mono" aria-hidden="true">CH</span>
+          <div>
+            <p class="mt-host__name">Co-host</p>
+            <p class="mt-host__role">Data &amp; AI Consultant</p>
+            <p class="mt-host__bio">A local data and AI consultant who helps businesses turn everyday tools into time back in the week. Co-hosts the meetup and works the room afterwards.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="tile tile--white center" id="meetup-faq">
+    <div class="inner center reveal">
+      <div class="eyebrow">Questions</div>
+      <h2 class="mt-h2" data-reveal-words>Straight answers, before you ask.</h2>
+    </div>
+    <div class="svcp-faq cs-qa" data-stagger>
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="mtfaq-q-1" type="button" aria-expanded="false" aria-controls="mtfaq-a-1">
+          <span class="cs-qa__qtext">Is it really free?</span>
+          <svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="cs-qa__panel" id="mtfaq-a-1" role="region" aria-labelledby="mtfaq-q-1">
+          <div class="cs-qa__panel-inner"><p>Yes. The meetup costs nothing to attend. We run it to meet local owners and show what these tools can actually do. If you later want a one-to-one look at your own business, that&rsquo;s our paid work, and it&rsquo;s completely optional.</p></div>
+        </div>
+      </div>
+
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="mtfaq-q-2" type="button" aria-expanded="false" aria-controls="mtfaq-a-2">
+          <span class="cs-qa__qtext">Do I need to be technical?</span>
+          <svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="cs-qa__panel" id="mtfaq-a-2" role="region" aria-labelledby="mtfaq-q-2">
+          <div class="cs-qa__panel-inner"><p>Not at all. If you can use email, you&rsquo;re fine. We keep everything in plain language and show things working rather than talking theory.</p></div>
+        </div>
+      </div>
+
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="mtfaq-q-3" type="button" aria-expanded="false" aria-controls="mtfaq-a-3">
+          <span class="cs-qa__qtext">Will you try to sell me something?</span>
+          <svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="cs-qa__panel" id="mtfaq-a-3" role="region" aria-labelledby="mtfaq-q-3">
+          <div class="cs-qa__panel-inner"><p>No pitch from the stage. We show useful tools and answer your questions. If you want to take it further afterwards you&rsquo;re welcome to ask us, but nobody is getting sold to.</p></div>
+        </div>
+      </div>
+
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="mtfaq-q-4" type="button" aria-expanded="false" aria-controls="mtfaq-a-4">
+          <span class="cs-qa__qtext">Who is it for?</span>
+          <svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="cs-qa__panel" id="mtfaq-a-4" role="region" aria-labelledby="mtfaq-q-4">
+          <div class="cs-qa__panel-inner"><p>Owner-run businesses across {site.location}. Clinics, trades, shops, firms and agencies are all welcome. Bring your biggest weekly time-sink and leave with the tool that handles it.</p></div>
+        </div>
+      </div>
+
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="mtfaq-q-5" type="button" aria-expanded="false" aria-controls="mtfaq-a-5">
+          <span class="cs-qa__qtext">What should I bring?</span>
+          <svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="cs-qa__panel" id="mtfaq-a-5" role="region" aria-labelledby="mtfaq-q-5">
+          <div class="cs-qa__panel-inner"><p>Just yourself and one task that eats your week. Bring a laptop if you&rsquo;d like hands-on help setting something up for your own business.</p></div>
+        </div>
+      </div>
+
+      <div class="cs-qa__item reveal">
+        <button class="cs-qa__head" id="mtfaq-q-6" type="button" aria-expanded="false" aria-controls="mtfaq-a-6">
+          <span class="cs-qa__qtext">How often does it run?</span>
+          <svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="cs-qa__panel" id="mtfaq-a-6" role="region" aria-labelledby="mtfaq-q-6">
+          <div class="cs-qa__panel-inner"><p>Once a month in {site.location}, same simple format each time. Reserve a seat and we&rsquo;ll tell you the date and venue for the next one first.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="tile tile--dark cta center" id="meetup-book" data-spotlight>
+    <div class="inner center reveal">
+      <h2 class="cta__h2" data-reveal-words>Save your seat at the next <span class="accent">local AI</span> meetup.</h2>
+      <p class="cta__sub">Free to attend, limited seats, and no sales pitch. Reserve now and we&rsquo;ll send you the date and venue the moment they&rsquo;re set.</p>
+      <div class="mt-cta">
+        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...(rsvpExternal ? { target: '_blank', rel: 'noopener' } : {})}>Reserve your seat</a>
+      </div>
+      <p class="cta__reassure">Free &middot; Limited seats &middot; Monthly in {site.location}</p>
+      <p class="mt-close">Would rather a one-to-one look at your business first? See the <a class="textlink textlink--dark" href="/ai-services">AI Tools Assessment</a>, read up on <a class="textlink textlink--dark" href="/work">the work behind these nights</a>, or take the same tools for a spin in the <a class="textlink textlink--dark" href="/playground">playground</a>.</p>
+    </div>
+  </section>
+
+</Layout>

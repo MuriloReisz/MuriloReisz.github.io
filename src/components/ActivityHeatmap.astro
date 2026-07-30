@@ -1,0 +1,118 @@
+---
+// ActivityHeatmap — 52 weeks x 7 days of commit activity, as a real table.
+// Columns are weeks, rows are weekdays (Monday first). Every cell is a
+// button with a full accessible label; the tooltip is drawn from data-tip.
+import { activity, activityWeeks, activityTotal } from '../data/extras';
+
+const DAY_LONG = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+const dayOf = (weekStart: string, dayIndex: number) => {
+  const d = new Date(`${weekStart}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + dayIndex);
+  return d;
+};
+
+const longDate = (d: Date) =>
+  d.toLocaleDateString('en-IE', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' });
+const shortDate = (d: Date) =>
+  d.toLocaleDateString('en-IE', { timeZone: 'UTC', day: 'numeric', month: 'short' });
+const monthShort = (d: Date) => d.toLocaleDateString('en-IE', { timeZone: 'UTC', month: 'short' });
+
+type Cell = { level: number; label: string; tip: string };
+
+// One row per weekday, one cell per week.
+const rows: Cell[][] = DAY_LONG.map((dayName, day) =>
+  activityWeeks.map((weekStart, week) => {
+    const date = dayOf(weekStart, day);
+    const n = activity[week][day];
+    const noun = n === 1 ? 'commit' : 'commits';
+    return {
+      level: n,
+      label: n === 0
+        ? `No commits on ${dayName}, ${longDate(date)}`
+        : `${n} ${noun} on ${dayName}, ${longDate(date)}`,
+      tip: n === 0 ? `No commits · ${shortDate(date)}` : `${n} ${noun} · ${shortDate(date)}`,
+    };
+  })
+);
+
+// Month header: consecutive weeks sharing a month collapse into one span.
+type MonthSpan = { label: string; span: number };
+const months: MonthSpan[] = [];
+activityWeeks.forEach((weekStart) => {
+  const label = monthShort(new Date(`${weekStart}T00:00:00Z`));
+  const last = months[months.length - 1];
+  if (last && last.label === label) last.span += 1;
+  else months.push({ label, span: 1 });
+});
+
+const firstDay = dayOf(activityWeeks[0], 0);
+const lastDay = dayOf(activityWeeks[activityWeeks.length - 1], 6);
+const rangeText = `${longDate(firstDay)} — ${longDate(lastDay)}`;
+const totalText = activityTotal.toLocaleString('en-IE');
+const levels = [0, 1, 2, 3, 4];
+---
+
+<section class="tile tile--dark-3 hm-heat" id="activity">
+  <div class="inner" data-stagger>
+    <div class="eyebrow eyebrow--dark reveal">Consistency</div>
+    <h2 class="metrics__h2 reveal" style="color:#fff">A year of commits.</h2>
+    <p class="hero__sub reveal">
+      {totalText} commits across client repositories, internal tooling and this site,
+      {' '}{rangeText}. The quiet columns are holidays — the rest is most weekdays,
+      which is how a pipeline stays alive after handover.
+    </p>
+
+    <figure class="hm-heat__fig reveal">
+      <div class="hm-heat__rail mo-hscroll" role="group" aria-label="Commit activity, 52 weeks">
+        <table class="hm-heat__grid">
+          <caption class="hm-sr">
+            Daily commit counts by weekday and week, {rangeText}. {totalText} commits in total.
+          </caption>
+          <thead>
+            <tr class="hm-heat__mrow">
+              <td class="hm-heat__corner"></td>
+              {months.map((m) => (
+                <th class="hm-heat__month" scope="colgroup" colspan={m.span}>
+                  <span class="hm-heat__mlabel">{m.span > 1 ? m.label : ''}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((cells, day) => (
+              <tr class="hm-heat__row">
+                <th class="hm-heat__dayhead" scope="row">
+                  <span class={day % 2 === 0 ? 'hm-heat__daylabel' : 'hm-sr'}>{DAY_SHORT[day]}</span>
+                </th>
+                {cells.map((c) => (
+                  <td class="hm-heat__td">
+                    <button
+                      class="hm-heat__cell"
+                      type="button"
+                      data-level={String(c.level)}
+                      data-tip={c.tip}
+                      aria-label={c.label}
+                    ></button>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <figcaption class="hm-heat__foot">
+        <span class="hm-heat__total">{totalText} commits · 52 weeks</span>
+        <span class="hm-heat__legend">
+          <span class="hm-heat__legend-l">Fewer</span>
+          <span class="hm-heat__steps" role="img" aria-label="Scale from no commits to four or more commits a day">
+            {levels.map((l) => <span class="hm-heat__sw" data-level={String(l)}></span>)}
+          </span>
+          <span class="hm-heat__legend-l">More</span>
+        </span>
+      </figcaption>
+    </figure>
+  </div>
+</section>

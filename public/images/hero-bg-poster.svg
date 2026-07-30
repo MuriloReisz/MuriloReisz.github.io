@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs><radialGradient id="h" cx="72%" cy="26%" r="95%"><stop offset="0" stop-color="#ece9ff"/><stop offset="1" stop-color="#f7f7fb"/></radialGradient></defs>
+  <rect width="1280" height="720" fill="url(#h)"/>
+  <g fill="none" stroke="#6d5ef0" stroke-opacity="0.16" stroke-width="1.5">
+    <path d="M0 520 Q320 420 640 500 T1280 470"/><path d="M0 560 Q320 470 640 545 T1280 520"/>
+    <path d="M0 600 Q320 520 640 590 T1280 570"/>
+  </g>
+</svg>

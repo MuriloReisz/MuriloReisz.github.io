@@ -1,0 +1,46 @@
+---
+// Testimonials — a swipeable rail of client quotes. site.ts drives the
+// prev/next buttons; the track is a scroll-snap list, so it is fully
+// usable by touch, wheel and keyboard even before the script loads.
+import { testimonials } from '../data/extras';
+---
+
+<section class="tile tile--parchment hm-quotes" id="testimonials">
+  <div class="inner" data-stagger>
+    <div class="eyebrow reveal">In their words</div>
+    <h2 class="metrics__h2 reveal">The people who signed the work off.</h2>
+    <p class="hero__sub reveal">
+      Operations leads, finance managers and founders — the ones who had to live with the
+      dashboards and pipelines after the engagement closed.
+    </p>
+
+    <div class="hm-quotes__carousel reveal" data-carousel>
+      <ul class="hm-quotes__track carousel__track" role="list" tabindex="0" aria-label="Client testimonials">
+        {testimonials.map((t) => (
+          <li class="hm-quotes__item">
+            <figure class="quote hm-quotes__card">
+              <span class="quote__mark" aria-hidden="true">&#8220;</span>
+              <blockquote class="quote__text">{t.quote}</blockquote>
+              <figcaption class="quote__who">
+                <span class="hm-quotes__avatar" aria-hidden="true">{t.initials}</span>
+                <span class="hm-quotes__ident">
+                  <span class="quote__name">{t.name}</span>
+                  <span class="quote__role">{t.role} · {t.org}</span>
+                </span>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+
+      <div class="carousel__nav">
+        <button class="carousel__btn carousel__prev" type="button" aria-label="Previous testimonial">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+        </button>
+        <button class="carousel__btn carousel__next" type="button" aria-label="Next testimonial">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

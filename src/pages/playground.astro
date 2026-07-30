@@ -1,0 +1,459 @@
+---
+// ---------------------------------------------------------------------------
+// /playground — six working models a visitor can actually drive.
+//
+// Every control here is wired to src/scripts/demos.ts. The attribute names
+// below are that module's documented contract, so they are deliberately
+// literal: [data-roi-in="hours"] etc. demos.ts normalises min/max/step/value
+// on each range input itself, so this markup only has to declare intent.
+//
+// Nothing is faked visually: with JS off you get labelled controls and the
+// server-rendered starting figures, which are the same numbers the scripts
+// compute on first paint.
+// ---------------------------------------------------------------------------
+import Layout from '../layouts/Layout.astro';
+import { projectBySlug } from '../data/projects';
+
+const churn = projectBySlug('churn-early-warning');
+const forecast = projectBySlug('retail-demand-forecast');
+const automation = projectBySlug('freelance-automation-bi');
+const logistics = projectBySlug('logistics-control-tower');
+
+/* The KPI explorer reuses the series demos.ts already ships. */
+const kpis = [
+  { key: 'revenue', label: 'Revenue' },
+  { key: 'orders', label: 'Orders' },
+  { key: 'aov', label: 'Avg order value' },
+  { key: 'retention', label: 'Retention' },
+  { key: 'margin', label: 'Margin' },
+  { key: 'channels', label: 'Channels' },
+];
+
+const examples = [
+  { id: 'channels', label: 'Revenue by channel' },
+  { id: 'repeat', label: 'Repeat-purchase rate' },
+  { id: 'stock', label: 'Slow-moving stock' },
+];
+
+const roiFields = [
+  { key: 'hours', label: 'Hours each person loses to manual reporting', hint: 'per week' },
+  { key: 'people', label: 'People doing that work', hint: '' },
+  { key: 'weeks', label: 'Working weeks per year', hint: '' },
+  { key: 'rate', label: 'Fully loaded hourly cost', hint: 'salary plus overhead' },
+  { key: 'share', label: 'Share of the work automation removes', hint: 'be conservative' },
+  { key: 'invest', label: 'One-off build cost', hint: '' },
+];
+
+const churnFields = [
+  { key: 'logins', label: 'Product logins per week' },
+  { key: 'recency', label: 'Days since the last report was opened' },
+  { key: 'tickets', label: 'Support tickets in the last 30 days' },
+  { key: 'nps', label: 'Last satisfaction score, 0 to 10' },
+];
+
+const stages = [
+  { key: 'extract', name: 'Extract', desc: 'Warehouse read replica, from the last watermark.' },
+  { key: 'validate', name: 'Validate', desc: 'Schema contract checked; bad rows quarantined.' },
+  { key: 'transform', name: 'Transform', desc: 'Currency, labels and grain normalised.' },
+  { key: 'load', name: 'Load', desc: 'Idempotent upsert into the reporting mart.' },
+  { key: 'publish', name: 'Publish', desc: 'Dashboards refreshed, run logged, team notified.' },
+];
+---
+
+<Layout
+  title="Playground — interactive data models"
+  description="Six working models you can drive yourself: an automation ROI calculator, a KPI explorer, a SQL console, a churn scorer, a forecast horizon and an ETL pipeline."
+  ogImage="/images/proposal-insights-1.svg"
+  wide
+>
+  <!-- ===================== HERO ===================== -->
+  <section class="tile tile--white pg-hero" id="playground-top">
+    <div class="inner" data-stagger>
+      <div class="eyebrow reveal">Playground</div>
+      <h1 class="metrics__h2 pg-hero__h1 reveal" data-reveal-words>
+        Don’t take my word for it. Drive it yourself.
+      </h1>
+      <p class="hero__sub reveal">
+        Six of the models behind my case studies, stripped back and made interactive. Move the
+        inputs and watch the numbers move — the arithmetic is written out beside every result, so
+        you can check my working rather than trust a headline.
+      </p>
+      <ul class="pg-hero__list reveal">
+        <li class="pg-hero__item"><a class="textlink" href="#pg-roi">Automation ROI</a></li>
+        <li class="pg-hero__item"><a class="textlink" href="#pg-kpi">KPI explorer</a></li>
+        <li class="pg-hero__item"><a class="textlink" href="#pg-sql">SQL console</a></li>
+        <li class="pg-hero__item"><a class="textlink" href="#pg-churn">Churn scorer</a></li>
+        <li class="pg-hero__item"><a class="textlink" href="#pg-forecast">Forecast horizon</a></li>
+        <li class="pg-hero__item"><a class="textlink" href="#pg-pipeline">ETL pipeline</a></li>
+      </ul>
+      <p class="pg-hero__note reveal">
+        Every demo runs entirely in your browser on synthetic data. Nothing you type is sent
+        anywhere.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 01 · ROI CALCULATOR ===================== -->
+  <section class="tile tile--parchment pg-demo" id="pg-roi">
+    <div class="inner" data-stagger>
+      <div class="pg-demo__head">
+        <span class="pg-demo__n" aria-hidden="true">01</span>
+        <div>
+          <div class="eyebrow reveal">Automation ROI</div>
+          <h2 class="metrics__h2 pg-demo__h reveal">What is manual reporting actually costing you?</h2>
+          <p class="pg-demo__what reveal">
+            The first thing I work out on any automation engagement. Put your own numbers in — the
+            formula is shown underneath, so nothing is hidden in a black box.
+          </p>
+        </div>
+      </div>
+
+      <div class="pg-panel reveal" data-roi-calc>
+        <div class="pg-panel__controls">
+          {roiFields.map((f) => (
+            <div class="ix-field">
+              <div class="ix-field__top">
+                <label class="ix-field__label" for={`roi-${f.key}`}>{f.label}</label>
+                <output class="ix-field__val" data-roi-val={f.key} for={`roi-${f.key}`}></output>
+              </div>
+              <input class="ix-range" id={`roi-${f.key}`} type="range" data-roi-in={f.key} />
+              {f.hint && <p class="ix-field__hint">{f.hint}</p>}
+            </div>
+          ))}
+        </div>
+
+        <div class="pg-panel__results">
+          <div class="pg-result pg-result--hero">
+            <div class="ix-out">
+              <span class="ix-out__v ix-out__v--accent" data-roi-out="annual">—</span>
+              <span class="ix-out__l">given back per year</span>
+            </div>
+          </div>
+          <div class="pg-result__row">
+            <div class="ix-out">
+              <span class="ix-out__v" data-roi-out="hoursword">—</span>
+              <span class="ix-out__l">returned to the team</span>
+            </div>
+            <div class="ix-out">
+              <span class="ix-out__v" data-roi-out="payback">—</span>
+              <span class="ix-out__l">to pay back the build</span>
+            </div>
+          </div>
+          <dl class="pg-result__facts">
+            <div class="pg-fact">
+              <dt class="pg-fact__k">Time spent today</dt>
+              <dd class="pg-fact__v" data-roi-out="baseline">—</dd>
+            </div>
+            <div class="pg-fact">
+              <dt class="pg-fact__k">Cost of that time</dt>
+              <dd class="pg-fact__v" data-roi-out="cost">—</dd>
+            </div>
+            <div class="pg-fact">
+              <dt class="pg-fact__k">Saving per month</dt>
+              <dd class="pg-fact__v" data-roi-out="monthly">—</dd>
+            </div>
+            <div class="pg-fact">
+              <dt class="pg-fact__k">In working days</dt>
+              <dd class="pg-fact__v" data-roi-out="days">—</dd>
+            </div>
+          </dl>
+          <div class="pg-formula">
+            <p class="pg-formula__k">The arithmetic</p>
+            <p class="pg-formula__v" data-roi-out="formula">—</p>
+            <p class="pg-formula__v pg-formula__v--sub" data-roi-out="paybackformula">—</p>
+          </div>
+          <p class="ix-status" data-roi-status></p>
+        </div>
+      </div>
+
+      <p class="pg-demo__foot reveal">
+        This is the model behind the <a class="textlink" href={`/work/${automation?.slug}`}>automation &amp; BI practice</a>,
+        where a −80% cut in manual effort came out of exactly this sum.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 02 · KPI EXPLORER ===================== -->
+  <section class="tile tile--white pg-demo" id="pg-kpi">
+    <div class="inner" data-stagger>
+      <div class="pg-demo__head">
+        <span class="pg-demo__n" aria-hidden="true">02</span>
+        <div>
+          <div class="eyebrow reveal">KPI explorer</div>
+          <h2 class="metrics__h2 pg-demo__h reveal">One dashboard, eight questions.</h2>
+          <p class="pg-demo__what reveal">
+            How a real executive dashboard behaves: one chart, a metric switcher, and a written
+            reading of what the series actually says. Hover or tab through any point for its value.
+          </p>
+        </div>
+      </div>
+
+      <div class="pg-panel pg-panel--kpi reveal" data-kpi-explorer>
+        <div class="ix-seg pg-kpi__seg" role="group" aria-label="Choose a metric">
+          {kpis.map((k, i) => (
+            <button
+              class="ix-seg__btn"
+              type="button"
+              data-kpi={k.key}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+            >{k.label}</button>
+          ))}
+        </div>
+
+        <div class="pg-kpi__top">
+          <div class="ix-out">
+            <span class="ix-out__v" data-kpi-out="value">—</span>
+            <span class="ix-out__l" data-kpi-out="name">—</span>
+          </div>
+          <span class="pg-kpi__delta" data-kpi-out="delta">—</span>
+        </div>
+
+        <div class="pg-kpi__chart" data-chart="line" data-series="[]" data-chart-dec="0"></div>
+
+        <p class="pg-kpi__note" data-kpi-out="note">—</p>
+        <p class="ix-status" data-kpi-status></p>
+      </div>
+
+      <p class="pg-demo__foot reveal">
+        The same pattern as the <a class="textlink" href={`/work/${logistics?.slug}`}>logistics control tower</a> —
+        one screen a leadership team can actually run a meeting from.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 03 · SQL CONSOLE ===================== -->
+  <section class="tile tile--dark pg-demo pg-demo--dark" id="pg-sql">
+    <div class="inner" data-stagger>
+      <div class="pg-demo__head">
+        <span class="pg-demo__n pg-demo__n--dark" aria-hidden="true">03</span>
+        <div>
+          <div class="eyebrow eyebrow--dark reveal">SQL console</div>
+          <h2 class="metrics__h2 pg-demo__h reveal" style="color:#fff">Ask the warehouse a question.</h2>
+          <p class="pg-demo__what pg-demo__what--dark reveal">
+            A sandbox with four tables — <code>orders</code>, <code>customer_monthly</code>,
+            <code>inventory_health</code> and <code>campaigns</code>. Run one of the examples, or
+            write your own <code>SELECT</code> and see what comes back.
+          </p>
+        </div>
+      </div>
+
+      <div class="pg-panel pg-panel--sql reveal" data-sql-play>
+        <div class="pg-sql__examples">
+          <span class="pg-sql__exlabel">Try one</span>
+          {examples.map((e) => (
+            <button class="pill pill--ghost-dark pill--sm" type="button" data-sql-example={e.id}>
+              {e.label}
+            </button>
+          ))}
+        </div>
+
+        <div class="code-window pg-sql__editor">
+          <div class="code-window__bar" aria-hidden="true">
+            <span class="code-window__dots">
+              <span class="code-window__dot cw-r"></span>
+              <span class="code-window__dot cw-y"></span>
+              <span class="code-window__dot cw-g"></span>
+            </span>
+            <span class="code-window__name">query.sql</span>
+          </div>
+          <label class="ix-sr" for="sql-input">SQL query</label>
+          <textarea
+            class="pg-sql__input"
+            id="sql-input"
+            rows="7"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            data-sql-input
+          >SELECT * FROM orders LIMIT 5;</textarea>
+        </div>
+
+        <div class="pg-sql__actions">
+          <button class="pill pill--primary pill--sm" type="button" data-sql-run>Run query</button>
+          <button class="pill pill--ghost-dark pill--sm" type="button" data-sql-clear>Clear</button>
+          <span class="pg-sql__meta" data-sql-meta></span>
+        </div>
+
+        <div class="pg-sql__out" data-sql-out></div>
+        <p class="ix-status" data-sql-status></p>
+      </div>
+
+      <p class="pg-demo__foot pg-demo__foot--dark reveal">
+        Queries run against an in-browser fixture — there is no database behind this page, and
+        nothing you type leaves your machine.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 04 · CHURN SCORER ===================== -->
+  <section class="tile tile--parchment pg-demo" id="pg-churn">
+    <div class="inner" data-stagger>
+      <div class="pg-demo__head">
+        <span class="pg-demo__n" aria-hidden="true">04</span>
+        <div>
+          <div class="eyebrow reveal">Churn scorer</div>
+          <h2 class="metrics__h2 pg-demo__h reveal">Which account is about to leave?</h2>
+          <p class="pg-demo__what reveal">
+            A weighted scorecard, not a neural network — which is the point. Four signals, visible
+            weights, and a verdict a customer-success lead can act on the same morning.
+          </p>
+        </div>
+      </div>
+
+      <div class="pg-panel pg-panel--churn reveal" data-churn-demo>
+        <div class="pg-panel__controls">
+          {churnFields.map((f) => (
+            <div class="ix-field">
+              <div class="ix-field__top">
+                <label class="ix-field__label" for={`churn-${f.key}`}>{f.label}</label>
+                <output class="ix-field__val" data-churn-val={f.key} for={`churn-${f.key}`}></output>
+              </div>
+              <input class="ix-range" id={`churn-${f.key}`} type="range" data-churn-in={f.key} />
+            </div>
+          ))}
+          <p class="pg-churn__weights">
+            Signal weights: <span data-churn-out="weights">—</span>
+          </p>
+        </div>
+
+        <div class="pg-churn__verdict">
+          <div class="mo-ring pg-churn__ring" data-progress-ring data-progress="0" data-progress-label="Churn risk score"></div>
+          <p class="pg-churn__band" data-churn-out="band">—</p>
+          <p class="pg-churn__score"><span data-churn-out="scoreof">—</span> risk score</p>
+          <p class="pg-churn__line" data-churn-out="verdict">—</p>
+          <p class="pg-churn__factor" data-churn-out="factor">—</p>
+          <p class="ix-status" data-churn-status></p>
+        </div>
+      </div>
+
+      <p class="pg-demo__foot reveal">
+        Read the full build in the <a class="textlink" href={`/work/${churn?.slug}`}>churn early-warning case study</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 05 · FORECAST HORIZON ===================== -->
+  <section class="tile tile--white pg-demo" id="pg-forecast">
+    <div class="inner" data-stagger>
+      <div class="pg-demo__head">
+        <span class="pg-demo__n" aria-hidden="true">05</span>
+        <div>
+          <div class="eyebrow reveal">Forecast horizon</div>
+          <h2 class="metrics__h2 pg-demo__h reveal">How far ahead can you honestly see?</h2>
+          <p class="pg-demo__what reveal">
+            Push the horizon out and watch the confidence band widen. This is the conversation worth
+            having before anyone commits to a number twelve months out.
+          </p>
+        </div>
+      </div>
+
+      <div class="pg-panel pg-panel--fc reveal" data-forecast-demo>
+        <div class="pg-fc__controls">
+          <div class="ix-field">
+            <div class="ix-field__top">
+              <label class="ix-field__label" for="fc-horizon">Forecast horizon</label>
+              <output class="ix-field__val" data-forecast-val="horizon" for="fc-horizon"></output>
+            </div>
+            <input class="ix-range" id="fc-horizon" type="range" data-forecast-in="horizon" />
+          </div>
+          <dl class="pg-fc__facts">
+            <div class="pg-fact">
+              <dt class="pg-fact__k">Point forecast</dt>
+              <dd class="pg-fact__v" data-forecast-out="point">—</dd>
+            </div>
+            <div class="pg-fact">
+              <dt class="pg-fact__k">80% interval</dt>
+              <dd class="pg-fact__v" data-forecast-out="range">—</dd>
+            </div>
+            <div class="pg-fact">
+              <dt class="pg-fact__k">Uncertainty</dt>
+              <dd class="pg-fact__v" data-forecast-out="band">—</dd>
+            </div>
+            <div class="pg-fact">
+              <dt class="pg-fact__k">Implied growth</dt>
+              <dd class="pg-fact__v" data-forecast-out="growth">—</dd>
+            </div>
+          </dl>
+          <p class="pg-fc__method"><span class="pg-fc__method-k">Method</span> <span data-forecast-out="method">—</span></p>
+        </div>
+
+        <div class="pg-fc__stage" data-forecast-plot></div>
+        <div class="pg-fc__table" data-forecast-table></div>
+        <p class="ix-status" data-forecast-status></p>
+      </div>
+
+      <p class="pg-demo__foot reveal">
+        The production version of this sits in the
+        <a class="textlink" href={`/work/${forecast?.slug}`}>retail demand-forecast case study</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== 06 · ETL PIPELINE ===================== -->
+  <section class="tile tile--dark-3 pg-demo pg-demo--dark" id="pg-pipeline">
+    <div class="inner" data-stagger>
+      <div class="pg-demo__head">
+        <span class="pg-demo__n pg-demo__n--dark" aria-hidden="true">06</span>
+        <div>
+          <div class="eyebrow eyebrow--dark reveal">ETL pipeline</div>
+          <h2 class="metrics__h2 pg-demo__h reveal" style="color:#fff">Watch a nightly run, end to end.</h2>
+          <p class="pg-demo__what pg-demo__what--dark reveal">
+            Five stages, safe to re-run, with rejected rows quarantined rather than quietly dropped.
+            Start a run and each stage reports in as it finishes.
+          </p>
+        </div>
+      </div>
+
+      <div class="pg-panel pg-panel--pipe reveal" data-pipeline-demo>
+        <div class="pg-pipe__controls">
+          <button class="pill pill--primary pill--sm" type="button" data-pipeline-run>Run pipeline</button>
+          <button class="pill pill--ghost-dark pill--sm" type="button" data-pipeline-reset>Reset</button>
+          <span class="pg-pipe__state">Stage: <b data-pipeline-out="stage">Idle</b></span>
+        </div>
+
+        <ol class="pg-pipe__stages">
+          {stages.map((s, i) => (
+            <li class="pg-pipe__stage" data-pipeline-stage={s.key} data-pipeline-name={s.name}>
+              <span class="pg-pipe__stage-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="pg-pipe__stage-t">{s.name}</span>
+              <span class="pg-pipe__stage-d">{s.desc}</span>
+            </li>
+          ))}
+        </ol>
+
+        <dl class="pg-pipe__outs">
+          <div class="pg-pipe__out"><dt class="pg-pipe__out-k">Rows read</dt><dd class="pg-pipe__out-v" data-pipeline-out="rows">—</dd></div>
+          <div class="pg-pipe__out"><dt class="pg-pipe__out-k">Rows loaded</dt><dd class="pg-pipe__out-v" data-pipeline-out="loaded">—</dd></div>
+          <div class="pg-pipe__out"><dt class="pg-pipe__out-k">Quarantined</dt><dd class="pg-pipe__out-v" data-pipeline-out="rejected">—</dd></div>
+          <div class="pg-pipe__out"><dt class="pg-pipe__out-k">Tables</dt><dd class="pg-pipe__out-v" data-pipeline-out="tables">—</dd></div>
+          <div class="pg-pipe__out"><dt class="pg-pipe__out-k">Run time</dt><dd class="pg-pipe__out-v" data-pipeline-out="duration">—</dd></div>
+        </dl>
+
+        <div class="pg-pipe__log" data-pipeline-log></div>
+        <p class="ix-status" data-pipeline-status></p>
+      </div>
+
+      <p class="pg-demo__foot pg-demo__foot--dark reveal">
+        The same five stages run behind every pipeline in the
+        <a class="textlink textlink--dark" href="/work">case studies</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== CTA ===================== -->
+  <section class="tile tile--white center pg-cta" id="playground-cta">
+    <div class="inner center" data-stagger>
+      <div class="eyebrow reveal">Next step</div>
+      <h2 class="metrics__h2 reveal">Want one of these running on your own data?</h2>
+      <p class="hero__sub reveal">
+        These are toys with the real logic inside them. The production versions read from your
+        warehouse, refresh on a schedule and get monitored — tell me which number you are trying to
+        move and I will tell you what it takes.
+      </p>
+      <div class="pg-cta__actions reveal">
+        <a class="pill pill--primary" href="/#contact" data-magnetic>Start a conversation</a>
+        <a class="pill pill--ghost" href="/work">See the case studies</a>
+      </div>
+    </div>
+  </section>
+</Layout>

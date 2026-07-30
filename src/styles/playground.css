@@ -1,0 +1,505 @@
+/* ============================================================
+   playground.css — the .pg-* namespace: /playground's demo shells,
+   plus the .pg-pipe__* / .pg-sql__* / .pg-fc__* / .pg-kpi__* parts
+   that demos.ts injects (the pipeline panel on /ai-services reuses
+   .pg-pipe__stage and .pg-pipe__log, so those must stand alone).
+
+   The playground is the newest page on the site and therefore the
+   one most at risk of looking bolted on, so everything here stays
+   inside the existing .tile rhythm, radii, hairlines and type scale.
+   ============================================================ */
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.pg-hero__h1 { text-align: left; margin-left: 0; max-width: 20ch; }
+.pg-hero .hero__sub { margin-left: 0; text-align: left; max-width: 70ch; }
+.pg-hero__list {
+  list-style: none;
+  margin: 0;
+  padding: 30px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+}
+.pg-hero__item { font-size: 15px; }
+.pg-hero__note {
+  padding-top: 24px;
+  font-size: 13.5px;
+  letter-spacing: -0.1px;
+  color: var(--color-ink-48);
+}
+
+/* ============================================================
+   DEMO SECTION SHELL
+   ============================================================ */
+.pg-demo__head { display: flex; gap: 22px; align-items: flex-start; }
+.pg-demo__n {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--color-primary);
+  padding-top: 8px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.pg-demo__n--dark { color: var(--color-primary-on-dark); }
+.pg-demo__h { text-align: left; margin-left: 0; max-width: 22ch; }
+.pg-demo__what {
+  padding-top: 16px;
+  font-size: 17px;
+  line-height: 1.6;
+  letter-spacing: -0.224px;
+  color: var(--color-ink-48);
+  max-width: 66ch;
+}
+.pg-demo__what--dark { color: var(--color-body-muted); }
+.pg-demo__what code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 0.88em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+.pg-demo__what--dark code { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.pg-demo__foot {
+  padding-top: 26px;
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: -0.2px;
+  color: var(--color-ink-48);
+}
+.pg-demo__foot--dark { color: var(--color-body-muted); }
+
+/* ============================================================
+   PANEL — the card every demo lives in
+   ============================================================ */
+.pg-panel {
+  margin-top: 36px;
+  padding: 30px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 34px;
+  align-items: start;
+}
+/* On dark tiles the card borrows the dark-card treatment from .svc. */
+.pg-demo--dark .pg-panel {
+  background: var(--color-tile-dark-2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+/* Single-column demos */
+.pg-panel--kpi,
+.pg-panel--sql,
+.pg-panel--pipe { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+.pg-panel--fc { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+
+.pg-panel__controls { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.pg-panel__results { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+/* ---------- ROI results ---------- */
+.pg-result--hero {
+  padding: 22px 24px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+.pg-result--hero .ix-out__v { font-size: 48px; letter-spacing: -1.6px; }
+.pg-result__row { display: flex; gap: 30px; flex-wrap: wrap; }
+.pg-result__row .ix-out__v { font-size: 26px; letter-spacing: -0.7px; }
+.pg-result__facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 20px;
+}
+.pg-fact { display: flex; flex-direction: column; gap: 3px; padding-top: 12px; border-top: 1px solid var(--color-divider-soft); }
+.pg-fact__k { font-size: 12.5px; letter-spacing: -0.1px; color: var(--color-ink-48); }
+.pg-fact__v {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-formula {
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: var(--color-parchment);
+  border: 1px solid var(--color-divider-soft);
+}
+.pg-formula__k {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-ink-48);
+  padding-bottom: 7px;
+}
+.pg-formula__v {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--color-ink-80);
+  overflow-wrap: anywhere;
+}
+.pg-formula__v--sub { color: var(--color-ink-48); padding-top: 5px; }
+
+/* ============================================================
+   KPI EXPLORER
+   ============================================================ */
+.pg-kpi__seg { align-self: flex-start; }
+.pg-kpi__top { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.pg-kpi__delta {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  padding: 6px 13px;
+  border-radius: var(--radius-pill);
+  background: var(--color-parchment);
+  color: var(--color-ink-48);
+  font-variant-numeric: tabular-nums;
+}
+/* demos.ts adds the direction class to whichever element holds the delta. */
+.pg-kpi__delta--up { background: color-mix(in srgb, #2e9e5b 15%, transparent); color: #1f7a44; }
+.pg-kpi__delta--down { background: color-mix(in srgb, #d1453b 15%, transparent); color: #b5342b; }
+[data-theme="dark"] .pg-kpi__delta--up { color: #57d98a; }
+[data-theme="dark"] .pg-kpi__delta--down { color: #ff8585; }
+.pg-kpi__chart { width: 100%; min-height: 220px; }
+.pg-kpi__note {
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.224px;
+  color: var(--color-ink-80);
+  max-width: 76ch;
+  padding-top: 4px;
+  border-top: 1px solid var(--color-divider-soft);
+  margin-top: 4px;
+  padding: 16px 0 0;
+}
+
+/* ============================================================
+   SQL CONSOLE
+   ============================================================ */
+.pg-sql__examples { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pg-sql__exlabel {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-body-muted);
+}
+.pg-sql__editor { width: 100%; }
+.pg-sql__input {
+  display: block;
+  width: 100%;
+  border: 0;
+  resize: vertical;
+  padding: 16px 18px;
+  background: transparent;
+  color: #e8e8ed;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 13.5px;
+  line-height: 1.65;
+  tab-size: 2;
+}
+.pg-sql__input:focus-visible { outline: 2px solid var(--color-primary-on-dark); outline-offset: -2px; }
+.pg-sql__actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pg-sql__meta {
+  font-size: 12.5px;
+  letter-spacing: -0.1px;
+  color: var(--color-body-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Result surface — dark to match the console it sits under. */
+.pg-sql__out:empty { display: none; }
+.pg-sql__result {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.pg-sql__scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.pg-sql__table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.pg-sql__th,
+.pg-sql__td {
+  padding: 9px 14px;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+.pg-sql__th {
+  font-family: var(--font-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-primary-on-dark);
+  background: rgba(255, 255, 255, 0.05);
+}
+.pg-sql__td { color: #e8e8ed; font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace; }
+.pg-sql__num { text-align: right; font-variant-numeric: tabular-nums; }
+.pg-sql__row:last-child .pg-sql__td { border-bottom: 0; }
+.pg-sql__note {
+  padding: 10px 14px;
+  font-size: 12px;
+  letter-spacing: -0.1px;
+  color: var(--color-body-muted);
+  background: rgba(255, 255, 255, 0.04);
+}
+/* A recognised-but-unrunnable query explains itself rather than erroring out. */
+.pg-sql__msg {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 133, 133, 0.4);
+  background: rgba(255, 133, 133, 0.09);
+}
+.pg-sql__msg-text { font-size: 14.5px; line-height: 1.5; color: #ffb4b4; }
+.pg-sql__msg-hint { font-size: 13px; line-height: 1.5; color: var(--color-body-muted); }
+
+/* ============================================================
+   CHURN SCORER
+   ============================================================ */
+.pg-churn__weights {
+  font-size: 12.5px;
+  line-height: 1.5;
+  letter-spacing: -0.1px;
+  color: var(--color-ink-48);
+  padding-top: 4px;
+  border-top: 1px solid var(--color-divider-soft);
+  padding: 14px 0 0;
+}
+.pg-churn__verdict {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 26px;
+  border-radius: var(--radius-md);
+  background: var(--color-parchment);
+  text-align: center;
+}
+.pg-churn__ring { margin-bottom: 6px; }
+.pg-churn__band {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  color: var(--color-ink);
+}
+.pg-churn__score { font-size: 13.5px; letter-spacing: -0.1px; color: var(--color-ink-48); font-variant-numeric: tabular-nums; }
+.pg-churn__line { font-size: 15.5px; line-height: 1.55; letter-spacing: -0.2px; color: var(--color-ink-80); max-width: 44ch; }
+.pg-churn__factor { font-size: 13.5px; line-height: 1.5; color: var(--color-ink-48); max-width: 44ch; }
+
+/* Band tint — demos.ts sets .pg-churn--<band> on the panel root.
+   The ring inherits its stroke from currentColor, so recolouring the
+   verdict block recolours the ring with it. */
+.pg-churn--low .pg-churn__ring { color: #2e9e5b; }
+.pg-churn--low .pg-churn__band { color: #1f7a44; }
+.pg-churn--watch .pg-churn__ring { color: #c98a12; }
+.pg-churn--watch .pg-churn__band { color: #9a6a0c; }
+.pg-churn--risk .pg-churn__ring { color: #e0722c; }
+.pg-churn--risk .pg-churn__band { color: #b8551b; }
+.pg-churn--critical .pg-churn__ring { color: #d1453b; }
+.pg-churn--critical .pg-churn__band { color: #b5342b; }
+[data-theme="dark"] .pg-churn--low .pg-churn__band { color: #57d98a; }
+[data-theme="dark"] .pg-churn--watch .pg-churn__band { color: #e8b44a; }
+[data-theme="dark"] .pg-churn--risk .pg-churn__band { color: #ff9d5c; }
+[data-theme="dark"] .pg-churn--critical .pg-churn__band { color: #ff8585; }
+
+/* ============================================================
+   FORECAST
+   ============================================================ */
+.pg-fc__controls { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.pg-fc__facts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+.pg-fc__method { font-size: 12.5px; line-height: 1.5; color: var(--color-ink-48); }
+.pg-fc__method-k {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+}
+.pg-fc__stage { width: 100%; min-width: 0; }
+.pg-fc__svg { display: block; width: 100%; height: auto; overflow: visible; }
+.pg-fc__grid { stroke: var(--color-hairline); stroke-width: 1; shape-rendering: crispEdges; }
+.pg-fc__band { fill: color-mix(in srgb, var(--c1) 15%, transparent); stroke: none; }
+.pg-fc__actual { fill: none; stroke: var(--c1); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+/* Forecast is the same hue, dashed — it must never read as measured data. */
+.pg-fc__fc {
+  fill: none;
+  stroke: var(--c1);
+  stroke-width: 2.5;
+  stroke-dasharray: 5 5;
+  stroke-linecap: round;
+}
+.pg-fc__dot { fill: var(--c1); }
+.pg-fc__dot--fc { fill: var(--color-canvas); stroke: var(--c1); stroke-width: 2; }
+.pg-fc__split { stroke: var(--color-ink-48); stroke-width: 1; stroke-dasharray: 3 4; }
+.pg-fc__xtick,
+.pg-fc__ytick {
+  font-family: var(--font-text);
+  font-size: 11px;
+  letter-spacing: -0.1px;
+  fill: var(--color-ink-48);
+}
+.pg-fc__xtick--end { fill: var(--color-primary); font-weight: 600; }
+/* Draw-in only once the plot is mounted, and never under reduced motion. */
+.pg-fc__plot--drawn .pg-fc__actual,
+.pg-fc__plot--drawn .pg-fc__fc {
+  animation: pgFcDraw 1.1s var(--reveal-ease) 1 both;
+}
+@keyframes pgFcDraw {
+  from { stroke-dasharray: 0 2000; }
+}
+.pg-fc__table { width: 100%; overflow-x: auto; }
+.pg-fc__table:empty { display: none; }
+
+/* ============================================================
+   ETL PIPELINE — also used by the .hm-pipe panel on /ai-services
+   ============================================================ */
+.pg-pipe__controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pg-pipe__state { font-size: 13.5px; letter-spacing: -0.2px; color: var(--color-body-muted); }
+.pg-pipe__state b { color: var(--color-primary-on-dark); font-weight: 600; }
+/* demos.ts marks the panel root while a run is in flight / finished. */
+.pg-pipe--running [data-pipeline-run] { opacity: 0.55; pointer-events: none; }
+.pg-pipe--done .pg-pipe__state b { color: #57d98a; }
+.pg-pipe__stages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.pg-pipe__stage {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 160px) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 14px;
+  padding: 13px 16px;
+  border: 1px solid var(--color-divider-soft);
+  border-radius: var(--radius-md);
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+.pg-demo--dark .pg-pipe__stage { border-color: rgba(255, 255, 255, 0.1); }
+.pg-pipe__stage-n {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-ink-48);
+  font-variant-numeric: tabular-nums;
+}
+.pg-demo--dark .pg-pipe__stage-n { color: var(--color-body-muted); }
+.pg-pipe__stage-t { font-size: 15px; font-weight: 600; letter-spacing: -0.224px; }
+.pg-demo--dark .pg-pipe__stage-t { color: #fff; }
+.pg-pipe__stage-d { font-size: 13.5px; line-height: 1.45; letter-spacing: -0.1px; color: var(--color-ink-48); }
+.pg-demo--dark .pg-pipe__stage-d { color: var(--color-body-muted); }
+
+/* Running / done states, set by demos.ts */
+.pg-pipe__stage--running {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 9%, transparent);
+}
+.pg-pipe__stage--done { border-color: color-mix(in srgb, #2e9e5b 55%, transparent); }
+.pg-pipe__stage--running .pg-pipe__stage-n,
+.pg-pipe__stage[data-pipeline-done] .pg-pipe__stage-n { color: var(--color-primary); }
+/* A tick replaces the index once a stage has finished. */
+.pg-pipe__stage[data-pipeline-done] .pg-pipe__stage-n::after { content: " ✓"; color: #2e9e5b; }
+
+/* Log feed */
+.pg-pipe__log:empty { display: none; }
+.pg-pipe__log {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: #1d1d1f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.pg-pipe__loglist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.pg-pipe__logline {
+  display: grid;
+  grid-template-columns: 62px 84px minmax(0, 1fr);
+  gap: 10px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #c9c9cf;
+}
+.pg-pipe__logtime { color: #7d7d85; font-variant-numeric: tabular-nums; }
+.pg-pipe__logstage { color: var(--color-primary-on-dark); }
+.pg-pipe__logmsg { color: #e8e8ed; overflow-wrap: anywhere; }
+.pg-pipe__logline--warn .pg-pipe__logmsg { color: #e8b44a; }
+.pg-pipe__logline--error .pg-pipe__logmsg { color: #ff8585; }
+.pg-pipe__logline--done .pg-pipe__logmsg { color: #57d98a; }
+
+.pg-pipe__outs { margin: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.pg-pipe__out {
+  flex: 1 1 0;
+  min-width: 116px;
+  padding: 13px 15px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pg-pipe__out-k { font-size: 12px; letter-spacing: -0.12px; color: var(--color-body-muted); }
+.pg-pipe__out-v {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   CLOSING CTA
+   ============================================================ */
+.pg-cta__actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; padding-top: 32px; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .pg-panel, .pg-panel--fc { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .pg-result--hero .ix-out__v { font-size: 42px; }
+}
+@media (max-width: 833px) {
+  .pg-demo__head { gap: 14px; }
+  .pg-demo__h { max-width: none; }
+  .pg-panel { padding: 24px 22px; }
+  .pg-pipe__stage { grid-template-columns: 28px minmax(0, 1fr); }
+  .pg-pipe__stage-d { grid-column: 2; }
+  .pg-pipe__logline { grid-template-columns: 54px minmax(0, 1fr); }
+  .pg-pipe__logstage { grid-column: 2; }
+  .pg-pipe__logmsg { grid-column: 2; }
+}
+@media (max-width: 640px) {
+  .pg-panel { padding: 20px 16px; margin-top: 28px; }
+  .pg-result--hero { padding: 18px 18px; }
+  .pg-result--hero .ix-out__v { font-size: 34px; letter-spacing: -1px; }
+  .pg-result__facts, .pg-fc__facts { grid-template-columns: minmax(0, 1fr); }
+  .pg-demo__n { display: none; }
+  .pg-churn__verdict { padding: 22px 18px; }
+  .pg-churn__band { font-size: 22px; }
+  .pg-sql__input { font-size: 12.5px; }
+  .pg-hero__list { gap: 8px 18px; }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .pg-pipe__stage { transition: none; }
+  /* demos.ts also skips adding --drawn, but belt and braces. */
+  .pg-fc__plot--drawn .pg-fc__actual,
+  .pg-fc__plot--drawn .pg-fc__fc { animation: none; }
+}

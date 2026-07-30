@@ -1,0 +1,380 @@
+/* ============================================================
+   motion.css — styles for every .mo-* class injected by
+   src/scripts/motion.ts and src/scripts/motion2.ts.
+
+   Contract with the scripts:
+   • html.mo-js       set as soon as motion.ts runs, so pre-reveal
+                      state is only hidden when JS is actually live.
+   • html.mo-reduced  set when prefers-reduced-motion is on.
+   • .mo-in           added to a host when its enter effect fires.
+   • --i / --mo-n     child index / child count, for stagger maths.
+   ============================================================ */
+
+/* ---------- Screen-reader-only copy of animated text ---------- */
+/* Clip technique, not display:none — the text must stay readable
+   to assistive tech while the visual node is aria-hidden. */
+.mo-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   WORD REVEAL — [data-reveal-words]
+   .mo-words > .mo-word > .mo-word__i   (--i on the inner span)
+   Each word sits in an overflow-hidden box so the inner span can
+   rise into view from below the baseline.
+   ============================================================ */
+.mo-word {
+  display: inline-block;
+  overflow: hidden;
+  /* Descenders (g, y, p) would otherwise be clipped by a tight box. */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  vertical-align: bottom;
+}
+.mo-word__i {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+html.mo-js .mo-words:not(.mo-in) .mo-word__i {
+  opacity: 0;
+  transform: translateY(110%) rotate(2deg);
+}
+html.mo-js .mo-words .mo-word__i {
+  transition:
+    opacity 0.62s var(--reveal-ease),
+    transform 0.72s var(--reveal-ease);
+  transition-delay: calc(var(--i, 0) * 52ms);
+}
+html.mo-js .mo-words.mo-in .mo-word__i { opacity: 1; transform: none; }
+
+/* ============================================================
+   CHARACTER REVEAL — [data-reveal-chars] (short labels only)
+   ============================================================ */
+.mo-chars { display: inline-block; }
+.mo-char { display: inline-block; white-space: pre; will-change: transform, opacity; }
+html.mo-js .mo-chars-host:not(.mo-in) .mo-char { opacity: 0; transform: translateY(0.4em); }
+html.mo-js .mo-chars-host .mo-char {
+  transition: opacity 0.4s var(--reveal-ease), transform 0.4s var(--reveal-ease);
+  transition-delay: calc(var(--i, 0) * 22ms);
+}
+html.mo-js .mo-chars-host.mo-in .mo-char { opacity: 1; transform: none; }
+
+/* ============================================================
+   COUNTERS — [data-counter-to]
+   Tabular figures stop the number jittering as digits change.
+   ============================================================ */
+.mo-count {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ============================================================
+   BARS — [data-bar-to]; JS writes the fill width
+   --mo-bar-p = 0..1 progress, exposed for derived effects
+   ============================================================ */
+.mo-bar {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-ink) 9%, transparent);
+  overflow: hidden;
+}
+[data-theme="dark"] .mo-bar { background: rgba(255, 255, 255, 0.11); }
+.mo-bar__fill {
+  position: relative;
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--color-primary) 70%, transparent),
+    var(--color-primary));
+  transition: width 1.05s var(--reveal-ease);
+}
+/* A faint sheen that runs once, as the bar fills. */
+.mo-bar.mo-in .mo-bar__fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  animation: moBarSheen 1.2s var(--reveal-ease) 0.2s 1;
+}
+@keyframes moBarSheen { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+/* ============================================================
+   PROGRESS RINGS — [data-progress-ring]
+   JS injects .mo-ring__svg (track + bar circles) and sets
+   --mo-ring-c (circumference) and --mo-ring-p (0..1).
+   ============================================================ */
+.mo-ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 132px;
+  height: 132px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+.mo-ring__svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.mo-ring__track { color: var(--color-ink); }
+.mo-ring__bar { transition: stroke-dashoffset 1.1s var(--reveal-ease); }
+.mo-ring__val {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   INDEX-STAGGERED GRIDS — [data-count-grid]
+   ============================================================ */
+html.mo-js .mo-grid:not(.mo-in) .mo-grid__item { opacity: 0; transform: translateY(18px); }
+html.mo-js .mo-grid .mo-grid__item {
+  transition: opacity 0.55s var(--reveal-ease), transform 0.55s var(--reveal-ease);
+  transition-delay: calc(var(--i, 0) * 65ms);
+}
+html.mo-js .mo-grid.mo-in .mo-grid__item { opacity: 1; transform: none; }
+
+/* ============================================================
+   PARALLAX + SCROLL-SCALE — transform-only, written each frame
+   ============================================================ */
+.mo-parallax { will-change: translate; }
+.mo-scale { will-change: scale; transform-origin: center; }
+
+/* ============================================================
+   STICKY STACK — [data-sticky-stack] > [data-sticky-card]
+   ============================================================ */
+.mo-stack { position: relative; }
+.mo-stack__card {
+  position: sticky;
+  top: 92px;                 /* clears the 56px nav with breathing room */
+  transform-origin: center top;
+  will-change: scale;
+}
+
+/* ============================================================
+   POINTER TILT — [data-tilt]
+   --mo-tilt-x / --mo-tilt-y are rotations, in deg
+   ============================================================ */
+.mo-tilt {
+  transform: perspective(900px)
+             rotateX(var(--mo-tilt-y, 0deg))
+             rotateY(var(--mo-tilt-x, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--reveal-ease);
+}
+/* While the pointer is inside, follow it instantly; ease only on exit. */
+.mo-tilt.is-tilting { transition: transform 0.08s linear; }
+
+/* ============================================================
+   MAGNETIC BUTTONS — [data-magnetic]
+   ============================================================ */
+.mo-magnetic {
+  transform: translate(var(--mo-magnet-x, 0px), var(--mo-magnet-y, 0px));
+  transition: transform 0.34s var(--reveal-ease);
+}
+.mo-magnetic.is-magnetised { transition: transform 0.1s linear; }
+/* .pill already scales on :active — keep that feeling while magnetised. */
+.mo-magnetic:active {
+  transform: translate(var(--mo-magnet-x, 0px), var(--mo-magnet-y, 0px)) scale(0.96);
+}
+
+/* ============================================================
+   CURSOR SPOTLIGHT — [data-spotlight], --mx / --my in %
+   A soft accent glow that tracks the pointer across a tile.
+   ============================================================ */
+.mo-spotlight { position: relative; isolation: isolate; }
+.mo-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  background: radial-gradient(
+    460px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--color-primary-on-dark) 20%, transparent),
+    transparent 68%);
+}
+.mo-spotlight.is-lit::before { opacity: 1; }
+/* Light tiles need a gentler wash to keep text legible. */
+.tile--white.mo-spotlight::before,
+.tile--parchment.mo-spotlight::before {
+  background: radial-gradient(
+    460px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--color-primary) 11%, transparent),
+    transparent 68%);
+}
+/* Keep real content above the glow. */
+.mo-spotlight > * { position: relative; z-index: 1; }
+
+/* ============================================================
+   TYPING — [data-typing]
+   .mo-typing > .mo-typing__text + .mo-typing__caret + .mo-sr
+   ============================================================ */
+.mo-typing { display: inline-flex; align-items: baseline; gap: 2px; }
+.mo-typing__text { white-space: pre; }
+.mo-typing__caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  border-radius: 1px;
+  background: var(--color-primary);
+  translate: 0 0.12em;
+  animation: moCaret 1.05s steps(1, end) infinite;
+}
+@keyframes moCaret { 0%, 45% { opacity: 1; } 46%, 100% { opacity: 0; } }
+/* Reduced motion / no-JS: the first word is shown, with no caret. */
+.mo-typing.is-static .mo-typing__caret { display: none; }
+
+/* ============================================================
+   MARQUEE — [data-marquee]
+   .mo-marquee > .mo-marquee__track > .mo-marquee__group (+ clones)
+   The track offset is written per frame; CSS owns layout + fades.
+   ============================================================ */
+.mo-marquee {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  /* Fade both edges so items enter and leave without a hard cut. */
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.mo-marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.mo-marquee__group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 14px;
+  flex-shrink: 0;
+}
+/* Clones are pure duplication — never interactive, never announced. */
+.mo-marquee__group--clone { pointer-events: none; }
+
+/* ============================================================
+   WHEEL-TO-HORIZONTAL RAIL — .mo-hscroll
+   JS keeps .is-scrollable / .is-start / .is-end in sync so the
+   edge fades only appear when there is genuinely more to see.
+   ============================================================ */
+.mo-hscroll {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.mo-hscroll::-webkit-scrollbar { height: 8px; }
+.mo-hscroll::-webkit-scrollbar-track { background: transparent; }
+.mo-hscroll::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+/* More to the right only */
+.mo-hscroll.is-scrollable.is-start:not(.is-end) {
+  mask-image: linear-gradient(90deg, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent);
+}
+/* Mid-scroll: both edges fade */
+.mo-hscroll.is-scrollable:not(.is-start):not(.is-end) {
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 88%, transparent);
+}
+/* Scrolled to the end: only the left edge fades */
+.mo-hscroll.is-scrollable:not(.is-start).is-end {
+  mask-image: linear-gradient(90deg, transparent, #000 6%);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%);
+}
+
+/* ============================================================
+   READER PROGRESS — [data-reader-progress]
+   Distinct from #scrollProgress, which site.ts owns for the page.
+   --mo-read = 0..1; the fill is scaleX-driven for cheap paints.
+   ============================================================ */
+.mo-readbar {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: color-mix(in srgb, var(--color-ink) 10%, transparent);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+[data-theme="dark"] .mo-readbar { background: rgba(255, 255, 255, 0.12); }
+.mo-readbar.is-shown { opacity: 1; }
+.mo-readbar__fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: var(--color-primary);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 833px) {
+  .mo-ring { width: 116px; height: 116px; }
+  .mo-ring__val { font-size: 28px; }
+  /* Sticky stacking is a desktop conceit — it fights short viewports. */
+  .mo-stack__card { position: static; top: auto; scale: 1 !important; }
+}
+@media (max-width: 640px) {
+  .mo-marquee {
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  }
+  .mo-ring { width: 104px; height: 104px; }
+  .mo-ring__val { font-size: 25px; }
+}
+
+/* ============================================================
+   REDUCED MOTION — everything resolves to its final state.
+   motion.ts also sets html.mo-reduced and skips its rAF pipeline;
+   these rules make the CSS side inert too.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html.mo-js .mo-words .mo-word__i,
+  html.mo-js .mo-words:not(.mo-in) .mo-word__i,
+  html.mo-js .mo-chars-host .mo-char,
+  html.mo-js .mo-chars-host:not(.mo-in) .mo-char,
+  html.mo-js .mo-grid .mo-grid__item,
+  html.mo-js .mo-grid:not(.mo-in) .mo-grid__item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .mo-word { overflow: visible; }
+  .mo-bar__fill, .mo-ring__bar, .mo-readbar, .mo-readbar__fill,
+  .mo-tilt, .mo-magnetic, .mo-spotlight::before {
+    transition: none !important;
+  }
+  .mo-bar.mo-in .mo-bar__fill::after { animation: none; content: none; }
+  .mo-typing__caret { animation: none; opacity: 1; }
+  .mo-tilt, .mo-magnetic { transform: none !important; }
+  .mo-parallax { translate: none !important; }
+  .mo-scale { scale: none !important; }
+  .mo-stack__card { position: static; scale: 1 !important; }
+  .mo-spotlight::before { display: none; }
+}

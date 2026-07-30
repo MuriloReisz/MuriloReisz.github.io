@@ -1,0 +1,351 @@
+---
+// -------------------------------------------------------------------------
+// /work/[slug] — the case-study reader.
+// Built on the ported .reader / .cs-* system in global.css; every new class
+// lives in the .cse-* namespace and is styled in src/styles/work.css.
+// -------------------------------------------------------------------------
+import Layout from '../../layouts/Layout.astro';
+import { projects, type Project } from '../../data/projects';
+
+export function getStaticPaths() {
+  const total = projects.length;
+  return projects.map((project, i) => ({
+    params: { slug: project.slug },
+    props: {
+      project,
+      prev: projects[(i - 1 + total) % total],
+      next: projects[(i + 1) % total],
+      index: i + 1,
+      total,
+    },
+  }));
+}
+
+interface Props {
+  project: Project;
+  prev: Project;
+  next: Project;
+  index: number;
+  total: number;
+}
+
+const { project, prev, next, index, total } = Astro.props as Props;
+
+const path = `/work/${project.slug}/`;
+const shareUrl = Astro.site ? new URL(path, Astro.site).href : Astro.url.href;
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+/* A time series reads as a line; a small comparison reads as bars. */
+const chartKind = project.chart.series.length >= 6 ? 'line' : 'bar';
+const chartSeries = JSON.stringify(
+  project.chart.series.map((p) => ({ label: p.label, value: p.value }))
+);
+const chartDec = project.chart.series.some((p) => !Number.isInteger(p.value)) ? '1' : '0';
+const chartMin = Math.min(...project.chart.series.map((p) => p.value));
+const chartMax = Math.max(...project.chart.series.map((p) => p.value));
+
+const lbGroup = `case-${project.slug}`;
+
+const sections = [
+  { id: 'cs-problem', label: 'The problem' },
+  { id: 'cs-approach', label: 'The approach' },
+  { id: 'cs-results', label: 'What changed' },
+  { id: 'cs-chart', label: 'The numbers' },
+  ...(project.gallery.length ? [{ id: 'cs-gallery', label: 'Screens' }] : []),
+  { id: 'cs-stack', label: 'Stack & role' },
+  ...(project.faq.length ? [{ id: 'cs-faq', label: 'Questions' }] : []),
+];
+
+/** Section kickers number themselves off the live section list. */
+const step = (id: string) => pad(sections.findIndex((s) => s.id === id) + 1);
+
+const pageTitle = `${project.title} — ${project.org} case study`;
+const pageDesc = project.summary;
+---
+
+<Layout title={pageTitle} description={pageDesc} ogImage={project.cover} wide>
+  <div class="cse-reader">
+    <div class="reader__bar cse-bar">
+      <a class="reader__back" href="/work">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+        <span>Portfolio</span>
+      </a>
+      <span class="cse-bar__title">{project.title}</span>
+      <div class="reader__tools">
+        <span class="cse-bar__count" aria-hidden="true">{pad(index)} / {pad(total)}</span>
+        <button
+          class="reader__iconbtn cse-bar__share"
+          type="button"
+          data-copy={shareUrl}
+          data-copy-message="Case-study link copied to clipboard"
+          aria-label="Copy a link to this case study"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3A5 5 0 0 0 13 3l-1.5 1.5" /><path d="M14 11a5 5 0 0 0-7.07 0l-3 3A5 5 0 0 0 11 21l1.5-1.5" /></svg>
+        </button>
+      </div>
+      <div
+        class="cse-bar__progress"
+        data-reader-progress="#csBody"
+        role="progressbar"
+        aria-label="Case-study reading progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <span class="reader__progress mo-readbar__fill cse-bar__progress-fill"></span>
+      </div>
+    </div>
+
+    <div class="reader__content reader__case cse-case">
+      <article id="csBody" class="cse-article">
+        <header class="cse-hero" data-stagger>
+          <p class="eyebrow reveal">{project.eyebrow} · {project.org}</p>
+          <h1 class="cs-title reveal">{project.title}</h1>
+          <p class="cse-meta reveal">
+            <span class="cse-meta__item">{project.period}</span>
+            <span class="cse-meta__sep" aria-hidden="true">·</span>
+            <span class="cse-meta__item">{project.duration}</span>
+            <span class="cse-meta__sep" aria-hidden="true">·</span>
+            <span class="cse-meta__item">{project.readMinutes} min read</span>
+          </p>
+          <p class="cs-lead reveal">{project.lead}</p>
+
+          <ul class="cse-findings reveal" data-stagger>
+            {project.findings.map((f) => (
+              <li class="cse-finding reveal">
+                {f.count !== undefined ? (
+                  <span
+                    class="cse-finding__v"
+                    data-counter-to={String(f.count)}
+                    data-counter-prefix={f.prefix}
+                    data-counter-suffix={f.suffix}
+                  >{f.value}</span>
+                ) : (
+                  <span class="cse-finding__v">{f.value}</span>
+                )}
+                <span class="cse-finding__l">{f.label}</span>
+              </li>
+            ))}
+          </ul>
+
+          <figure class="cs-figure cs-figure--full cse-cover reveal">
+            <img
+              class="cs-figure__img"
+              src={project.cover}
+              alt={project.coverAlt}
+              width={project.coverWidth}
+              height={project.coverHeight}
+              loading="lazy"
+              decoding="async"
+              data-lightbox-group={lbGroup}
+            />
+            <figcaption>{project.summary}</figcaption>
+          </figure>
+        </header>
+
+        <nav class="cse-toc" data-toc aria-label="On this page">
+          <p class="cse-toc__label">On this page</p>
+          <ul class="cse-toc__list">
+            {sections.map((s) => (
+              <li class="cse-toc__item">
+                <a class="cse-toc__link" href={`#${s.id}`}>{s.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <section class="cs-section cse-section" id="cs-problem" data-toc-target>
+          <p class="cs-kicker">{step('cs-problem')} — Context</p>
+          <h2 class="cs-h">The problem.</h2>
+          {project.problem.map((para) => <p class="cs-p sreveal">{para}</p>)}
+        </section>
+
+        <section class="cs-section cse-section" id="cs-approach" data-toc-target>
+          <p class="cs-kicker">{step('cs-approach')} — Method</p>
+          <h2 class="cs-h">The approach.</h2>
+          <p class="cs-p">The build, in the order it happened.</p>
+          <ol class="cs-numlist cse-steps" data-stagger>
+            {project.approach.map((item, i) => (
+              <li class="cse-step reveal">
+                <span class="cs-num" aria-hidden="true">{pad(i + 1)}</span>
+                <div class="cse-step__body">
+                  <h3 class="cse-step__t">{item.title}</h3>
+                  <p class="cse-step__p">{item.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section class="cs-section cse-section" id="cs-results" data-toc-target>
+          <p class="cs-kicker">{step('cs-results')} — Outcome</p>
+          <h2 class="cs-h">What changed.</h2>
+          <ul class="cse-results" data-stagger>
+            {project.results.map((r) => (
+              <li class="cse-result reveal">
+                <svg class="cse-result__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                <span class="cse-result__t">{r}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="cs-section cse-section" id="cs-chart" data-toc-target>
+          <p class="cs-kicker">{step('cs-chart')} — The numbers</p>
+          <h2 class="cs-h">{project.chart.title}.</h2>
+          <p class="cs-p">
+            Tracked as {project.chart.unit}, from {project.chart.series[0].label} through {project.chart.series[project.chart.series.length - 1].label} —
+            low {chartMin}, high {chartMax}.
+          </p>
+          <figure class="cse-chart reveal">
+            <div
+              class="cse-chart__frame"
+              data-chart={chartKind}
+              data-series={chartSeries}
+              data-chart-title={`${project.chart.title} (${project.chart.unit})`}
+              data-chart-unit={project.chart.unit}
+              data-chart-dec={chartDec}
+            ></div>
+            <figcaption class="cse-chart__cap">{project.chart.title} — {project.chart.unit}, {project.period}.</figcaption>
+          </figure>
+        </section>
+
+        {project.gallery.length > 0 && (
+          <section class="cs-section cse-section" id="cs-gallery" data-toc-target>
+            <p class="cs-kicker">{step('cs-gallery')} — Screens</p>
+            <h2 class="cs-h">What it looks like in use.</h2>
+            <div class="cs-gallery cse-gallery" data-carousel>
+              <div class="cs-gallery__track carousel__track">
+                {project.gallery.map((g) => (
+                  <figure class="cs-gallery__slide">
+                    <div class="cs-gallery__media">
+                      <img
+                        src={g.src}
+                        alt={g.alt}
+                        width={g.width}
+                        height={g.height}
+                        loading="lazy"
+                        decoding="async"
+                        data-lightbox-group={lbGroup}
+                      />
+                    </div>
+                    <figcaption class="cs-gallery__cap"><p class="cs-p">{g.caption}</p></figcaption>
+                  </figure>
+                ))}
+              </div>
+              <div class="carousel__nav">
+                <button class="carousel__btn carousel__prev" type="button" aria-label="Previous screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg></button>
+                <button class="carousel__btn carousel__next" type="button" aria-label="Next screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg></button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <section class="cs-section cse-section" id="cs-stack" data-toc-target>
+          <p class="cs-kicker">{step('cs-stack')} — Stack &amp; role</p>
+          <h2 class="cs-h">Built with.</h2>
+          <ul class="cse-stack" aria-label="Tools and technologies used">
+            {project.stack.map((s) => <li class="tag cse-stack__chip">{s}</li>)}
+          </ul>
+          <dl class="cse-facts">
+            <div class="cse-fact">
+              <dt class="cse-fact__k">Role</dt>
+              <dd class="cse-fact__v">{project.role}</dd>
+            </div>
+            <div class="cse-fact">
+              <dt class="cse-fact__k">Duration</dt>
+              <dd class="cse-fact__v">{project.duration}</dd>
+            </div>
+            <div class="cse-fact">
+              <dt class="cse-fact__k">Client</dt>
+              <dd class="cse-fact__v">{project.org}</dd>
+            </div>
+            <div class="cse-fact">
+              <dt class="cse-fact__k">Period</dt>
+              <dd class="cse-fact__v">{project.period}</dd>
+            </div>
+          </dl>
+          {project.links.length > 0 && (
+            <div class="cs-linkrow cse-linkrow">
+              {project.links.map((l) => (
+                <a
+                  class="pill pill--ghost pill--sm cse-linkrow__link"
+                  href={l.href}
+                  target={l.external ? '_blank' : undefined}
+                  rel={l.external ? 'noopener noreferrer' : undefined}
+                >
+                  {l.label}
+                  {l.external && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7" /><path d="M8 7h9v9" /></svg>
+                  )}
+                  {l.external && <span class="ix-sr"> (opens in a new tab)</span>}
+                </a>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {project.faq.length > 0 && (
+          <section class="cs-section cse-section" id="cs-faq" data-toc-target>
+            <p class="cs-kicker">{step('cs-faq')} — Questions</p>
+            <h2 class="cs-h">The questions I get asked about this one.</h2>
+            <div class="cs-qa cse-faq" data-stagger>
+              {project.faq.map((item, i) => (
+                <div class="cs-qa__item reveal">
+                  <button
+                    class="cs-qa__head"
+                    id={`csq-${project.slug}-${i + 1}`}
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls={`csa-${project.slug}-${i + 1}`}
+                  >
+                    <span class="cs-num" aria-hidden="true">{pad(i + 1)}</span>
+                    <span class="cs-qa__qtext">{item.q}</span>
+                    <svg class="cs-qa__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+                  </button>
+                  <div
+                    class="cs-qa__panel"
+                    id={`csa-${project.slug}-${i + 1}`}
+                    role="region"
+                    aria-labelledby={`csq-${project.slug}-${i + 1}`}
+                  >
+                    <div class="cs-qa__panel-inner"><p>{item.a}</p></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </article>
+
+      <section class="cse-cta sreveal" aria-labelledby="cse-cta-h">
+        <h2 class="cs-h--sub cse-cta__h" id="cse-cta-h">Got a report that takes two days to assemble?</h2>
+        <p class="cse-cta__p">That is usually a one-week fix. Tell me what you are reconciling by hand and I will tell you what I would automate first.</p>
+        <div class="cse-cta__row">
+          <a class="pill pill--primary" href="/#contact">Start a conversation</a>
+          <a class="textlink cse-cta__link" href="/work">Back to the portfolio</a>
+        </div>
+      </section>
+
+      <nav class="cse-pager" aria-label="More case studies">
+        <a class="cse-pager__link cse-pager__link--prev" href={`/work/${prev.slug}/`} rel="prev">
+          <span class="cse-pager__dir">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+            Previous
+          </span>
+          <span class="cse-pager__title">{prev.title}</span>
+          <span class="cse-pager__meta">{prev.org} · {prev.period}</span>
+        </a>
+        <a class="cse-pager__link cse-pager__link--next" href={`/work/${next.slug}/`} rel="next">
+          <span class="cse-pager__dir">
+            Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+          </span>
+          <span class="cse-pager__title">{next.title}</span>
+          <span class="cse-pager__meta">{next.org} · {next.period}</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,44 @@
+---
+// StatBand — the four headline numbers on a dark tile.
+// Values count up via motion.ts ([data-counter-to]); the server-rendered
+// text is already the final figure, so it reads correctly with JS off.
+import { stats } from '../data/extras';
+
+type Attrs = Record<string, string>;
+
+const items = stats.map((s) => {
+  const attrs: Attrs = {};
+  if (typeof s.count === 'number') {
+    attrs['data-counter-to'] = String(s.count);
+    if (s.prefix) attrs['data-counter-prefix'] = s.prefix;
+    if (s.suffix) attrs['data-counter-suffix'] = s.suffix;
+    // Keep the thousands separator the data already implies.
+    if (s.value.includes(',')) attrs['data-counter-group'] = 'true';
+  }
+  return {
+    text: `${s.prefix ?? ''}${s.value}${s.suffix ?? ''}`,
+    label: s.label,
+    attrs,
+  };
+});
+---
+
+<section class="tile tile--dark center hm-statband" id="numbers">
+  <div class="inner center" data-stagger>
+    <div class="eyebrow eyebrow--dark reveal">By the numbers</div>
+    <h2 class="metrics__h2 reveal" style="color:#fff">The work, counted.</h2>
+    <p class="hero__sub reveal">
+      Every figure below comes from delivered engagements — dashboards in daily use,
+      pipelines running unattended, hours given back to the people who used to do it by hand.
+    </p>
+
+    <ul class="hm-statband__grid" role="list">
+      {items.map((item) => (
+        <li class="hm-statband__item reveal">
+          <span class="hm-statband__value" {...item.attrs}>{item.text}</span>
+          <span class="hm-statband__label">{item.label}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

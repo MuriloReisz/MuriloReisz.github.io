@@ -1,0 +1,456 @@
+/* ============================================================
+   ix.css — shared interactive primitives (.ix-*).
+
+   Injected or tagged by src/scripts/widgets.ts and demos.ts, and
+   reused by /work, the case studies, the playground and the home
+   page. These must read as though they were always part of the
+   design system in global.css.
+
+   Chart geometry from widgets.ts: bar/line use a 640x300 viewBox,
+   donuts a 240x240 one.
+   ============================================================ */
+
+/* ---------- Visually hidden, still announced ---------- */
+/* Clip technique, not display:none — the chart data tables and
+   live regions depend on staying readable to assistive tech. */
+.ix-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Scroll lock while the lightbox is open ---------- */
+html.ix-noscroll { overflow: hidden; }
+
+/* ============================================================
+   CHARTS — [data-chart="bar|line|donut"]
+   Host .ix-chart.ix-chart--<kind> holds the <svg>, an optional
+   legend, a visually-hidden data table, and one tooltip.
+   ============================================================ */
+.ix-chart {
+  position: relative;
+  width: 100%;
+  color: var(--color-ink);
+}
+.ix-chart__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;          /* axis labels sit just outside the plot */
+}
+.ix-chart--donut .ix-chart__svg { max-width: 240px; margin: 0 auto; }
+
+/* ---------- Axes + gridlines ---------- */
+.ix-chart__gridline {
+  stroke: var(--color-hairline);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+.ix-chart__ylbl,
+.ix-chart__xlbl {
+  font-family: var(--font-text);
+  font-size: 11px;
+  letter-spacing: -0.1px;
+  fill: var(--color-ink-48);
+}
+.ix-chart__xlbl { font-size: 11.5px; }
+
+/* ---------- Bars ---------- */
+.ix-chart__bar-track { fill: color-mix(in srgb, var(--color-ink) 5%, transparent); }
+[data-theme="dark"] .ix-chart__bar-track { fill: rgba(255, 255, 255, 0.06); }
+.ix-chart__bar-fill {
+  fill: var(--c1);
+  transform: scaleY(0);
+  transform-origin: center bottom;
+  transform-box: fill-box;    /* scale about the bar, not the SVG origin */
+  transition: transform 0.85s var(--reveal-ease), fill 0.2s ease;
+}
+.ix-chart__hit { cursor: pointer; }
+.ix-chart__datum:hover .ix-chart__bar-fill,
+.ix-chart__datum:focus-visible .ix-chart__bar-fill { fill: var(--accent-fill-hover); }
+
+/* ---------- Line + area ---------- */
+.ix-chart__line {
+  stroke: var(--c1);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ix-chart__area { fill: color-mix(in srgb, var(--c1) 16%, transparent); stroke: none; }
+.ix-chart__dot {
+  fill: var(--color-canvas);
+  stroke: var(--c1);
+  stroke-width: 2.5;
+  opacity: 0;
+  transition: opacity 0.4s var(--reveal-ease), r 0.18s ease;
+}
+.ix-chart__datum:hover .ix-chart__dot,
+.ix-chart__datum:focus-visible .ix-chart__dot { r: 7; fill: var(--c1); }
+
+/* ---------- Donut ---------- */
+.ix-chart__ring { stroke: color-mix(in srgb, var(--color-ink) 7%, transparent); }
+[data-theme="dark"] .ix-chart__ring { stroke: rgba(255, 255, 255, 0.08); }
+.ix-chart__arc {
+  fill: none;
+  stroke-linecap: butt;
+  transition: opacity 0.2s ease;
+}
+/* Single-hue ramp, so a donut never becomes a pie chart of confetti. */
+.ix-chart__arcs > .ix-chart__datum:nth-child(1) .ix-chart__arc { stroke: var(--c1); }
+.ix-chart__arcs > .ix-chart__datum:nth-child(2) .ix-chart__arc { stroke: var(--c2); }
+.ix-chart__arcs > .ix-chart__datum:nth-child(3) .ix-chart__arc { stroke: var(--c3); }
+.ix-chart__arcs > .ix-chart__datum:nth-child(4) .ix-chart__arc { stroke: var(--c4); }
+.ix-chart__arcs > .ix-chart__datum:nth-child(5) .ix-chart__arc { stroke: var(--c5); }
+.ix-chart__arcs > .ix-chart__datum:nth-child(n + 6) .ix-chart__arc { stroke: var(--c6); }
+.ix-chart__slice:hover .ix-chart__arc,
+.ix-chart__slice:focus-visible .ix-chart__arc { opacity: 0.82; }
+.ix-chart__center-v {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  fill: var(--color-ink);
+}
+.ix-chart__center-l {
+  font-family: var(--font-text);
+  font-size: 12px;
+  letter-spacing: -0.1px;
+  fill: var(--color-ink-48);
+}
+
+/* ---------- Focus: the SVG group is the tab stop ---------- */
+.ix-chart__datum { outline: none; }
+.ix-chart__datum:focus-visible .ix-chart__hit {
+  stroke: var(--color-primary-focus);
+  stroke-width: 2;
+  rx: 4;
+}
+
+/* ---------- Legend ---------- */
+.ix-chart__legend {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ix-chart__legend-row { display: flex; align-items: center; gap: 10px; }
+.ix-chart__legend-sw { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.ix-chart__legend-l {
+  flex: 1 1 0;
+  font-size: 13px;
+  letter-spacing: -0.224px;
+  color: var(--color-ink-80);
+}
+.ix-chart__legend-v {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.224px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Tooltip: positioned from --ix-tip-x / --ix-tip-y (%) ---------- */
+.ix-chart__tip {
+  position: absolute;
+  left: var(--ix-tip-x, 50%);
+  top: var(--ix-tip-y, 50%);
+  transform: translate(-50%, calc(-100% - 12px));
+  z-index: 3;
+  min-width: 96px;
+  max-width: 220px;
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  background: #1d1d1f;
+  color: #e8e8ed;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: left;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+[data-theme="dark"] .ix-chart__tip { background: #2c2c2e; border: 1px solid rgba(255, 255, 255, 0.14); }
+.ix-chart__tip.is-on { opacity: 1; }
+.ix-chart__tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50% 0;
+  border: 6px solid transparent;
+  border-top-color: #1d1d1f;
+}
+[data-theme="dark"] .ix-chart__tip::after { border-top-color: #2c2c2e; }
+.ix-chart__tip-l { font-size: 11.5px; letter-spacing: -0.1px; color: rgba(255, 255, 255, 0.66); }
+.ix-chart__tip-v {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.ix-chart__tip-sub { font-size: 11.5px; line-height: 1.4; color: rgba(255, 255, 255, 0.6); }
+
+/* ---------- Empty state ---------- */
+.ix-chart__empty {
+  padding: 34px 18px;
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: -0.2px;
+  color: var(--color-ink-48);
+  border: 1px dashed var(--color-hairline);
+  border-radius: var(--radius-md);
+}
+
+/* The accessible fallback table — only ever seen via .ix-sr. */
+.ix-chart__table { border-collapse: collapse; }
+
+/* ============================================================
+   RANGE SLIDERS
+   WebKit and Firefox share no pseudo-element, so the two blocks
+   cannot be merged — a combined selector list would invalidate
+   the whole rule in both engines.
+   ============================================================ */
+.ix-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+/* -- WebKit / Blink -- */
+.ix-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+.ix-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;          /* centres a 20px thumb on a 6px track */
+  border-radius: 50%;
+  background: var(--accent-fill);
+  border: 2px solid var(--color-canvas);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+  transition: transform 0.14s ease, background-color 0.2s ease;
+}
+.ix-range:hover::-webkit-slider-thumb { transform: scale(1.1); }
+.ix-range:active::-webkit-slider-thumb { transform: scale(0.94); }
+.ix-range:focus-visible { outline: none; }
+.ix-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 34%, transparent);
+}
+/* -- Firefox -- */
+.ix-range::-moz-range-track {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+.ix-range::-moz-range-progress {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-fill);
+}
+.ix-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+  border: 2px solid var(--color-canvas);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+}
+.ix-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 34%, transparent);
+}
+[data-theme="dark"] .ix-range::-webkit-slider-runnable-track { background: rgba(255, 255, 255, 0.14); }
+[data-theme="dark"] .ix-range::-moz-range-track { background: rgba(255, 255, 255, 0.14); }
+
+/* A labelled slider row: label + live value above, track below. */
+.ix-field { display: flex; flex-direction: column; gap: 7px; }
+.ix-field__top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.ix-field__label { font-size: 14px; font-weight: 500; letter-spacing: -0.2px; color: var(--color-ink-80); }
+.ix-field__val {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+.ix-field__hint { font-size: 12.5px; letter-spacing: -0.1px; color: var(--color-ink-48); }
+
+/* ============================================================
+   SEGMENTED CONTROL — real buttons with [aria-pressed]
+   ============================================================ */
+.ix-seg {
+  display: inline-flex;
+  padding: 3px;
+  gap: 3px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-parchment);
+  flex-wrap: wrap;
+}
+.ix-seg__btn {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  height: 32px;
+  padding: 0 15px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-ink-80);
+  font-family: var(--font-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.ix-seg__btn:hover { color: var(--color-primary); }
+.ix-seg__btn[aria-pressed="true"] { background: var(--accent-fill); color: #fff; }
+
+/* ============================================================
+   NUMERIC READOUTS
+   ============================================================ */
+.ix-out { display: flex; flex-direction: column; gap: 3px; }
+.ix-out__v {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -1.2px;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.ix-out__v--accent { color: var(--color-primary); }
+.ix-out__l { font-size: 13px; letter-spacing: -0.2px; color: var(--color-ink-48); }
+
+/* ============================================================
+   STATUS / LIVE REGIONS
+   ============================================================ */
+.ix-status {
+  min-height: 20px;
+  font-size: 13.5px;
+  letter-spacing: -0.2px;
+  color: var(--color-ink-48);
+}
+.ix-status.is-ok { color: var(--color-primary); }
+.ix-status.is-error { color: #d1453b; }
+[data-theme="dark"] .ix-status.is-error { color: #ff8585; }
+
+/* ============================================================
+   RESULT TABLES — echoing the .cmp table conventions
+   ============================================================ */
+.ix-table { width: 100%; border-collapse: collapse; font-size: 13.5px; letter-spacing: -0.1px; }
+.ix-table th,
+.ix-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-divider-soft);
+  white-space: nowrap;
+}
+.ix-table th {
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-48);
+  background: var(--color-parchment);
+}
+.ix-table td { color: var(--color-ink-80); }
+.ix-table td.is-num { text-align: right; font-variant-numeric: tabular-nums; }
+.ix-table tr:last-child td { border-bottom: 0; }
+
+/* ============================================================
+   TOOLBAR CONTROLS tagged by widgets.ts
+   (search input, sort control, view toggle, copy button)
+   ============================================================ */
+.ix-search__input,
+.ix-sort {
+  font-family: var(--font-text);
+  font-size: 15px;
+  letter-spacing: -0.2px;
+  color: var(--color-ink);
+  background: var(--surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  height: 40px;
+  padding: 0 16px;
+}
+.ix-search__input::placeholder { color: var(--color-ink-48); }
+.ix-search__input:focus-visible,
+.ix-sort:focus-visible { border-color: var(--color-primary); }
+.ix-sort { cursor: pointer; padding-right: 34px; }
+
+.ix-viewbtn {
+  appearance: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-ink-48);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.ix-viewbtn:hover { color: var(--color-primary); }
+.ix-viewbtn[aria-pressed="true"] { background: var(--color-parchment); color: var(--color-primary); }
+.ix-viewbtn svg { width: 18px; height: 18px; display: block; }
+
+.ix-copy { cursor: pointer; }
+.ix-copy.is-copied { color: var(--color-primary); }
+
+/* Lightbox triggers get a zoom affordance on pointer devices. */
+@media (hover: hover) and (pointer: fine) {
+  .ix-lb-trigger { cursor: zoom-in; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 833px) {
+  .ix-out__v { font-size: 32px; }
+  .ix-chart__tip { max-width: 180px; }
+}
+@media (max-width: 640px) {
+  .ix-out__v { font-size: 28px; letter-spacing: -0.8px; }
+  .ix-chart__ylbl, .ix-chart__xlbl { font-size: 10px; }
+  .ix-seg { width: 100%; justify-content: center; }
+  .ix-table th, .ix-table td { padding: 9px 10px; font-size: 12.5px; }
+  .ix-chart__center-v { font-size: 28px; }
+}
+
+/* ============================================================
+   REDUCED MOTION — charts render in their final state
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .ix-chart__bar-fill { transform: scaleY(1); transition: none; }
+  .ix-chart__dot { opacity: 1; transition: none; }
+  .ix-chart__tip,
+  .ix-chart__arc,
+  .ix-seg__btn,
+  .ix-viewbtn { transition: none; }
+  .ix-range::-webkit-slider-thumb { transition: none; }
+  .ix-range:hover::-webkit-slider-thumb,
+  .ix-range:active::-webkit-slider-thumb { transform: none; }
+}

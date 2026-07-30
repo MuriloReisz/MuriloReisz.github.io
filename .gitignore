@@ -1,0 +1,13 @@
+# build output
+dist/
+# dependencies
+node_modules/
+# astro
+.astro/
+# os / editor
+.DS_Store
+*.log
+# reference source (extraction scratch — safe to delete)
+_source/
+# personal working drafts — not site source, and this repo is public
+LINKEDIN.md

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1750" viewBox="0 0 1240 1750" role="img" aria-label="Sample report 1/9">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f5f5f7"/><stop offset="1" stop-color="#0a0a0c"/>
+  </linearGradient></defs>
+  <rect width="1240" height="1750" fill="url(#g)"/>
+  <rect x="8" y="8" width="1224" height="1734" fill="none" stroke="#a78bfa" stroke-opacity="0.25" stroke-width="2" rx="14"/>
+  <text x="50%" y="50%" fill="#6b6b6b" font-family="Inter,system-ui,sans-serif" font-size="89" font-weight="600" text-anchor="middle" dominant-baseline="middle">Sample report 1/9</text>
+</svg>

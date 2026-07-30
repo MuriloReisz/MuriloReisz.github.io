@@ -1,0 +1,107 @@
+---
+import '../styles/global.css';
+// Enhancement layers — loaded after global.css so they win ties at equal specificity.
+// Order matters: motion + shared primitives first, then the page-scoped namespaces.
+import '../styles/motion.css';
+import '../styles/ix.css';
+import '../styles/work.css';
+import '../styles/playground.css';
+import '../styles/home.css';import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Chrome from '../components/Chrome.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Social-share image, absolute path under /public (e.g. '/images/proposal-overview.svg') */
+  ogImage?: string;
+  /** Opt into the wider content measure (portfolio grid, case-study reader) */
+  wide?: boolean;
+}
+
+const {
+  title = `${site.brand} — ${site.name} · ${site.role}`,
+  description = site.tagline,
+  ogImage = '/images/logo-mark.svg',
+  wide = false,
+} = Astro.props;
+
+// Astro.site comes from astro.config.mjs. Fall back gracefully so a missing/placeholder
+// `site` never breaks the build — canonical + og:url are simply omitted in that case.
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const ogImageAbs = Astro.site ? new URL(ogImage, Astro.site).href : ogImage;
+
+// Person schema helps search engines connect the site to the real profiles.
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: site.role,
+  email: `mailto:${site.email}`,
+  telephone: site.phone,
+  address: { '@type': 'PostalAddress', addressLocality: site.location },
+  sameAs: [site.socials.github, site.socials.linkedin],
+  description: site.tagline,
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline>
+      /* Set theme before first paint to avoid flash */
+      (function () {
+        try {
+          document.documentElement.classList.add('js');
+          var t = localStorage.getItem('theme');
+          if (!t) t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+          if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        } catch (e) {}
+      })();
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageAbs} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbs} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <link rel="apple-touch-icon" href="/images/favicon.svg" />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(personLd)} />
+  </head>
+  <body data-measure={wide ? 'wide' : undefined}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Chrome />
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script src="../scripts/site.ts"></script>
+    <script src="../scripts/motion.ts"></script>
+    <script src="../scripts/motion2.ts"></script>
+    <script src="../scripts/widgets.ts"></script>
+    <script src="../scripts/demos.ts"></script>
+    <script src="../scripts/home.ts"></script>
+  </body>
+</html>

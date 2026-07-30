@@ -1,0 +1,272 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+import { featured, projects } from '../data/projects';
+import WorkTile from '../components/WorkTile.astro';
+import StatBand from '../components/StatBand.astro';
+import SkillsPanel from '../components/SkillsPanel.astro';
+import TechMarquee from '../components/TechMarquee.astro';
+import ActivityHeatmap from '../components/ActivityHeatmap.astro';
+import Testimonials from '../components/Testimonials.astro';
+
+// The rotating line beside the static role. First phrase is the no-JS fallback;
+// motion2.ts reads data-typing-words and injects its own .mo-sr copy.
+const rolePhrases = [
+  'Tableau & Power BI dashboards',
+  'Python & RPA automation',
+  'BigQuery ETL pipelines',
+  'Agentic AI workflows',
+  'Forecasting & ML models',
+];
+---
+
+<Layout>
+  <!-- ===================== HERO ===================== -->
+  <header class="tile tile--white hero-host center" id="top">
+    <div class="hero-bg" aria-hidden="true">
+      <img class="hero-bg__poster hero-bg__poster--light" src="/images/hero-bg-poster.svg" alt="" width="1280" height="720" />
+      <img class="hero-bg__poster hero-bg__poster--dark" src="/images/hero-bg-dark-poster.svg" alt="" width="1280" height="720" />
+      <div class="hero-bg__scrim"></div>
+      <canvas class="hero-net" id="heroNet"></canvas>
+    </div>
+
+    <div class="profile-hero profile-hero--split" data-stagger>
+      <aside class="ph-aside reveal">
+        <img class="ph-portrait" src="/images/portrait.jpg" alt={site.name} width="300" height="300" fetchpriority="high" />
+        <span class="ph-loc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="10" r="3"></circle><path d="M12 21.5s7-5.5 7-11.5a7 7 0 0 0-14 0c0 6 7 11.5 7 11.5z"></path></svg>
+          {site.location}
+        </span>
+      </aside>
+      <div class="ph-main reveal">
+        <div class="ph-cta">
+          <a class="pill pill--primary" href="/#contact" data-magnetic data-magnetic-strength="7">Get in touch <span aria-hidden="true">›</span></a>
+          <a class="pill pill--ghost" href="/#work" data-magnetic data-magnetic-strength="7">View portfolio</a>
+        </div>
+        <h1 class="ph-name" data-reveal-words>{site.name}</h1>
+        <p class="ph-role hm-role">
+          <span class="hm-role__static">{site.role}</span>
+          <span class="hm-role__sep" aria-hidden="true">·</span>
+          <span
+            class="hm-role__typing"
+            data-typing
+            data-typing-words={rolePhrases.join(' | ')}
+            data-typing-speed="62"
+            data-typing-hold="1800"
+          >{rolePhrases[0]}</span>
+        </p>
+        <nav class="ph-links" aria-label="Profile links">
+          <a class="ph-link" href={site.socials.github} target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.6 8.21 11.16.6.11.82-.25.82-.56 0-.28-.01-1.02-.02-2-3.34.72-4.04-1.58-4.04-1.58-.55-1.36-1.34-1.73-1.34-1.73-1.09-.73.08-.72.08-.72 1.2.08 1.84 1.21 1.84 1.21 1.07 1.8 2.81 1.28 3.5.98.11-.76.42-1.28.76-1.58-2.67-.3-5.47-1.31-5.47-5.84 0-1.29.47-2.34 1.24-3.17-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.21a11.6 11.6 0 0 1 6.01 0c2.29-1.53 3.3-1.21 3.3-1.21.66 1.66.24 2.88.12 3.18.77.83 1.24 1.88 1.24 3.17 0 4.54-2.81 5.54-5.49 5.83.43.37.81 1.1.81 2.22 0 1.61-.01 2.9-.01 3.29 0 .31.22.68.83.56C20.56 21.88 24 17.49 24 12.29 24 5.78 18.63.5 12 .5z"></path></svg><span class="ph-link__label">GitHub</span></a>
+          <a class="ph-link" href={site.socials.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg><span class="ph-link__label">LinkedIn</span></a>
+          <a class="ph-link" href={`mailto:${site.email}`} aria-label="Email"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4.5h16c1.1 0 2 .9 2 2v11c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-11c0-1.1.9-2 2-2zm.3 2 7.05 5.13c.39.28.91.28 1.3 0L19.7 6.5H4.3zM20 8.04l-6.18 4.5a3 3 0 0 1-3.64 0L4 8.04v9.46h16V8.04z"></path></svg><span class="ph-link__label">Email</span></a>
+          <a class="ph-link" href={site.resume} download aria-label="Résumé"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2.75H7A1.75 1.75 0 0 0 5.25 4.5v15A1.75 1.75 0 0 0 7 21.25h10a1.75 1.75 0 0 0 1.75-1.75V7.5z"></path><path d="M14 2.75V7.5h4.75"></path></svg><span class="ph-link__label">Résumé</span></a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section class="tile tile--parchment about-v2" id="about">
+    <div class="inner about-v2__inner">
+      <div class="about-v2__text" data-stagger>
+        <div class="eyebrow reveal">About</div>
+        <h2 class="about-v2__lead reveal">Hi, I’m {site.name}</h2>
+        <p class="about-v2__intro reveal">I’m a <strong>Data Analyst</strong> and <strong>AI Specialist</strong> who turns messy, real-world data into clear decisions — dashboards, models, and automation that leaders can act on.</p>
+        <p class="about-v2__intro reveal">I’m currently a <strong>Data Analyst at Apple</strong>, working on the analytics and insight behind the numbers, and I take on <strong>freelance AI &amp; automation</strong> work on the side.</p>
+        <p class="about-v2__intro reveal">I’ve spent countless hours on <strong>agentic AI &amp; automation</strong> — building scripts and data products that drive decisions, save time, and cut cost. Example work is showcased across this site and on GitHub.</p>
+        <div class="about-v2__achv-h reveal">Notable achievements</div>
+      </div>
+      <ul class="about-v2__list" data-stagger>
+        <li class="reveal"><span class="about-v2__n" data-counter-to="80" data-counter-prefix="−" data-counter-suffix="%">−80%</span> manual effort for freelance clients by engineering custom <strong>Python &amp; RPA</strong> automation — from consultation through to end-to-end deployment.</li>
+        <li class="reveal"><span class="about-v2__n">Terabytes</span> of data engineered into <strong>Google BigQuery</strong> through scalable, governed ETL pipelines from disparate sources.</li>
+        <li class="reveal"><span class="about-v2__n">CEMEA</span>-wide sales visibility delivered through interactive <strong>Tableau dashboards</strong> and Playwright automation for Apple's Sales BPR &amp; Systems team.</li>
+        <li class="reveal"><span class="about-v2__n" data-counter-to="5" data-counter-suffix=" languages">5 languages</span> spoken fluently, leading stakeholder management across multicultural, multi-regional teams.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== PORTFOLIO — tool filter ===================== -->
+  <section class="tile tile--white center portfolio-intro" id="work">
+    <div class="inner center reveal">
+      <div class="eyebrow">Portfolio</div>
+      <h2 class="metrics__h2" style="color:var(--color-ink)">Featured work.</h2>
+      <p class="toolhint">Select a tool to filter the projects below.</p>
+      <div class="toolfilter" role="group" aria-label="Filter projects by tool">
+        <button class="filter-pill toolchip" data-filter="all" aria-pressed="true">All</button>
+        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="tableau" aria-pressed="false"><span class="toolchip__logo tl-tableau" aria-hidden="true"></span>Tableau</button></span>
+        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="powerbi" aria-pressed="false"><span class="toolchip__logo tl-powerbi" aria-hidden="true"></span>Power BI</button></span>
+        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="python" aria-pressed="false"><span class="toolchip__logo tl-python" aria-hidden="true"></span>Python</button></span>
+        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="sql" aria-pressed="false"><span class="toolchip__logo tl-sql" aria-hidden="true"></span>SQL</button></span>
+        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="excel" aria-pressed="false"><span class="toolchip__logo tl-excel" aria-hidden="true"></span>Excel</button></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURED WORK — rendered from src/data/projects.ts ===================== -->
+  {featured.map((project, i) => <WorkTile project={project} feature={i === 0} />)}
+
+  <!-- ===================== ALL WORK ===================== -->
+  <section class="tile tile--white center hm-more">
+    <div class="inner center reveal">
+      <p class="hm-more__hint">Three of {projects.length}. The rest — Power BI models, forecasting, cloud pipelines — sit in the full archive, each written up end to end.</p>
+      <a class="pill pill--ghost hm-more__link" href="/work" data-magnetic data-magnetic-strength="6">See all {projects.length} projects <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- ===================== NUMBERS · SKILLS · STACK · ACTIVITY · WORDS ===================== -->
+  <StatBand />
+  <SkillsPanel />
+  <TechMarquee />
+  <ActivityHeatmap />
+  <Testimonials />
+
+  <!-- ===================== EXPERIENCE ===================== -->
+  <section class="tile tile--white" id="experience">
+    <div class="inner">
+      <div class="eyebrow reveal">Experience</div>
+      <h2 class="exp__h2 reveal">Where the work happened.</h2>
+      <div class="exp__list" data-stagger>
+
+        <div class="exp__item reveal">
+          <div class="exp__when">
+            <div class="exp__role">Data Analyst</div>
+            <div class="exp__dates">Present</div>
+          </div>
+          <div class="exp__body">
+            <div class="exp__head">
+              <span class="exp__logo" aria-hidden="true"><svg class="exp__logo-glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.55c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.9-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.88 2.65 3.22 2.6 1.29-.05 1.78-.83 3.34-.83 1.56 0 2 .83 3.37.81 1.39-.03 2.27-1.27 3.12-2.53.98-1.45 1.39-2.86 1.41-2.93-.03-.01-2.71-1.04-2.74-4.12zM14.54 4.97c.71-.86 1.19-2.06 1.06-3.25-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.98-1.08 3.15 1.14.09 2.3-.58 3.01-1.44z"></path></svg></span>
+              <div class="exp__org">Apple</div>
+            </div>
+            <p class="exp__intro">On the <strong>CEMEA Sales BPR &amp; Systems</strong> team — building browser-based automation, processing large-scale cross-regional sales data, and turning it into Tableau dashboards and predictive models that give stakeholders visibility into performance and KPIs.</p>
+            <p class="exp__tools"><strong>Tools:</strong> Tableau · SQL · Python (Pandas, Playwright, Selenium) · Google BigQuery · Microsoft Excel</p>
+            <ul class="exp__points">
+              <li>Develop and maintain <strong>browser-based automation workflows with Playwright</strong> to streamline data collection, validation and reporting for the CEMEA Sales BPR &amp; Systems team.</li>
+            </ul>
+            <div class="exp__inline-more" id="appleMore">
+              <ul class="exp__points">
+                <li>Design and build <strong>interactive Tableau dashboards</strong> giving stakeholders visibility into sales performance and key business KPIs across the CEMEA region.</li>
+                <li><strong>Manage and process large-scale datasets</strong> supporting cross-regional sales business-process re-engineering (BPR), ensuring data accuracy and integrity.</li>
+                <li>Build <strong>predictive scripts and statistical models</strong> to analyse sales trends and support forecasting and data-driven decisions.</li>
+              </ul>
+            </div>
+            <button class="exp__readmore" type="button" id="appleToggle" aria-expanded="false" aria-controls="appleMore">
+              <span class="exp__readmore-label">Read more</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <div class="exp__tags"><span class="tag">Playwright automation</span><span class="tag">Tableau · KPIs</span><span class="tag">CEMEA Sales BPR</span><span class="tag">Predictive models</span></div>
+          </div>
+        </div>
+
+        <div class="exp__more" id="expMore">
+          <div class="exp__item">
+            <div class="exp__when">
+              <div class="exp__role">Freelance Data &amp; Automation Engineer</div>
+              <div class="exp__dates">Oct 2024 — Present · Remote</div>
+            </div>
+            <div class="exp__body">
+              <div class="exp__head">
+                <span class="exp__logo exp__logo--tue" aria-hidden="true">FL</span>
+                <div class="exp__org">Freelance · Remote</div>
+              </div>
+              <ul class="exp__points">
+                <li>Manage the full project lifecycle for multiple clients — from consultation and stakeholder engagement to architecting and deploying <strong>end-to-end data &amp; automation solutions</strong>.</li>
+                <li>Engineer custom automation with <strong>Python and RPA</strong>, streamlining complex processes and <strong>reducing manual effort by up to 80%</strong>.</li>
+                <li>Perform exploratory data analysis and statistical modelling to surface KPIs and predictive insight for forecasting; version control with Git / GitHub / GitLab.</li>
+              </ul>
+              <div class="exp__tags"><span class="tag">−80% manual effort</span><span class="tag">Python · RPA</span><span class="tag">End-to-end delivery</span></div>
+            </div>
+          </div>
+
+          <div class="exp__item">
+            <div class="exp__when">
+              <div class="exp__role">Data Analyst</div>
+              <div class="exp__dates">Nov 2022 — Oct 2024</div>
+            </div>
+            <div class="exp__body">
+              <div class="exp__head">
+                <span class="exp__logo exp__logo--tue" aria-hidden="true">P</span>
+                <div class="exp__org">Porto · São Paulo, Brazil</div>
+              </div>
+              <ul class="exp__points">
+                <li>Engineered and maintained scalable <strong>ETL pipelines processing terabytes</strong> of data from disparate sources into <strong>Google BigQuery</strong>, ensuring integrity and data governance.</li>
+                <li>Delivered dynamic <strong>BI dashboards</strong> that guided strategic decisions, and drove process improvements with low-code apps (AppSheet) and AI automation (n8n).</li>
+                <li>Automated extraction from legacy systems (RPA) and external sites (web scraping), and optimised BigQuery performance with complex SQL and stored procedures.</li>
+              </ul>
+              <div class="exp__tags"><span class="tag">Terabytes → BigQuery</span><span class="tag">ETL · SQL</span><span class="tag">n8n · AppSheet</span></div>
+            </div>
+          </div>
+
+          <div class="exp__item">
+            <div class="exp__when">
+              <div class="exp__role">IT Assistant</div>
+              <div class="exp__dates">Dec 2021 — May 2022</div>
+            </div>
+            <div class="exp__body">
+              <div class="exp__head">
+                <span class="exp__logo exp__logo--tue" aria-hidden="true">MT</span>
+                <div class="exp__org">Marcelo Tostes Advogados · São Paulo, Brazil</div>
+              </div>
+              <ul class="exp__points">
+                <li>First point of contact for all IT issues, providing timely hardware and software support to a busy legal office.</li>
+                <li>Managed system maintenance, network configuration and software updates to keep workstations stable and secure.</li>
+              </ul>
+              <div class="exp__tags"><span class="tag">IT support</span><span class="tag">Systems &amp; networks</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="exp__toggle-wrap reveal">
+        <button class="exp__toggle" type="button" id="expToggle" aria-expanded="false" aria-controls="expMore">
+          <span class="exp__toggle-label">Show 3 earlier roles</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CERTIFICATIONS & ACHIEVEMENTS ===================== -->
+  <section class="tile tile--parchment" id="achievements">
+    <div class="inner center reveal">
+      <div class="eyebrow">Education &amp; Languages</div>
+      <h2 class="metrics__h2">Qualified, and multilingual.</h2>
+    </div>
+    <div class="inner creds" data-stagger>
+      <div class="cred reveal">
+        <div class="cred__badge"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"></path><path d="M22 10v6"></path></svg></div>
+        <div>
+          <div class="cred__name">BSc — Analysis &amp; Development of Systems</div>
+          <div class="cred__meta">FIAP · São Paulo · 2022–2024</div>
+        </div>
+      </div>
+      <div class="cred reveal">
+        <div class="cred__badge"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"></path></svg></div>
+        <div>
+          <div class="cred__name">Fluent in 5 languages</div>
+          <div class="cred__meta">Portuguese (native) · English C2 · Spanish C1 · French &amp; Italian B2</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT CTA ===================== -->
+  <section class="tile tile--dark cta" id="contact">
+    <div class="inner center reveal">
+      <h2 class="cta__h2">Let <span class="accent">data</span> lead your business, starting today.</h2>
+      <p class="cta__sub">Have a dataset, a dashboard, or a question? Send a note and I’ll get back to you.</p>
+      <form class="cta__form" id="contactForm" action="https://formsubmit.co/muriloarielreis@gmail.com" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="New enquiry from your portfolio site" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <input class="cta__field" type="text" name="name" placeholder="Your name" aria-label="Your name" autocomplete="name" required />
+        <span class="cta__err" id="err-name" aria-live="polite"></span>
+        <input class="cta__field" type="email" name="email" placeholder="Email address" aria-label="Email address" autocomplete="email" required />
+        <span class="cta__err" id="err-email" aria-live="polite"></span>
+        <textarea class="cta__field" name="message" placeholder="What can I help with?" aria-label="Message" required></textarea>
+        <span class="cta__err" id="err-message" aria-live="polite"></span>
+        <button class="pill pill--primary cta__submit" type="submit">Submit</button>
+        <div class="cta__status" id="contactStatus" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+</Layout>

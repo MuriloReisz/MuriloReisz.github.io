@@ -1,0 +1,85 @@
+---
+// SkillsPanel — four skill groups, every group rendered server-side.
+// The segmented control narrows the view client-side; with JS off all four
+// groups stay on the page, so nothing is ever hidden behind a script.
+import { skills, type Skill } from '../data/extras';
+
+const slug = (s: string) =>
+  s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+const groupNames = ['Analytics', 'Engineering', 'AI & ML', 'Delivery'] as const;
+
+const blurbs: Record<string, string> = {
+  Analytics: 'Turning a warehouse of rows into a page someone acts on.',
+  Engineering: 'The plumbing underneath — modelled, tested and scheduled.',
+  'AI & ML': 'Forecasts and retrieval, evaluated before they ship.',
+  Delivery: 'The unglamorous half that decides whether any of it gets used.',
+};
+
+const groups = groupNames.map((name) => ({
+  name,
+  id: slug(name),
+  blurb: blurbs[name],
+  items: skills.filter((s: Skill) => s.group === name),
+}));
+---
+
+<section class="tile tile--white hm-skills" id="skills">
+  <div class="inner" data-stagger>
+    <div class="eyebrow reveal">Capabilities</div>
+    <h2 class="metrics__h2 reveal">What I actually do, and how well.</h2>
+    <p class="hero__sub reveal">
+      Self-assessed against the work in the portfolio below — the tools I reach for weekly
+      sit at the top, the ones I bring in a specialist for sit lower and say so.
+    </p>
+
+    <div class="hm-skills__seg reveal" role="group" aria-label="Show one skill group">
+      <button
+        class="filter-pill hm-skills__segbtn"
+        type="button"
+        aria-pressed="true"
+        aria-controls="hm-skills-list"
+        data-skill-filter="all"
+      >All</button>
+      {groups.map((g) => (
+        <button
+          class="filter-pill hm-skills__segbtn"
+          type="button"
+          aria-pressed="false"
+          aria-controls="hm-skills-list"
+          data-skill-filter={g.id}
+        >{g.name}</button>
+      ))}
+    </div>
+
+    <div class="hm-skills__list" id="hm-skills-list">
+      {groups.map((g) => (
+        <div class="hm-skills__group sreveal" data-skill-group={g.id}>
+          <div class="hm-skills__ghead">
+            <h3 class="hm-skills__gtitle">{g.name}</h3>
+            <p class="hm-skills__gblurb muted">{g.blurb}</p>
+          </div>
+          <ul class="hm-skills__rows" role="list">
+            {g.items.map((s) => (
+              <li class="hm-skills__row">
+                <span class="hm-skills__name">{s.name}</span>
+                <span
+                  class="hm-skills__meter"
+                  data-bar-to={String(s.level)}
+                  role="progressbar"
+                  aria-label={`${s.name} — proficiency`}
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow={String(s.level)}
+                >
+                  <span class="mo-bar__fill"></span>
+                </span>
+                <span class="hm-skills__level" aria-hidden="true">{s.level}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

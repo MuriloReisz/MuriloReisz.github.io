@@ -1,0 +1,470 @@
+/* ============================================================
+   home.css — the .hm-* sections added to the home page, plus the
+   pipeline panel reused on /ai-services.
+
+   Each block styles one component:
+     .hm-role      the rotating role line in the hero
+     .hm-more      the "see all projects" bridge tile
+     .hm-statband  StatBand.astro
+     .hm-skills    SkillsPanel.astro
+     .hm-marquee   TechMarquee.astro
+     .hm-heat      ActivityHeatmap.astro
+     .hm-quotes    Testimonials.astro
+     .hm-pipe      the ETL pipeline panel on /ai-services
+   ============================================================ */
+
+/* Screen-reader-only lists that mirror decorative content. */
+.hm-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   HERO ROLE LINE — static role · rotating specialism
+   ============================================================ */
+.hm-role {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 10px;
+}
+.hm-role__sep { color: var(--color-hairline); }
+.hm-role__typing { color: var(--color-primary); }
+
+/* ============================================================
+   BRIDGE TILE — "see all N projects"
+   Sits between the featured tiles and the numbers, so it stays
+   deliberately quiet: one line and one ghost pill.
+   ============================================================ */
+.hm-more { padding-top: 56px; padding-bottom: 56px; }
+.hm-more__hint {
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.224px;
+  color: var(--color-ink-48);
+  max-width: 620px;
+  margin: 0 auto 22px;
+}
+.hm-more__link { gap: 8px; }
+
+/* ============================================================
+   STAT BAND — four headline numbers, dark tile
+   ============================================================ */
+.hm-statband__grid {
+  list-style: none;
+  margin: 0;
+  padding: 56px 0 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+.hm-statband__item {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  position: relative;
+  padding-left: 22px;
+}
+/* A hairline rule per figure, the way .fact does on the About block. */
+.hm-statband__item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--color-primary-on-dark);
+  opacity: 0.4;
+}
+.hm-statband__value {
+  font-family: var(--font-display);
+  font-size: 58px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -2px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.hm-statband__label {
+  font-size: 15px;
+  line-height: 1.45;
+  letter-spacing: -0.224px;
+  color: var(--color-body-muted);
+  max-width: 22ch;
+}
+
+/* ============================================================
+   SKILLS PANEL — group switcher + proficiency meters
+   ============================================================ */
+.hm-skills__seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 30px;
+}
+.hm-skills__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px 56px;
+  padding-top: 44px;
+}
+/* The switcher hides whole groups; keep the grid from collapsing oddly. */
+.hm-skills__group[hidden] { display: none; }
+.hm-skills__ghead { padding-bottom: 18px; border-bottom: 1px solid var(--color-hairline); }
+.hm-skills__gtitle {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--color-ink);
+}
+.hm-skills__gblurb {
+  font-size: 14.5px;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+  color: var(--color-ink-48);
+  padding-top: 5px;
+}
+.hm-skills__rows {
+  list-style: none;
+  margin: 0;
+  padding: 18px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.hm-skills__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 128px 34px;
+  align-items: center;
+  gap: 14px;
+}
+.hm-skills__name {
+  font-size: 15.5px;
+  letter-spacing: -0.224px;
+  color: var(--color-ink-80);
+  min-width: 0;
+}
+/* The meter is a .mo-bar in all but name — motion.ts fills the inner span. */
+.hm-skills__meter {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-ink) 9%, transparent);
+  overflow: hidden;
+}
+[data-theme="dark"] .hm-skills__meter { background: rgba(255, 255, 255, 0.11); }
+.hm-skills__level {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  color: var(--color-ink-48);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   TECH MARQUEE — two counter-scrolling rows
+   .mo-marquee (motion.css) owns the mask + track; this owns chips.
+   ============================================================ */
+.hm-marquee__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  padding-top: 46px;
+}
+.hm-marquee__row { width: 100%; }
+.hm-marquee__chip {
+  white-space: nowrap;
+  border: 1px solid var(--color-hairline);
+  background: var(--surface-card);
+  font-size: 14.5px;
+  padding: 9px 18px;
+}
+/* A tiny leading dot, tinted by category, so the rows read as grouped. */
+.hm-marquee__chip::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 9px;
+  translate: 0 -1px;
+  background: var(--c3);
+}
+.hm-marquee__chip[data-kind="lang"]::before { background: var(--c1); }
+.hm-marquee__chip[data-kind="bi"]::before { background: var(--c2); }
+.hm-marquee__chip[data-kind="cloud"]::before { background: var(--c3); }
+.hm-marquee__chip[data-kind="ai"]::before { background: var(--c4); }
+.hm-marquee__chip[data-kind="tool"]::before { background: var(--c5); }
+
+/* ============================================================
+   ACTIVITY HEATMAP — 52 x 7 table on a dark tile
+   Cell tint is a single-hue ramp mixed from --color-primary.
+   ============================================================ */
+.hm-heat__fig { margin: 0; padding-top: 44px; }
+.hm-heat__rail { width: 100%; padding-bottom: 8px; }
+.hm-heat__grid { border-collapse: separate; border-spacing: 3px; margin: 0 auto; }
+.hm-heat__corner { width: 34px; }
+.hm-heat__month {
+  padding: 0 0 6px;
+  text-align: left;
+  font-family: var(--font-text);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+  color: var(--color-body-muted);
+  white-space: nowrap;
+}
+.hm-heat__mlabel { display: inline-block; }
+.hm-heat__dayhead {
+  padding: 0 8px 0 0;
+  text-align: right;
+  vertical-align: middle;
+  font-family: var(--font-text);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  color: var(--color-body-muted);
+  white-space: nowrap;
+}
+.hm-heat__td { padding: 0; line-height: 0; }
+.hm-heat__cell {
+  appearance: none;
+  display: block;
+  width: 13px;
+  height: 13px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.07);
+  transition: transform 0.12s ease, outline-color 0.12s ease;
+}
+.hm-heat__cell[data-level="1"] { background: color-mix(in srgb, var(--color-primary-on-dark) 30%, transparent); }
+.hm-heat__cell[data-level="2"] { background: color-mix(in srgb, var(--color-primary-on-dark) 52%, transparent); }
+.hm-heat__cell[data-level="3"] { background: color-mix(in srgb, var(--color-primary-on-dark) 74%, transparent); }
+.hm-heat__cell[data-level="4"] { background: var(--color-primary-on-dark); }
+.hm-heat__cell:hover { transform: scale(1.28); }
+.hm-heat__cell:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+
+/* Legend + total, under the grid */
+.hm-heat__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+}
+.hm-heat__total { font-size: 13.5px; letter-spacing: -0.2px; color: var(--color-body-muted); }
+.hm-heat__legend { display: inline-flex; align-items: center; gap: 9px; }
+.hm-heat__legend-l { font-size: 12px; letter-spacing: -0.1px; color: var(--color-body-muted); }
+.hm-heat__steps { display: inline-flex; gap: 3px; }
+.hm-heat__sw { width: 13px; height: 13px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); }
+.hm-heat__sw[data-level="1"] { background: color-mix(in srgb, var(--color-primary-on-dark) 30%, transparent); }
+.hm-heat__sw[data-level="2"] { background: color-mix(in srgb, var(--color-primary-on-dark) 52%, transparent); }
+.hm-heat__sw[data-level="3"] { background: color-mix(in srgb, var(--color-primary-on-dark) 74%, transparent); }
+.hm-heat__sw[data-level="4"] { background: var(--color-primary-on-dark); }
+
+/* Floating tooltip, positioned by home.ts from --hm-tip-x / --hm-tip-y (px) */
+.hm-heat__tip {
+  position: fixed;
+  left: var(--hm-tip-x, 0);
+  top: var(--hm-tip-y, 0);
+  z-index: 120;
+  transform: translate(-50%, calc(-100% - 10px));
+  padding: 7px 11px;
+  border-radius: var(--radius-sm);
+  background: #1d1d1f;
+  color: #e8e8ed;
+  font-family: var(--font-text);
+  font-size: 12.5px;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+  opacity: 0;
+  transition: opacity 0.14s ease;
+}
+.hm-heat__tip.is-on { opacity: 1; }
+
+/* ============================================================
+   TESTIMONIALS — scroll-snap rail of quote cards
+   ============================================================ */
+.hm-quotes__carousel { position: relative; padding-top: 44px; }
+.hm-quotes__track {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.hm-quotes__track::-webkit-scrollbar { display: none; }
+.hm-quotes__item {
+  flex: 0 0 auto;
+  width: 420px;
+  max-width: 100%;
+  scroll-snap-align: start;
+  display: flex;
+}
+.hm-quotes__card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 30px 28px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  width: 100%;
+}
+.hm-quotes__card .quote__text { flex: 1 1 auto; }
+.hm-quotes__card .quote__who { display: flex; align-items: center; gap: 13px; }
+.hm-quotes__avatar {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-primary) 13%, transparent);
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.hm-quotes__ident { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+/* ============================================================
+   PIPELINE PANEL — /ai-services (shares .pg-pipe__* from playground.css)
+   ============================================================ */
+.hm-pipe {
+  width: 100%;
+  max-width: var(--max-grid);
+  margin: 46px auto 0;
+  padding: 32px 30px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+.hm-pipe__head { display: flex; flex-direction: column; gap: 8px; }
+.hm-pipe__title {
+  font-family: var(--font-display);
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+}
+.hm-pipe__lead { font-size: 16px; line-height: 1.55; letter-spacing: -0.224px; color: var(--color-ink-48); }
+.hm-pipe__controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.hm-pipe__state { font-size: 13.5px; letter-spacing: -0.2px; color: var(--color-ink-48); }
+.hm-pipe__state b { color: var(--color-primary); font-weight: 600; }
+.hm-pipe__stages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; counter-reset: none; }
+.hm-pipe__stage {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 150px) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-divider-soft);
+  border-radius: var(--radius-md);
+}
+.hm-pipe__stage-n {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--color-ink-48);
+  font-variant-numeric: tabular-nums;
+}
+.hm-pipe__stage-t { font-size: 15px; font-weight: 600; letter-spacing: -0.224px; color: var(--color-ink); }
+.hm-pipe__stage-d { font-size: 13.5px; line-height: 1.45; letter-spacing: -0.1px; color: var(--color-ink-48); }
+.hm-pipe__outs {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.hm-pipe__out {
+  flex: 1 1 0;
+  min-width: 118px;
+  padding: 13px 15px;
+  border-radius: var(--radius-md);
+  background: var(--color-parchment);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hm-pipe__out-k { font-size: 12px; letter-spacing: -0.12px; color: var(--color-ink-48); }
+.hm-pipe__out-v {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.hm-pipe__foot { font-size: 14px; line-height: 1.55; letter-spacing: -0.2px; color: var(--color-ink-48); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .hm-statband__value { font-size: 48px; letter-spacing: -1.6px; }
+}
+@media (max-width: 833px) {
+  .hm-statband__grid { flex-wrap: wrap; gap: 30px 24px; }
+  .hm-statband__item { flex: 1 1 42%; }
+  .hm-skills__list { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+  .hm-quotes__item { width: 360px; }
+  .hm-pipe { padding: 26px 22px; }
+  .hm-pipe__stage { grid-template-columns: 28px minmax(0, 1fr); }
+  .hm-pipe__stage-d { grid-column: 2; }
+}
+@media (max-width: 640px) {
+  .hm-statband__grid { padding-top: 40px; }
+  .hm-statband__item { flex: 1 1 100%; }
+  .hm-statband__value { font-size: 44px; }
+  .hm-skills__row { grid-template-columns: minmax(0, 1fr) 84px 30px; gap: 10px; }
+  .hm-quotes__item { width: 84vw; }
+  .hm-quotes__card { padding: 24px 22px; }
+  .hm-marquee__chip { font-size: 13.5px; padding: 8px 14px; }
+  .hm-heat__cell, .hm-heat__sw { width: 11px; height: 11px; }
+  .hm-more__hint { font-size: 16px; }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .hm-heat__cell,
+  .hm-heat__tip { transition: none; }
+  .hm-heat__cell:hover { transform: none; }
+  .hm-quotes__track { scroll-behavior: auto; }
+}

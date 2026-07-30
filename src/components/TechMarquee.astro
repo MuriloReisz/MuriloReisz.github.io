@@ -1,0 +1,37 @@
+---
+// TechMarquee — two counter-scrolling rows of the current toolkit.
+// The animated rows are decorative (aria-hidden); the same names are
+// exposed once, in order, as a screen-reader list.
+import { techStack } from '../data/extras';
+
+const half = Math.ceil(techStack.length / 2);
+const rowOne = techStack.slice(0, half);
+const rowTwo = techStack.slice(half);
+---
+
+<section class="tile tile--parchment center hm-marquee" id="stack">
+  <div class="inner center" data-stagger>
+    <div class="eyebrow reveal">Toolkit</div>
+    <h2 class="metrics__h2 reveal">The tools in regular use.</h2>
+    <p class="hero__sub reveal">
+      Not a wish list — everything here has shipped something in the past year.
+    </p>
+  </div>
+
+  <div class="hm-marquee__rows reveal" aria-hidden="true">
+    <div class="hm-marquee__row" data-marquee data-marquee-speed="34">
+      {rowOne.map((t) => (
+        <span class="tag hm-marquee__chip" data-kind={t.kind}>{t.name}</span>
+      ))}
+    </div>
+    <div class="hm-marquee__row" data-marquee data-marquee-reverse data-marquee-speed="28">
+      {rowTwo.map((t) => (
+        <span class="tag hm-marquee__chip" data-kind={t.kind}>{t.name}</span>
+      ))}
+    </div>
+  </div>
+
+  <ul class="hm-sr" role="list">
+    {techStack.map((t) => <li>{t.name}</li>)}
+  </ul>
+</section>

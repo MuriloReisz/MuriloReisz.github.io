@@ -1,0 +1,54 @@
+---
+import { site, nav } from '../data/site';
+---
+
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<!-- ===================== NAV BAR ===================== -->
+<nav class="navbar">
+  <div class="navbar__inner">
+    <a class="navbar__brand" href="/">
+      <img class="navbar__logo navbar__logo--light" src="/images/logo-mark.svg" alt={site.brand} width="240" height="170" />
+      <img class="navbar__logo navbar__logo--dark" src="/images/logo-mark-dark.svg" alt={site.brand} width="240" height="170" />
+    </a>
+    <div class="navbar__links">
+      <span class="navbar__item navbar__item--mega" data-mega="navMega">
+        <a href="/" aria-haspopup="true" aria-expanded="false">About me</a>
+      </span>
+      <a class="navbar__item" href="/work">Portfolio</a>
+      <span class="navbar__item navbar__item--mega" data-mega="navMegaServices">
+        <a href="/ai-services" aria-haspopup="true" aria-expanded="false">Services</a>
+      </span>
+      <button class="nav-search-btn" id="navSearch" type="button" aria-label="Search (press Command or Control K)" aria-haspopup="dialog" aria-controls="cmdk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+      </button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg class="icon-theme" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"></path></svg>
+      </button>
+      <a class="pill pill--primary pill--sm" href="/#contact">Contact me</a>
+      <button class="nav-burger" id="navBurger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu">
+        <span class="nav-burger__box"><span class="nav-burger__line"></span><span class="nav-burger__line"></span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="navbar__mega" id="navMega">
+    <div class="navbar__mega-inner">
+      <div class="navbar__mega-eyebrow">Explore</div>
+      {nav.aboutMenu.map((l) => <a class="navbar__mega-link" href={l.href} set:html={l.label} />)}
+    </div>
+  </div>
+
+  <div class="navbar__mega" id="navMegaServices">
+    <div class="navbar__mega-inner">
+      <div class="navbar__mega-eyebrow">Services</div>
+      {nav.servicesMenu.map((l) => (
+        <a class="navbar__mega-link navbar__mega-link--rich" href={l.href}>{l.label}<span class="navbar__mega-desc">{l.desc}</span></a>
+      ))}
+    </div>
+  </div>
+
+  <div class="nav-menu" id="navMenu">
+    {nav.mobile.map((l) => <a href={l.href}>{l.label}</a>)}
+  </div>
+</nav>

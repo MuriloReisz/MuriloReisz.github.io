@@ -1,0 +1,119 @@
+---
+// ---------------------------------------------------------------------------
+// ProjectCard — one project in the /work grid.
+//
+// The root is a <section data-tags> so the existing site.ts tool filter picks
+// it up, and a [data-filter-item] so the widgets.ts collection (search + sort
+// + view) drives the same element. The two compose: site.ts toggles the
+// .work--hidden class, widgets.ts sets inline display.
+//
+// One keyboard target per card: the title link. It is stretched over the whole
+// card in CSS, so the media, the stats and the "Read the case study" affordance
+// are all deliberately non-interactive.
+// ---------------------------------------------------------------------------
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+
+const href = `/work/${project.slug}`;
+const titleId = `pc-t-${project.slug}`;
+
+// Everything the search box should be able to match on, flattened once at build
+// time so the client never has to walk the DOM for it.
+const filterText = [
+  project.title,
+  project.eyebrow,
+  project.org,
+  project.period,
+  project.summary,
+  project.role,
+  ...project.stack,
+  ...project.tags,
+]
+  .join(' ')
+  .toLowerCase();
+
+const stats = project.findings.slice(0, 3);
+---
+
+<section
+  class="pc-card"
+  id={`pc-${project.slug}`}
+  data-filter-item
+  data-tags={project.tags.join(' ')}
+  data-filter-text={filterText}
+  data-sort-year={String(project.year)}
+  data-sort-title={project.title}
+  data-tilt
+  data-tilt-max="4"
+  aria-labelledby={titleId}
+  style={`--pc-i:${index}`}
+>
+  <div class="pc-card__media" data-spotlight>
+    <img
+      class="pc-card__img"
+      src={project.cover}
+      alt={project.coverAlt}
+      width={project.coverWidth}
+      height={project.coverHeight}
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="pc-card__badge">{project.org}</span>
+  </div>
+
+  <div class="pc-card__body">
+    <div class="pc-card__eyebrow eyebrow eyebrow--mono">{project.eyebrow}</div>
+
+    <h3 class="pc-card__title" id={titleId}>
+      <a class="pc-card__link" href={href}>{project.title}</a>
+    </h3>
+
+    <p class="pc-card__meta">
+      <span class="pc-card__org">{project.org}</span>
+      <span class="pc-card__sep" aria-hidden="true">·</span>
+      <span class="pc-card__period">{project.period}</span>
+      <span class="pc-card__sep" aria-hidden="true">·</span>
+      <span class="pc-card__read">{project.readMinutes} min read</span>
+    </p>
+
+    <p class="pc-card__summary">{project.summary}</p>
+
+    <dl class="pc-card__stats">
+      {
+        stats.map((f) => (
+          <div class="pc-stat">
+            <dt class="pc-stat__l">{f.label}</dt>
+            <dd class="pc-stat__v">
+              {f.count !== undefined ? (
+                <span
+                  class="pc-stat__n"
+                  data-count={String(f.count)}
+                  data-prefix={f.prefix}
+                  data-suffix={f.suffix}
+                >
+                  {f.value}
+                </span>
+              ) : (
+                <span class="pc-stat__n">{f.value}</span>
+              )}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <ul class="pc-card__stack" aria-label={`Stack used on ${project.title}`}>
+      {project.stack.map((tool) => <li class="tag pc-card__tag">{tool}</li>)}
+    </ul>
+
+    <p class="pc-card__cta" aria-hidden="true">
+      Read the case study <span class="pc-card__arrow">→</span>
+    </p>
+  </div>
+</section>
