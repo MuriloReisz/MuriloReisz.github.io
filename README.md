@@ -93,17 +93,13 @@ and — if you set `featured: true` — a full-bleed tile on the home page.
 `.github/workflows/deploy.yml` builds and publishes to **GitHub Pages** on every push
 to `main`. Enable it once under *Settings → Pages → Source → GitHub Actions*.
 
-If the site is served from a project path (`https://<user>.github.io/<repo>/`) rather
-than a custom domain or a `<user>.github.io` repo, set both in `astro.config.mjs`:
+This repo is named `MuriloReisz.github.io`, so the site serves from the domain root at
+<https://muriloreisz.github.io> and needs no `base` in `astro.config.mjs`.
 
-```js
-export default defineConfig({
-  site: 'https://<user>.github.io',
-  base: '/<repo>',
-});
-```
+To move to a custom domain later: set `site` in `astro.config.mjs` to the new domain, add
+`public/CNAME` containing the bare hostname, and point the DNS at GitHub Pages.
 
-Otherwise it deploys anywhere static: Netlify, Vercel or Cloudflare Pages, with build
+It also deploys anywhere else static — Netlify, Vercel or Cloudflare Pages — with build
 command `npm run build` and output directory `dist`.
 
 ## Content note
