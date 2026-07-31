@@ -6,17 +6,16 @@ import { stats } from '../data/extras';
 
 type Attrs = Record<string, string>;
 
+// The server-rendered text is the final figure, so it reads correctly with JS
+// off; motion.ts counts up to the same value from data-counter-to.
 const items = stats.map((s) => {
-  const attrs: Attrs = {};
-  if (typeof s.count === 'number') {
-    attrs['data-counter-to'] = String(s.count);
-    if (s.prefix) attrs['data-counter-prefix'] = s.prefix;
-    if (s.suffix) attrs['data-counter-suffix'] = s.suffix;
-    // Keep the thousands separator the data already implies.
-    if (s.value.includes(',')) attrs['data-counter-group'] = 'true';
-  }
+  const grouped = s.count >= 1000;
+  const attrs: Attrs = { 'data-counter-to': String(s.count) };
+  if (s.prefix) attrs['data-counter-prefix'] = s.prefix;
+  if (s.suffix) attrs['data-counter-suffix'] = s.suffix;
+  if (grouped) attrs['data-counter-group'] = 'true';
   return {
-    text: `${s.prefix ?? ''}${s.value}${s.suffix ?? ''}`,
+    text: `${s.prefix ?? ''}${s.count.toLocaleString('en-IE')}${s.suffix ?? ''}`,
     label: s.label,
     attrs,
   };

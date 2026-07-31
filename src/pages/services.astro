@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { site } from '../data/site';
+import RoiCalculator from '../components/RoiCalculator.astro';
 
 const bookHref = site.calendlyUrl || '#services-book';
 const bookAttrs = site.calendlyUrl
@@ -139,7 +140,7 @@ const bookAttrs = site.calendlyUrl
   <section class="tile tile--parchment center">
     <div class="inner center sreveal" data-stagger>
       <div class="eyebrow sreveal">Proof</div>
-      <h2 class="metrics__h2 sreveal" style="color:var(--color-ink)" data-reveal-words>Proven at enterprise scale.</h2>
+      <h2 class="metrics__h2" style="color:var(--color-ink)" data-reveal-words>Proven at enterprise scale.</h2>
       <p class="proofcs__lead sreveal">The job is always the same: take reporting that lives in someone's head or a fragile spreadsheet and turn it into a system people can trust.</p>
       <div class="proofcs__grid sreveal">
         <article class="proofcs__card" data-tilt data-tilt-max="3">
@@ -498,7 +499,7 @@ const bookAttrs = site.calendlyUrl
       <div class="pg-demo__head">
         <div>
           <div class="eyebrow reveal">Before we talk</div>
-          <h2 class="metrics__h2 pg-demo__h reveal" data-reveal-words>What could this save you?</h2>
+          <h2 class="metrics__h2 pg-demo__h" data-reveal-words>What could this save you?</h2>
           <p class="pg-demo__what reveal">
             This is the first sum I run on any reporting or automation brief, so you may as well run
             it yourself. Put in what the work actually costs you today &mdash; the arithmetic is
@@ -507,92 +508,11 @@ const bookAttrs = site.calendlyUrl
         </div>
       </div>
 
-      <div class="pg-panel reveal" data-roi-calc>
-        <div class="pg-panel__controls">
-          <div class="ix-field">
-            <div class="ix-field__top">
-              <label class="ix-field__label" for="svc-roi-hours">Hours each person loses to manual reporting</label>
-              <output class="ix-field__val" data-roi-val="hours" for="svc-roi-hours"></output>
-            </div>
-            <input class="ix-range" id="svc-roi-hours" type="range" data-roi-in="hours" />
-            <p class="ix-field__hint">per week</p>
-          </div>
-          <div class="ix-field">
-            <div class="ix-field__top">
-              <label class="ix-field__label" for="svc-roi-people">People doing that work</label>
-              <output class="ix-field__val" data-roi-val="people" for="svc-roi-people"></output>
-            </div>
-            <input class="ix-range" id="svc-roi-people" type="range" data-roi-in="people" />
-          </div>
-          <div class="ix-field">
-            <div class="ix-field__top">
-              <label class="ix-field__label" for="svc-roi-rate">Fully loaded hourly cost</label>
-              <output class="ix-field__val" data-roi-val="rate" for="svc-roi-rate"></output>
-            </div>
-            <input class="ix-range" id="svc-roi-rate" type="range" data-roi-in="rate" />
-            <p class="ix-field__hint">salary plus overhead</p>
-          </div>
-          <div class="ix-field">
-            <div class="ix-field__top">
-              <label class="ix-field__label" for="svc-roi-share">Share of the work automation removes</label>
-              <output class="ix-field__val" data-roi-val="share" for="svc-roi-share"></output>
-            </div>
-            <input class="ix-range" id="svc-roi-share" type="range" data-roi-in="share" />
-            <p class="ix-field__hint">be conservative &mdash; I would rather under-promise</p>
-          </div>
-          <div class="ix-field">
-            <div class="ix-field__top">
-              <label class="ix-field__label" for="svc-roi-invest">Build cost you are weighing up</label>
-              <output class="ix-field__val" data-roi-val="invest" for="svc-roi-invest"></output>
-            </div>
-            <input class="ix-range" id="svc-roi-invest" type="range" data-roi-in="invest" />
-            <p class="ix-field__hint">a fixed-scope build starts at &euro;8,000</p>
-          </div>
-        </div>
-
-        <div class="pg-panel__results">
-          <div class="pg-result pg-result--hero">
-            <div class="ix-out">
-              <span class="ix-out__v ix-out__v--accent" data-roi-out="annual">&mdash;</span>
-              <span class="ix-out__l">given back per year</span>
-            </div>
-          </div>
-          <div class="pg-result__row">
-            <div class="ix-out">
-              <span class="ix-out__v" data-roi-out="hoursword">&mdash;</span>
-              <span class="ix-out__l">returned to the team</span>
-            </div>
-            <div class="ix-out">
-              <span class="ix-out__v" data-roi-out="payback">&mdash;</span>
-              <span class="ix-out__l">to pay back the build</span>
-            </div>
-          </div>
-          <dl class="pg-result__facts">
-            <div class="pg-fact">
-              <dt class="pg-fact__k">Time spent today</dt>
-              <dd class="pg-fact__v" data-roi-out="baseline">&mdash;</dd>
-            </div>
-            <div class="pg-fact">
-              <dt class="pg-fact__k">Cost of that time</dt>
-              <dd class="pg-fact__v" data-roi-out="cost">&mdash;</dd>
-            </div>
-            <div class="pg-fact">
-              <dt class="pg-fact__k">Saving per month</dt>
-              <dd class="pg-fact__v" data-roi-out="monthly">&mdash;</dd>
-            </div>
-            <div class="pg-fact">
-              <dt class="pg-fact__k">In working days</dt>
-              <dd class="pg-fact__v" data-roi-out="days">&mdash;</dd>
-            </div>
-          </dl>
-          <div class="pg-formula">
-            <p class="pg-formula__k">The arithmetic</p>
-            <p class="pg-formula__v" data-roi-out="formula">&mdash;</p>
-            <p class="pg-formula__v pg-formula__v--sub" data-roi-out="paybackformula">&mdash;</p>
-          </div>
-          <p class="ix-status" data-roi-status></p>
-        </div>
-      </div>
+      <RoiCalculator
+        idPrefix="svc-roi"
+        keys={['hours', 'people', 'rate', 'share', 'invest']}
+        overrides={{ invest: { label: 'Build cost you are weighing up', hint: 'a fixed-scope build starts at &euro;8,000' } }}
+      />
 
       <p class="pg-demo__foot reveal">
         A model, not a quote &mdash; the diagnostic replaces these estimates with your real numbers.

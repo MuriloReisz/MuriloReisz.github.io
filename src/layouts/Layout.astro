@@ -10,6 +10,7 @@ import '../styles/home.css';import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Chrome from '../components/Chrome.astro';
 import { site } from '../data/site';
+import { projects } from '../data/projects';
 
 interface Props {
   title?: string;
@@ -44,6 +45,16 @@ const personLd = {
   sameAs: [site.socials.github, site.socials.linkedin],
   description: site.tagline,
 };
+
+// The ⌘K palette's case-study entries, projected here at build time. Keeping
+// this out of src/scripts/site.ts is what stops the whole projects dataset —
+// case-study prose, galleries, FAQs, ~46 KB — from shipping in the client
+// bundle of every page just to power a search index.
+const cmdkProjects = projects.map((p) => ({
+  label: p.title,
+  href: `/work/${p.slug}`,
+  kw: `case study project ${p.org} ${p.tags.join(' ')} ${p.eyebrow}`.toLowerCase(),
+}));
 ---
 
 <!doctype html>
@@ -97,6 +108,7 @@ const personLd = {
       <slot />
     </main>
     <Footer />
+    <script type="application/json" id="cmdkProjects" set:html={JSON.stringify(cmdkProjects)} is:inline />
     <script src="../scripts/site.ts"></script>
     <script src="../scripts/motion.ts"></script>
     <script src="../scripts/motion2.ts"></script>

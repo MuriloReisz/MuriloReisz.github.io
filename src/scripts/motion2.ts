@@ -9,26 +9,11 @@
 //  Never touches #scrollProgress — site.ts owns that.
 // ============================================================
 
-const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s);
-const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => Array.from(r.querySelectorAll<T>(s));
+import { $, $$, clamp, debounce, num, prefersReduced } from './dom';
 
-const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
-const prefersReduced = () => reduceMQ.matches;
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-
-const clamp = (n: number, min: number, max: number) => (n < min ? min : n > max ? max : n);
-const attrNum = (el: Element, name: string, fallback: number) => {
-  const raw = el.getAttribute(name);
-  const n = raw === null ? NaN : parseFloat(raw);
-  return Number.isFinite(n) ? n : fallback;
-};
-const debounce = (fn: () => void, wait = 160) => {
-  let t = 0;
-  return () => {
-    clearTimeout(t);
-    t = window.setTimeout(fn, wait);
-  };
-};
+const attrNum = (el: Element, name: string, fallback: number) =>
+  num(el.getAttribute(name), fallback);
 
 /* ---------- Pointer tilt ---------- */
 const tiltEls = $$('[data-tilt]');
@@ -49,13 +34,17 @@ if (tiltEls.length && finePointer.matches && !prefersReduced()) {
       if (!raf) raf = requestAnimationFrame(paint);
     };
 
+    /* The card's box cannot move while the pointer is inside it, so measure
+       once on enter rather than on every pointermove. */
+    let box: DOMRect | null = null;
+
     el.addEventListener('pointermove', (ev) => {
       const e = ev as PointerEvent;
       if (e.pointerType !== 'mouse') return;
-      const r = el.getBoundingClientRect();
-      if (!r.width || !r.height) return;
-      const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
+      if (!box) box = el.getBoundingClientRect();
+      if (!box.width || !box.height) return;
+      const px = (e.clientX - box.left) / box.width - 0.5;
+      const py = (e.clientY - box.top) / box.height - 0.5;
       ry = px * max * 2;
       rx = -py * max * 2;
       schedule();
@@ -63,8 +52,13 @@ if (tiltEls.length && finePointer.matches && !prefersReduced()) {
 
     el.addEventListener('pointerenter', (ev) => {
       if ((ev as PointerEvent).pointerType !== 'mouse') return;
+      box = el.getBoundingClientRect();
       el.classList.add('is-tilting');
     });
+    /* Scrolling or resizing moves the box out from under the cached value. */
+    const invalidate = () => { box = null; };
+    addEventListener('scroll', invalidate, { passive: true });
+    addEventListener('resize', invalidate, { passive: true });
 
     const reset = () => {
       rx = 0;
@@ -175,7 +169,7 @@ typingEls.forEach((host) => {
   caret.className = 'mo-typing__caret';
   caret.setAttribute('aria-hidden', 'true');
   const sr = document.createElement('span');
-  sr.className = 'mo-sr';
+  sr.className = 'u-sr';
   sr.textContent = first;
   host.append(out, caret, sr);
 
@@ -344,13 +338,26 @@ if (marqueeEls.length && !prefersReduced()) {
 
 /* ---------- Wheel-to-horizontal rails ---------- */
 $$('.mo-hscroll').forEach((rail) => {
+  let queued = false;
   const sync = () => {
+    queued = false;
+    /* Read everything first: a class write between two reads forces a style
+       recalc, and this runs on every scroll event of the rail. */
     const max = rail.scrollWidth - rail.clientWidth;
-    rail.classList.toggle('is-scrollable', max > 1);
-    rail.classList.toggle('is-start', rail.scrollLeft <= 1);
-    rail.classList.toggle('is-end', max <= 1 || rail.scrollLeft >= max - 1);
+    const left = rail.scrollLeft;
+    const scrollable = max > 1;
+    const atStart = left <= 1;
+    const atEnd = !scrollable || left >= max - 1;
+    rail.classList.toggle('is-scrollable', scrollable);
+    rail.classList.toggle('is-start', atStart);
+    rail.classList.toggle('is-end', atEnd);
   };
-  rail.addEventListener('scroll', sync, { passive: true });
+  const scheduleSync = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(sync);
+  };
+  rail.addEventListener('scroll', scheduleSync, { passive: true });
   addEventListener('resize', debounce(sync, 140));
   sync();
 
@@ -471,7 +478,6 @@ $$('[data-reader-progress]').forEach((bar) => {
     const pct = Math.round(ratio * 1000) / 10;
     if (pct === last) return;
     last = pct;
-    bar.style.setProperty('--mo-read', String(ratio.toFixed(4)));
     if (fill) fill.style.transform = 'scaleX(' + ratio.toFixed(4) + ')';
     bar.classList.toggle('is-shown', rect.top < innerHeight * 0.5 && rect.bottom > 0);
     if (live) live.setAttribute('aria-valuenow', String(Math.round(pct)));

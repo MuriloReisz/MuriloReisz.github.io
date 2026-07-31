@@ -30,8 +30,10 @@ export interface Cert {
 }
 
 export interface StatItem {
-  value: string;
-  count?: number;
+  /** Always numeric here, so the display string is derived, not stored.
+      (Contrast `Finding` in projects.ts, whose `value` is free-form text and
+      already contains its own prefix/suffix.) */
+  count: number;
   prefix?: string;
   suffix?: string;
   label: string;
@@ -175,10 +177,10 @@ export const certs: Cert[] = [
 // ------------------------------------------------------------
 
 export const stats: StatItem[] = [
-  { value: '42', count: 42, suffix: '+', label: 'Data projects delivered' },
-  { value: '1,900', count: 1900, suffix: ' hrs', label: 'Manual work automated each year' },
-  { value: '12', count: 12, suffix: ' TB', label: 'Transactional data modelled' },
-  { value: '5', count: 5, label: 'Languages spoken' },
+  { count: 42, suffix: '+', label: 'Data projects delivered' },
+  { count: 1900, suffix: ' hrs', label: 'Manual work automated each year' },
+  { count: 12, suffix: ' TB', label: 'Transactional data modelled' },
+  { count: 5, label: 'Languages spoken' },
 ];
 
 // ------------------------------------------------------------

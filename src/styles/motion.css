@@ -7,24 +7,8 @@
                       state is only hidden when JS is actually live.
    • html.mo-reduced  set when prefers-reduced-motion is on.
    • .mo-in           added to a host when its enter effect fires.
-   • --i / --mo-n     child index / child count, for stagger maths.
+   • --i              child index, for stagger delays.
    ============================================================ */
-
-/* ---------- Screen-reader-only copy of animated text ---------- */
-/* Clip technique, not display:none — the text must stay readable
-   to assistive tech while the visual node is aria-hidden. */
-.mo-sr {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
 
 /* ============================================================
    WORD REVEAL — [data-reveal-words]
@@ -79,12 +63,13 @@ html.mo-js .mo-chars-host.mo-in .mo-char { opacity: 1; transform: none; }
 
 /* ============================================================
    BARS — [data-bar-to]; JS writes the fill width
-   --mo-bar-p = 0..1 progress, exposed for derived effects
    ============================================================ */
 .mo-bar {
   position: relative;
   width: 100%;
-  height: 8px;
+  /* --mo-bar-h lets a consumer (e.g. the skills meter) change the height
+     without restating the whole block. */
+  height: var(--mo-bar-h, 8px);
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-ink) 9%, transparent);
   overflow: hidden;
@@ -94,13 +79,15 @@ html.mo-js .mo-chars-host.mo-in .mo-char { opacity: 1; transform: none; }
   position: relative;
   display: block;
   height: 100%;
-  width: 0;
+  width: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg,
     color-mix(in srgb, var(--color-primary) 70%, transparent),
     var(--color-primary));
   transition: width 1.05s var(--reveal-ease);
 }
+/* Collapse it only when motion.ts is live to grow it again. */
+html.mo-js .mo-bar__fill { width: 0; }
 /* A faint sheen that runs once, as the bar fills. */
 .mo-bar.mo-in .mo-bar__fill::after {
   content: "";
@@ -113,8 +100,8 @@ html.mo-js .mo-chars-host.mo-in .mo-char { opacity: 1; transform: none; }
 
 /* ============================================================
    PROGRESS RINGS — [data-progress-ring]
-   JS injects .mo-ring__svg (track + bar circles) and sets
-   --mo-ring-c (circumference) and --mo-ring-p (0..1).
+   JS injects .mo-ring__svg (track + bar circles) and drives the
+   bar's stroke-dashoffset directly.
    ============================================================ */
 .mo-ring {
   position: relative;
@@ -139,16 +126,6 @@ html.mo-js .mo-chars-host.mo-in .mo-char { opacity: 1; transform: none; }
   color: var(--color-ink);
   font-variant-numeric: tabular-nums;
 }
-
-/* ============================================================
-   INDEX-STAGGERED GRIDS — [data-count-grid]
-   ============================================================ */
-html.mo-js .mo-grid:not(.mo-in) .mo-grid__item { opacity: 0; transform: translateY(18px); }
-html.mo-js .mo-grid .mo-grid__item {
-  transition: opacity 0.55s var(--reveal-ease), transform 0.55s var(--reveal-ease);
-  transition-delay: calc(var(--i, 0) * 65ms);
-}
-html.mo-js .mo-grid.mo-in .mo-grid__item { opacity: 1; transform: none; }
 
 /* ============================================================
    PARALLAX + SCROLL-SCALE — transform-only, written each frame
@@ -226,7 +203,7 @@ html.mo-js .mo-grid.mo-in .mo-grid__item { opacity: 1; transform: none; }
 
 /* ============================================================
    TYPING — [data-typing]
-   .mo-typing > .mo-typing__text + .mo-typing__caret + .mo-sr
+   .mo-typing > .mo-typing__text + .mo-typing__caret + .u-sr
    ============================================================ */
 .mo-typing { display: inline-flex; align-items: baseline; gap: 2px; }
 .mo-typing__text { white-space: pre; }
@@ -358,9 +335,7 @@ html.mo-js .mo-grid.mo-in .mo-grid__item { opacity: 1; transform: none; }
   html.mo-js .mo-words .mo-word__i,
   html.mo-js .mo-words:not(.mo-in) .mo-word__i,
   html.mo-js .mo-chars-host .mo-char,
-  html.mo-js .mo-chars-host:not(.mo-in) .mo-char,
-  html.mo-js .mo-grid .mo-grid__item,
-  html.mo-js .mo-grid:not(.mo-in) .mo-grid__item {
+  html.mo-js .mo-chars-host:not(.mo-in) .mo-char {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;

@@ -59,9 +59,10 @@ const fullLinkClass = onDark
         <div class="finding">
           <span
             class="finding__n"
-            data-count={f.count !== undefined ? String(f.count) : undefined}
-            data-prefix={f.prefix}
-            data-suffix={f.suffix}
+            data-counter-to={f.count !== undefined ? String(f.count) : undefined}
+            data-counter-prefix={f.prefix}
+            data-counter-suffix={f.suffix}
+            data-counter-dec={f.count !== undefined && !Number.isInteger(f.count) ? '2' : '0'}
           >{f.value}</span>
           <span class="finding__t">{f.label}</span>
         </div>

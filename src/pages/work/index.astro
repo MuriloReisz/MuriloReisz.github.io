@@ -33,7 +33,7 @@ const orgCount = new Set(projects.map((p) => p.org)).size;
   <section class="tile tile--white pc-hero" id="portfolio-top">
     <div class="inner" data-stagger>
       <div class="eyebrow reveal">Portfolio</div>
-      <h1 class="metrics__h2 pc-hero__h1 reveal" data-reveal-words>
+      <h1 class="metrics__h2 pc-hero__h1" data-reveal-words>
         Every project, written up end to end.
       </h1>
       <p class="hero__sub reveal">
@@ -80,7 +80,7 @@ const orgCount = new Set(projects.map((p) => p.org)).size;
       <div class="pc-toolbar">
         <div class="pc-toolbar__row pc-toolbar__row--find">
           <div class="pc-search">
-            <label class="pc-search__label" for="pc-search">Search projects</label>
+            <label class="u-sr" for="pc-search">Search projects</label>
             <div class="pc-search__field">
               <svg
                 class="pc-search__icon"

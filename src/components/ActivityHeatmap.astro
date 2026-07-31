@@ -67,7 +67,7 @@ const levels = [0, 1, 2, 3, 4];
     <figure class="hm-heat__fig reveal">
       <div class="hm-heat__rail mo-hscroll" role="group" aria-label="Commit activity, 52 weeks">
         <table class="hm-heat__grid">
-          <caption class="hm-sr">
+          <caption class="u-sr">
             Daily commit counts by weekday and week, {rangeText}. {totalText} commits in total.
           </caption>
           <thead>
@@ -84,7 +84,7 @@ const levels = [0, 1, 2, 3, 4];
             {rows.map((cells, day) => (
               <tr class="hm-heat__row">
                 <th class="hm-heat__dayhead" scope="row">
-                  <span class={day % 2 === 0 ? 'hm-heat__daylabel' : 'hm-sr'}>{DAY_SHORT[day]}</span>
+                  <span class={day % 2 === 0 ? 'hm-heat__daylabel' : 'u-sr'}>{DAY_SHORT[day]}</span>
                 </th>
                 {cells.map((c) => (
                   <td class="hm-heat__td">

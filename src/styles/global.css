@@ -2823,6 +2823,8 @@
   .filter-pill:active { transform: scale(0.95); }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
   .work.just-shown { animation: fadeUp 0.45s var(--reveal-ease); }
+  /* The tool filter in site.ts toggles this; without a rule the chips were inert. */
+  .work--hidden { display: none; }
 
   /* subtle pointer tilt on project shots (enabled via JS on fine pointers) */
   .tilt { transition: transform 0.25s var(--reveal-ease); transform-style: preserve-3d; }
@@ -2878,28 +2880,10 @@
      Theme-aware via the same tokens; z-index 550 sits above the
      nav/modal but below the ⌘K palette (600) so search still works.
      ============================================================ */
-  .reader-scrim {
-    position: fixed; inset: 0; z-index: 550;
-    background: var(--color-canvas);
-    opacity: 0; visibility: hidden;
-    transition: opacity 0.4s var(--reveal-ease), visibility 0s linear 0.4s;
-  }
-  .reader-scrim.is-open { opacity: 1; visibility: visible; transition: opacity 0.4s var(--reveal-ease), visibility 0s linear 0s; }
-
-  /* the scroll container itself */
-  .reader {
-    position: absolute; inset: 0;
-    overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
-    background: var(--color-canvas); color: var(--color-ink);
-    transform: translateY(26px) scale(0.99);
-    transition: transform 0.45s var(--reveal-ease);
-    overscroll-behavior: contain;
-  }
-  .reader-scrim.is-open .reader { transform: none; }
-
   /* sticky frosted bar (mirrors the site navbar) */
   .reader__bar {
-    position: sticky; top: 0; z-index: 3;
+    /* Sits under the 56px sticky navbar (z-index 100), not over it. */
+    position: sticky; top: 56px; z-index: 20;
     display: flex; align-items: center; gap: 12px;
     height: 56px;
     padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
@@ -3173,6 +3157,25 @@
   }
 
   /* ============================================================
+     VISUALLY HIDDEN — readable by assistive tech, invisible on screen.
+     Clip technique, not display:none, which would remove it from the
+     a11y tree. Used for chart data tables, animated-text alternatives,
+     decorative-marquee equivalents and redundant form labels.
+     ============================================================ */
+  .u-sr {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* ============================================================
      SKIP LINK — first tab stop on every page (WCAG 2.4.1)
      ============================================================ */
   .skip-link {
@@ -3214,8 +3217,8 @@
     transition: opacity 0.28s var(--reveal-ease), transform 0.28s var(--reveal-ease),
                 visibility 0s linear 0.28s, color 0.2s ease, border-color 0.2s ease;
   }
-  /* Accept whichever "on" class the motion module uses, so the two stay decoupled */
-  .totop.is-shown, .totop.is-visible, .totop.is-in {
+  /* motion2.ts toggles .is-shown past ~600px */
+  .totop.is-shown {
     opacity: 1; visibility: visible; pointer-events: auto; transform: none;
     transition: opacity 0.28s var(--reveal-ease), transform 0.28s var(--reveal-ease),
                 visibility 0s linear 0s, color 0.2s ease, border-color 0.2s ease;
@@ -3252,7 +3255,6 @@
     .cs-liveband { padding: 18px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .reader, .reader-scrim.is-open .reader { transform: none !important; transition: none !important; }
     html.js .cs-reveal { opacity: 1 !important; transform: none !important; }
     .reader__iconbtn:active, .reader__back:active { transform: none !important; }
   }

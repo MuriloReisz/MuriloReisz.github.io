@@ -1,0 +1,111 @@
+---
+// ---------------------------------------------------------------------------
+// RoiCalculator — the automation ROI model, used on /playground and /services.
+//
+// Wired to [data-roi-calc] in src/scripts/demos.ts, which normalises each
+// range input's min/max/step/value, so this markup only declares intent.
+// The output half was previously duplicated verbatim across both pages.
+//
+// Callers pick fields with `keys` (order is preserved) and can override a
+// label or hint per page via `overrides`.
+// ---------------------------------------------------------------------------
+export interface RoiField {
+  key: string;
+  label: string;
+  hint?: string;
+}
+
+/** Canonical copy. Kept here so the two pages cannot drift apart. */
+const FIELDS: Record<string, RoiField> = {
+  hours: { key: 'hours', label: 'Hours each person loses to manual reporting', hint: 'per week' },
+  people: { key: 'people', label: 'People doing that work' },
+  weeks: { key: 'weeks', label: 'Working weeks per year' },
+  rate: { key: 'rate', label: 'Fully loaded hourly cost', hint: 'salary plus overhead' },
+  share: {
+    key: 'share',
+    label: 'Share of the work automation removes',
+    hint: 'be conservative — I would rather under-promise',
+  },
+  invest: { key: 'invest', label: 'One-off build cost' },
+};
+
+interface Props {
+  /** Namespaces the input ids so two calculators can share a page. */
+  idPrefix: string;
+  /** Which fields to show, in order. Defaults to all six. */
+  keys?: string[];
+  /** Per-page label/hint tweaks, keyed by field key. */
+  overrides?: Record<string, Partial<RoiField>>;
+}
+
+const {
+  idPrefix,
+  keys = ['hours', 'people', 'weeks', 'rate', 'share', 'invest'],
+  overrides = {},
+} = Astro.props;
+
+const fields: RoiField[] = keys
+  .filter((k) => FIELDS[k])
+  .map((k) => ({ ...FIELDS[k], ...overrides[k] }));
+
+/* Any field left out simply falls back to demos.ts's own default
+   (e.g. omitting `weeks` keeps its 46-week assumption). */
+const outs = [
+  { key: 'baseline', label: 'Time spent today' },
+  { key: 'cost', label: 'Cost of that time' },
+  { key: 'monthly', label: 'Saving per month' },
+  { key: 'days', label: 'In working days' },
+];
+---
+
+<div class="pg-panel reveal" data-roi-calc>
+  <div class="pg-panel__controls">
+    {
+      fields.map((f) => (
+        <div class="ix-field">
+          <div class="ix-field__top">
+            <label class="ix-field__label" for={`${idPrefix}-${f.key}`}>{f.label}</label>
+            <output class="ix-field__val" data-roi-val={f.key} for={`${idPrefix}-${f.key}`} />
+          </div>
+          <input class="ix-range" id={`${idPrefix}-${f.key}`} type="range" data-roi-in={f.key} />
+          {f.hint && <p class="ix-field__hint" set:html={f.hint} />}
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="pg-panel__results">
+    <div class="pg-result pg-result--hero">
+      <div class="ix-out">
+        <span class="ix-out__v ix-out__v--accent" data-roi-out="annual">&mdash;</span>
+        <span class="ix-out__l">given back per year</span>
+      </div>
+    </div>
+    <div class="pg-result__row">
+      <div class="ix-out">
+        <span class="ix-out__v" data-roi-out="hoursword">&mdash;</span>
+        <span class="ix-out__l">returned to the team</span>
+      </div>
+      <div class="ix-out">
+        <span class="ix-out__v" data-roi-out="payback">&mdash;</span>
+        <span class="ix-out__l">to pay back the build</span>
+      </div>
+    </div>
+    <dl class="pg-result__facts">
+      {
+        outs.map((o) => (
+          <div class="pg-fact">
+            <dt class="pg-fact__k">{o.label}</dt>
+            <dd class="pg-fact__v" data-roi-out={o.key}>&mdash;</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <div class="pg-formula">
+      <p class="pg-formula__k">The arithmetic</p>
+      <p class="pg-formula__v" data-roi-out="formula">&mdash;</p>
+      <p class="pg-formula__v pg-formula__v--sub" data-roi-out="paybackformula">&mdash;</p>
+    </div>
+    <p class="ix-status" data-roi-status></p>
+  </div>
+</div>

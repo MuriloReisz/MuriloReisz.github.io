@@ -14,26 +14,17 @@
 //     the scroll pipeline never runs.
 // ============================================================
 
-const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s);
-const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) =>
-  Array.from(r.querySelectorAll<T>(s));
+import { $, $$, clamp, clamp01, num, prefersReduced, onMotionChange } from './dom';
 
 const html = document.documentElement;
-const motionMQ = matchMedia('(prefers-reduced-motion: reduce)');
-let reduced = motionMQ.matches;
+let reduced = prefersReduced();
 
 /* Lets motion.css hide pre-reveal state only when this module is live. */
 html.classList.add('mo-js');
 if (reduced) html.classList.add('mo-reduced');
 
 const IN = 'mo-in';
-const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
-const clamp01 = (v: number) => clamp(v, 0, 1);
 const easeOut = (p: number) => 1 - Math.pow(1 - p, 3);
-const num = (v: string | null, fallback: number) => {
-  const n = parseFloat(v ?? '');
-  return Number.isFinite(n) ? n : fallback;
-};
 
 /** Layout position in the document, immune to transforms (unlike getBoundingClientRect). */
 function docTop(el: HTMLElement): number {
@@ -162,12 +153,9 @@ $$('[data-parallax]').forEach((el) => {
       y = clamp((vh / 2 - centre) * speed, -max, max);
     },
     paint() {
-      const v = y.toFixed(2) + 'px';
-      el.style.setProperty('--mo-py', v);
-      el.style.translate = '0 ' + v;
+      el.style.translate = '0 ' + y.toFixed(2) + 'px';
     },
     reset() {
-      el.style.removeProperty('--mo-py');
       el.style.translate = '';
     },
   });
@@ -188,12 +176,9 @@ $$('[data-scroll-scale]').forEach((el) => {
       s = from + (1 - from) * easeOut(clamp01((vh - rectTop) / (vh * 0.62)));
     },
     paint() {
-      const v = s.toFixed(4);
-      el.style.setProperty('--mo-scale', v);
-      el.style.scale = v;
+      el.style.scale = s.toFixed(4);
     },
     reset() {
-      el.style.removeProperty('--mo-scale');
       el.style.scale = '';
     },
   });
@@ -205,7 +190,6 @@ $$('[data-sticky-stack]').forEach((stack) => {
   if (!cards.length) return;
   const shrink = clamp(num(stack.getAttribute('data-sticky-scale'), 0.055), 0, 0.3);
   stack.classList.add('mo-stack');
-  stack.style.setProperty('--mo-n', String(cards.length));
   cards.forEach((c, i) => {
     c.classList.add('mo-stack__card');
     c.style.setProperty('--i', String(i));
@@ -234,13 +218,11 @@ $$('[data-sticky-stack]').forEach((stack) => {
     paint() {
       cards.forEach((c, i) => {
         const p = ps[i]!;
-        c.style.setProperty('--mo-stack-p', p.toFixed(3));
         c.style.scale = (1 - p * shrink).toFixed(4);
       });
     },
     reset() {
       cards.forEach((c) => {
-        c.style.removeProperty('--mo-stack-p');
         c.style.scale = '';
       });
     },
@@ -279,7 +261,6 @@ function splitWords(host: HTMLElement) {
     }
     t.parentNode?.replaceChild(frag, t);
   }
-  host.style.setProperty('--mo-n', String(i));
 }
 $$('[data-reveal-words]').forEach((host) => {
   host.classList.add('mo-words');
@@ -300,7 +281,7 @@ function splitChars(host: HTMLElement) {
   host.dataset.moSplit = 'chars';
   host.textContent = '';
   const sr = document.createElement('span'); // the accessible copy
-  sr.className = 'mo-sr';
+  sr.className = 'u-sr';
   sr.textContent = text;
   const wrap = document.createElement('span');
   wrap.className = 'mo-chars';
@@ -316,7 +297,6 @@ function splitChars(host: HTMLElement) {
     s.textContent = ch;
     wrap.appendChild(s);
   });
-  host.style.setProperty('--mo-n', String(text.length));
   host.append(sr, wrap);
 }
 $$('[data-reveal-chars]').forEach((host) => {
@@ -380,7 +360,6 @@ $$('[data-bar-to]').forEach((host) => {
   const paint = (p: number) => {
     const v = to * p;
     fill.style.width = v.toFixed(2) + '%';
-    host.style.setProperty('--mo-bar-p', (v / 100).toFixed(4));
   };
   paint(0);
   onEnter(
@@ -428,13 +407,11 @@ $$('[data-progress-ring]').forEach((host) => {
   }
 
   const circ = 2 * Math.PI * RING_R;
-  host.style.setProperty('--mo-ring-c', circ.toFixed(2));
   bar.style.strokeDasharray = circ.toFixed(2);
   const ring = bar;
   const paint = (p: number) => {
     const v = val * p;
     ring.style.strokeDashoffset = (circ * (1 - v / 100)).toFixed(2);
-    host.style.setProperty('--mo-ring-p', (v / 100).toFixed(4));
     if (out) out.textContent = Math.round(v) + suffix;
   };
   paint(0);
@@ -451,23 +428,9 @@ $$('[data-progress-ring]').forEach((host) => {
   );
 });
 
-/* ---------- Index stagger — [data-count-grid] ---------- */
-$$('[data-count-grid]').forEach((host) => {
-  const kids = Array.from(host.children) as HTMLElement[];
-  if (!kids.length) return;
-  host.classList.add('mo-grid');
-  host.style.setProperty('--mo-n', String(kids.length));
-  kids.forEach((k, i) => {
-    k.classList.add('mo-grid__item');
-    k.style.setProperty('--i', String(i));
-  });
-  const show = () => host.classList.add(IN);
-  onEnter(host, show, show);
-});
-
 /* ---------- Honour a live change of the motion preference ---------- */
-motionMQ.addEventListener('change', (e) => {
-  reduced = e.matches;
+onMotionChange((isReduced) => {
+  reduced = isReduced;
   html.classList.toggle('mo-reduced', reduced);
   if (!reduced) {
     remeasure();

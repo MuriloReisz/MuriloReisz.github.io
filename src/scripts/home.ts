@@ -7,9 +7,7 @@
 //  group is server-rendered, and every cell carries an aria-label.
 // ============================================================
 
-const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s);
-const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) =>
-  Array.from(r.querySelectorAll<T>(s));
+import { $, $$ } from './dom';
 
 /* ---------- Skills group switcher ---------- */
 const skillBtns = $$<HTMLButtonElement>('[data-skill-filter]');

@@ -1,11 +1,9 @@
 // ============================================================
 //  Client interactions (framework-free). Bundled by Astro.
 // ============================================================
-import { projects } from '../data/projects';
+import { $, $$, debounce, prefersReduced } from './dom';
 
 const root = document.documentElement;
-const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s);
-const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => Array.from(r.querySelectorAll<T>(s));
 
 /* ---------- Theme toggle ---------- */
 function applyTheme(t: string) {
@@ -20,13 +18,29 @@ $('#themeToggle')?.addEventListener('click', () => {
 /* ---------- Scroll progress ---------- */
 const progress = $('#scrollProgress');
 if (progress) {
-  const onScroll = () => {
+  /* scrollHeight/clientHeight are layout reads that only change on resize, so
+     cache them; paint with scaleX (compositor) rather than width (layout), and
+     coalesce to one write per frame. */
+  let max = 0;
+  let queued = false;
+  const measure = () => {
     const h = document.documentElement;
-    const max = h.scrollHeight - h.clientHeight;
-    progress.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    max = h.scrollHeight - h.clientHeight;
   };
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  const paint = () => {
+    queued = false;
+    const p = max > 0 ? document.documentElement.scrollTop / max : 0;
+    progress.style.transform = `scaleX(${p.toFixed(4)})`;
+  };
+  const schedule = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(paint);
+  };
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', debounce(() => { measure(); paint(); }, 140), { passive: true });
+  measure();
+  paint();
 }
 
 /* ---------- Nav: mega-menus (hover + focus, with intent delay) ---------- */
@@ -83,23 +97,8 @@ addEventListener('scroll', () => {
 }, { passive: true });
 
 /* ---------- Reveal on scroll + count-up ---------- */
-const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-function countUp(el: HTMLElement) {
-  const target = parseFloat(el.getAttribute('data-count') || '0');
-  const prefix = el.getAttribute('data-prefix') || '';
-  const suffix = el.getAttribute('data-suffix') || '';
-  const decimals = (el.getAttribute('data-count') || '').includes('.') ? 1 : 0;
-  if (prefersReduced) { el.textContent = prefix + target.toFixed(decimals) + suffix; return; }
-  const dur = 1100; const start = performance.now();
-  const step = (now: number) => {
-    const p = Math.min(1, (now - start) / dur);
-    const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = prefix + (target * eased).toFixed(decimals) + suffix;
-    if (p < 1) requestAnimationFrame(step);
-    else el.textContent = prefix + target.toFixed(decimals) + suffix;
-  };
-  requestAnimationFrame(step);
-}
+/* Count-ups live in motion.ts under [data-counter-to] — one implementation, with
+   decimals, locale grouping and a shared tween ticker. */
 const io = new IntersectionObserver((entries) => {
   entries.forEach((e) => {
     if (!e.isIntersecting) return;
@@ -107,13 +106,11 @@ const io = new IntersectionObserver((entries) => {
     // CSS uses .reveal/.sreveal/.fw__row -> .is-visible, and fw/exp micro-elements -> .is-in.
     // Adding both is harmless (each rule only reacts to the class defined for that element).
     el.classList.add('is-visible', 'is-in');
-    $$('[data-count]', el).forEach((n) => { if (!n.dataset.done) { n.dataset.done = '1'; countUp(n); } });
-    if (el.matches('[data-count]') && !el.dataset.done) { el.dataset.done = '1'; countUp(el); }
     io.unobserve(el);
   });
 }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
 // Note: fw__line/msg/pipe/success are driven by the mock sequencer below, NOT this observer.
-const REVEAL_SEL = '.reveal, .sreveal, [data-stagger] > *, [data-count], .fw__row, .exp__more .exp__item';
+const REVEAL_SEL = '.reveal, .sreveal, [data-stagger] > *, .fw__row, .exp__more .exp__item';
 $$(REVEAL_SEL).forEach((el) => io.observe(el));
 
 /* ---------- "Learn more" accordions on the AI-services plan cards ---------- */
@@ -137,7 +134,7 @@ $$('[data-mock]').forEach((mock) => {
   const feed = $<HTMLElement>('[data-feed]', mock);
   if (!steps.length) return;
 
-  if (prefersReduced) {
+  if (prefersReduced()) {
     if (kind === 'voice') { steps[steps.length - 1].classList.add('is-in'); success?.classList.add('is-in'); }
     else { steps.forEach((s) => { s.classList.add('is-in'); if (kind === 'flow') s.classList.add('is-done'); }); }
     return;
@@ -171,7 +168,6 @@ $$('[data-mock]').forEach((mock) => {
   }, { threshold: 0.3 });
   mockIO.observe(mock);
 });
-
 
 /* ---------- Portfolio tool filter ---------- */
 const filterBtns = $$<HTMLButtonElement>('.toolfilter [data-filter]');
@@ -233,15 +229,23 @@ $$('.cmp, table').forEach((table) => {
 $$('.tl__rail').forEach((rail) => {
   const fill = $<HTMLElement>('.tl__fill', rail) || $<HTMLElement>('.tl__fill', rail.parentElement || document);
   if (!fill) return;
-  const update = () => {
+  let queued = false;
+  const paint = () => {
+    queued = false;
     const r = rail.getBoundingClientRect();
-    const vh = innerHeight;
-    const p = Math.max(0, Math.min(1, (vh * 0.55 - r.top) / (r.height || 1)));
-    fill.style.height = (p * 100) + '%';
+    const p = Math.max(0, Math.min(1, (innerHeight * 0.55 - r.top) / (r.height || 1)));
+    /* scaleY, not height: the rule sets transform-origin/scaleY(0) and
+       will-change: transform, so writing height left it scaled to nothing. */
+    fill.style.transform = `scaleY(${p.toFixed(4)})`;
   };
-  addEventListener('scroll', update, { passive: true });
-  addEventListener('resize', update);
-  update();
+  const schedule = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(paint);
+  };
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', debounce(paint, 140), { passive: true });
+  paint();
 });
 
 /* ---------- Contact form (client validation + status) ---------- */
@@ -290,7 +294,23 @@ legal?.addEventListener('click', (e) => { if (e.target === legal) legal.classLis
 const cmdk = $('#cmdk');
 const cmdkInput = $<HTMLInputElement>('#cmdkInput');
 const cmdkList = $('#cmdkList');
-const INDEX = [
+
+/* Case-study entries are projected at build time into a JSON tag by
+   Layout.astro. Importing src/data/projects.ts here instead would ship all
+   nine full project objects — case-study prose, galleries, FAQs, ~46 KB — to
+   every page, to build an index that needs five short fields. */
+type CmdkEntry = { label: string; href: string; kw: string };
+function projectEntries(): CmdkEntry[] {
+  const tag = $('#cmdkProjects');
+  if (!tag?.textContent) return [];
+  try {
+    return JSON.parse(tag.textContent) as CmdkEntry[];
+  } catch {
+    return [];
+  }
+}
+
+const INDEX: CmdkEntry[] = [
   { label: 'Home', href: '/', kw: 'top hero start' },
   { label: 'About', href: '/#about', kw: 'bio who' },
   { label: 'Portfolio — all projects', href: '/work', kw: 'projects work case study grid' },
@@ -301,12 +321,7 @@ const INDEX = [
   { label: 'AI services', href: '/ai-services', kw: 'automation assessment' },
   { label: 'Analytics services', href: '/services', kw: 'dashboards forecasts' },
   { label: 'Meetup', href: '/meetup', kw: 'community event' },
-  // Every case study is searchable by title, tools and client.
-  ...projects.map((p) => ({
-    label: p.title,
-    href: `/work/${p.slug}`,
-    kw: `case study project ${p.org} ${p.tags.join(' ')} ${p.eyebrow}`.toLowerCase(),
-  })),
+  ...projectEntries(),
 ];
 let cmdkActive = 0;
 function renderCmdk(q: string) {
@@ -340,7 +355,7 @@ addEventListener('keydown', (e) => {
 
 /* ---------- Hero constellation (animated tech background) ---------- */
 const heroNet = document.getElementById('heroNet') as HTMLCanvasElement | null;
-if (heroNet && !prefersReduced && heroNet.getContext) {
+if (heroNet && !prefersReduced() && heroNet.getContext) {
   const ctx = heroNet.getContext('2d')!;
   const host = (heroNet.closest('.hero-host') as HTMLElement) || (heroNet.parentElement as HTMLElement);
   const dpr = Math.min(2, window.devicePixelRatio || 1);

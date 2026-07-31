@@ -93,9 +93,10 @@ const stats = project.findings.slice(0, 3);
               {f.count !== undefined ? (
                 <span
                   class="pc-stat__n"
-                  data-count={String(f.count)}
-                  data-prefix={f.prefix}
-                  data-suffix={f.suffix}
+                  data-counter-to={String(f.count)}
+                  data-counter-prefix={f.prefix}
+                  data-counter-suffix={f.suffix}
+                  data-counter-dec={Number.isInteger(f.count) ? '0' : '2'}
                 >
                   {f.value}
                 </span>

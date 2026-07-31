@@ -16,17 +16,13 @@
 //  [data-counter-to]. This file owns the attributes listed above.
 // ============================================================
 
-const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s);
-const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) =>
-  Array.from(r.querySelectorAll<T>(s));
+import { $, $$, clamp, decN, prefersReduced, onMotionChange } from './dom';
 
-const motionMQ = matchMedia('(prefers-reduced-motion: reduce)');
-let reduced = motionMQ.matches;
-motionMQ.addEventListener('change', () => {
-  reduced = motionMQ.matches;
+let reduced = prefersReduced();
+onMotionChange((isReduced) => {
+  reduced = isReduced;
 });
 
-const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
 const RAMP = ['--c1', '--c2', '--c3', '--c4', '--c5', '--c6'];
 const rampVar = (i: number) => `var(${RAMP[i % RAMP.length]})`;
 
@@ -46,7 +42,7 @@ function announce(msg: string) {
   if (!liveEl) {
     liveEl = document.createElement('div');
     liveEl.id = 'ixStatus';
-    liveEl.className = 'ix-sr';
+    liveEl.className = 'u-sr';
     liveEl.setAttribute('role', 'status');
     liveEl.setAttribute('aria-live', 'polite');
     document.body.appendChild(liveEl);
@@ -81,15 +77,12 @@ type Datum = { label: string; value: number; color?: string; note?: string };
 const charts = $$('[data-chart]');
 
 if (charts.length) {
-  /* -- number formatting -------------------------------------------------- */
-  const nf = (dec: number) =>
-    new Intl.NumberFormat('en-IE', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-
+  /* -- number formatting (decN caches per decimal count) ------------------ */
   function makeFmt(host: HTMLElement) {
     const pre = host.dataset.chartPrefix ?? '';
     const suf = host.dataset.chartSuffix ?? '';
     const dec = Math.max(0, Math.min(4, Number(host.dataset.chartDec ?? '0') || 0));
-    const f = nf(dec);
+    const f = decN(dec);
     return (v: number) => pre + f.format(v) + suf;
   }
 
@@ -193,7 +186,7 @@ if (charts.length) {
   /* -- accessible fallback ------------------------------------------------ */
   function buildTable(host: HTMLElement, data: Datum[], title: string, fmt: (v: number) => string) {
     const wrap = document.createElement('div');
-    wrap.className = 'ix-sr';
+    wrap.className = 'u-sr';
     const t = document.createElement('table');
     t.className = 'ix-chart__table';
     const cap = document.createElement('caption');
@@ -713,7 +706,7 @@ if (copyBtns.length) {
     try {
       const ta = document.createElement('textarea');
       ta.value = text;
-      ta.className = 'ix-sr';
+      ta.className = 'u-sr';
       ta.setAttribute('aria-hidden', 'true');
       document.body.appendChild(ta);
       ta.select();
@@ -1015,9 +1008,9 @@ if (collControls.length && $('[data-filter-item]')) {
       const targets = [box, coll.scope instanceof HTMLElement ? coll.scope : null].filter(
         (t): t is HTMLElement => !!t
       );
+      /* One state channel: data-view. It doubles as the authored default,
+         which is read back below when restoring. */
       targets.forEach((t) => {
-        t.classList.remove('ix-view--grid', 'ix-view--list');
-        t.classList.add(`ix-view--${view}`);
         t.dataset.view = view;
       });
       viewBtns.forEach((b) => {

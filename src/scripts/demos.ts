@@ -21,34 +21,17 @@
 //     binder fills in sane defaults so a demo can never render dead.
 // ============================================================
 
-const $ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s);
-const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document) =>
-  Array.from(r.querySelectorAll<T>(s));
-
-const motionMQ = matchMedia('(prefers-reduced-motion: reduce)');
-const prefersReduced = () => motionMQ.matches;
-
-const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
-const clamp01 = (v: number) => clamp(v, 0, 1);
-const num = (v: string | null | undefined, fallback: number) => {
-  const n = parseFloat(v ?? '');
-  return Number.isFinite(n) ? n : fallback;
-};
+import { $, $$, clamp, clamp01, num, debounce, prefersReduced, int0, dec1, dec2, eur0, eur2 } from './dom';
 
 /* ---------- Formatting (en-IE, € — see house rules) ---------- */
-const eur0 = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-const eur2 = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2 });
-const int0 = new Intl.NumberFormat('en-IE', { maximumFractionDigits: 0 });
-const dec1 = new Intl.NumberFormat('en-IE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const money = (v: number) => (Math.abs(v) < 10 && v !== 0 ? eur2 : eur0).format(v);
 const EM_DASH = '—';
 
 /* ---------- Field binding ------------------------------------
    Maps the real range inputs inside a demo onto named fields.
-   Identity is read from data-<ns>-in, then name, then id; if the
-   markup names nothing recognisable we fall back to DOM order, so
-   the demo still works. Missing min/max/step/value/aria-label are
-   filled from the field spec.
+   Every range input in the codebase declares its own key in
+   data-<ns>-in, so identity is a direct attribute read. Missing
+   min/max/step/value/aria-label are filled from the field spec.
 ------------------------------------------------------------- */
 type Field = {
   key: string;
@@ -57,45 +40,19 @@ type Field = {
   max: number;
   step: number;
   def: number;
-  /** Higher wins when two fields could claim the same input. */
-  spec?: number;
   /** Human-readable value, also used for aria-valuetext. */
   fmt?: (v: number) => string;
 };
 
-const ident = (el: Element, attr: string) =>
-  (el.getAttribute(attr) || el.getAttribute('name') || el.id || '')
-    .toLowerCase()
-    .replace(/[^a-z]/g, '');
-
-function bindFields(
-  root: HTMLElement,
-  attr: string,
-  fields: Field[],
-  keyOf: (id: string) => string | null
-): Map<string, HTMLInputElement> {
-  const inputs = $$<HTMLInputElement>('input[type="range"]', root);
+function bindFields(root: HTMLElement, attr: string, fields: Field[]): Map<string, HTMLInputElement> {
   const map = new Map<string, HTMLInputElement>();
-  const claimed = new Set<HTMLInputElement>();
-
-  // Pass 1 — explicit / recognisable names, most specific field first.
-  [...fields]
-    .sort((a, b) => (b.spec ?? 0) - (a.spec ?? 0))
-    .forEach((f) => {
-      const hit = inputs.find((i) => !claimed.has(i) && keyOf(ident(i, attr)) === f.key);
-      if (hit) {
-        claimed.add(hit);
-        map.set(f.key, hit);
-      }
-    });
-
-  // Pass 2 — anything left over, in the order the fields were declared.
-  const spare = inputs.filter((i) => !claimed.has(i));
-  fields.forEach((f) => {
-    if (!map.has(f.key) && spare.length) map.set(f.key, spare.shift()!);
+  $$<HTMLInputElement>(`input[type="range"][${attr}]`, root).forEach((i) => {
+    const key = (i.getAttribute(attr) || '').trim();
+    if (key && !map.has(key)) map.set(key, i);
   });
 
-  // Normalise the control so it is usable and announced properly.
+  // Normalise each control so it is usable and announced properly. A field with
+  // no input simply keeps its default (e.g. /services omits `weeks`).
   fields.forEach((f) => {
     const i = map.get(f.key);
     if (!i) return;
@@ -148,22 +105,13 @@ function statusRegion(root: HTMLElement, attr: string): HTMLElement {
   let el = $<HTMLElement>(`[${attr}]`, root);
   if (!el) {
     el = document.createElement('p');
-    el.className = 'ix-sr';
+    el.className = 'u-sr';
     el.setAttribute(attr, '');
     root.appendChild(el);
   }
   el.setAttribute('role', 'status');
   el.setAttribute('aria-live', 'polite');
   return el;
-}
-
-/** Coalesces chatty slider input into one announcement. */
-function debounce(fn: () => void, ms = 500) {
-  let t = 0;
-  return () => {
-    clearTimeout(t);
-    t = window.setTimeout(fn, ms);
-  };
 }
 
 /** Per-demo init that cannot take the rest of the module down with it. */
@@ -196,33 +144,23 @@ function pick(sel: string | null): HTMLElement | null {
    ============================================================ */
 const ROI_FIELDS: Field[] = [
   { key: 'hours', label: 'Hours each person spends on manual reporting per week', min: 1, max: 30, step: 0.5, def: 6, fmt: (v) => `${dec1.format(v)} h/week` },
-  { key: 'people', label: 'People doing that work', min: 1, max: 40, step: 1, def: 4, spec: 1, fmt: (v) => `${int0.format(v)} ${v === 1 ? 'person' : 'people'}` },
-  { key: 'weeks', label: 'Working weeks per year', min: 20, max: 52, step: 1, def: 46, spec: 1, fmt: (v) => `${int0.format(v)} weeks` },
-  { key: 'rate', label: 'Fully loaded hourly cost', min: 15, max: 120, step: 1, def: 38, spec: 2, fmt: (v) => `${money(v)}/h` },
-  { key: 'share', label: 'Share of that work automation removes', min: 10, max: 95, step: 5, def: 70, spec: 2, fmt: (v) => `${int0.format(v)}%` },
-  { key: 'invest', label: 'One-off build cost', min: 1500, max: 25000, step: 500, def: 6500, spec: 3, fmt: (v) => money(v) },
+  { key: 'people', label: 'People doing that work', min: 1, max: 40, step: 1, def: 4, fmt: (v) => `${int0.format(v)} ${v === 1 ? 'person' : 'people'}` },
+  { key: 'weeks', label: 'Working weeks per year', min: 20, max: 52, step: 1, def: 46, fmt: (v) => `${int0.format(v)} weeks` },
+  { key: 'rate', label: 'Fully loaded hourly cost', min: 15, max: 120, step: 1, def: 38, fmt: (v) => `${money(v)}/h` },
+  { key: 'share', label: 'Share of that work automation removes', min: 10, max: 95, step: 5, def: 70, fmt: (v) => `${int0.format(v)}%` },
+  { key: 'invest', label: 'One-off build cost', min: 1500, max: 25000, step: 500, def: 6500, fmt: (v) => money(v) },
 ];
 
-function roiKey(id: string): string | null {
-  if (!id) return null;
-  if (/invest|fee|budget|setup|buildcost|engagement|oneoff/.test(id)) return 'invest';
-  if (/rate|cost|wage|salar|hourly|loaded|eur/.test(id)) return 'rate';
-  if (/share|automat|percent|pct|portion|coverage|reduction/.test(id)) return 'share';
-  if (/people|person|staff|team|head|analyst|fte|seat|size/.test(id)) return 'people';
-  if (/hour|hrs|time|manual/.test(id)) return 'hours';
-  if (/week|wks/.test(id)) return 'weeks';
-  return null;
-}
-
 each('[data-roi-calc]', (root) => {
-  const map = bindFields(root, 'data-roi-in', ROI_FIELDS, roiKey);
+  const map = bindFields(root, 'data-roi-in', ROI_FIELDS);
   if (!map.size) return;
   const status = statusRegion(root, 'data-roi-status');
   let lastSentence = '';
   let live = false; // stays quiet until the visitor actually moves something
+  /* One settled announcement rather than one per slider tick. */
   const announce = debounce(() => {
     if (live) status.textContent = lastSentence;
-  });
+  }, 500);
 
   const render = () => {
     const hours = val(map, 'hours', 6);
@@ -652,7 +590,7 @@ function fmtCell(v: string | number | null, type: Col['type']): string {
   if (typeof v === 'number') {
     if (type === 'eur') return money(v);
     if (type === 'pct') return `${dec1.format(v)}%`;
-    if (type === 'dec') return new Intl.NumberFormat('en-IE', { minimumFractionDigits: 2 }).format(v);
+    if (type === 'dec') return dec2.format(v);
     return int0.format(v);
   }
   return String(v);
@@ -667,7 +605,7 @@ function sqlTable(c: Canned): HTMLElement {
   table.className = 'pg-sql__table';
 
   const cap = document.createElement('caption');
-  cap.className = 'ix-sr';
+  cap.className = 'u-sr';
   cap.textContent = `${c.title} — ${c.rows.length} ${c.rows.length === 1 ? 'row' : 'rows'}`;
   table.appendChild(cap);
 
@@ -868,7 +806,7 @@ const CHURN_SIGNALS: Signal[] = [
     key: 'recency',
     label: 'Days since the last report was opened',
     min: 0, max: 90, step: 1, def: 21,
-    weight: 0.3, spec: 1,
+    weight: 0.3,
     driver: 'the account has gone quiet',
     risk: (v) => clamp01(v / 60),
     fmt: (v) => `${int0.format(v)} ${v === 1 ? 'day' : 'days'} ago`,
@@ -877,7 +815,7 @@ const CHURN_SIGNALS: Signal[] = [
     key: 'tickets',
     label: 'Support tickets in the last 30 days',
     min: 0, max: 12, step: 1, def: 2,
-    weight: 0.2, spec: 1,
+    weight: 0.2,
     driver: 'support pressure',
     risk: (v) => clamp01(v / 8),
     fmt: (v) => `${int0.format(v)} ${v === 1 ? 'ticket' : 'tickets'}`,
@@ -886,21 +824,12 @@ const CHURN_SIGNALS: Signal[] = [
     key: 'nps',
     label: 'Last satisfaction score, 0 to 10',
     min: 0, max: 10, step: 1, def: 8,
-    weight: 0.2, spec: 2,
+    weight: 0.2,
     driver: 'a weak satisfaction score',
     risk: (v) => clamp01((9 - v) / 9),
     fmt: (v) => `${int0.format(v)} out of 10`,
   },
 ];
-
-function churnKey(id: string): string | null {
-  if (!id) return null;
-  if (/nps|satisf|score|sentiment|csat|happi/.test(id)) return 'nps';
-  if (/ticket|support|case|issue|complaint/.test(id)) return 'tickets';
-  if (/recen|days|since|last|quiet|idle|inactiv|dormant/.test(id)) return 'recency';
-  if (/login|usage|session|active|seat|adopt|visit/.test(id)) return 'logins';
-  return null;
-}
 
 const CHURN_BANDS = [
   { max: 24, key: 'low', name: 'Low risk', line: 'This account looks healthy. Keep it on the standard quarterly review.' },
@@ -911,7 +840,7 @@ const CHURN_BANDS = [
 const BAND_KEYS = CHURN_BANDS.map((b) => b.key);
 
 each('[data-churn-demo]', (root) => {
-  const map = bindFields(root, 'data-churn-in', CHURN_SIGNALS, churnKey);
+  const map = bindFields(root, 'data-churn-in', CHURN_SIGNALS);
   if (!map.size) return;
   const ringHost = pick(root.getAttribute('data-churn-ring')) ?? $<HTMLElement>('[data-progress-ring]', root);
   const status = statusRegion(root, 'data-churn-status');
@@ -931,7 +860,6 @@ each('[data-churn-demo]', (root) => {
       bar.style.strokeDasharray = circ.toFixed(2);
       bar.style.strokeDashoffset = (circ * (1 - score / 100)).toFixed(2);
     }
-    ringHost.style.setProperty('--mo-ring-p', (score / 100).toFixed(4));
     if (out) out.textContent = String(score);
     else if (ringHost.hasAttribute('aria-label')) ringHost.setAttribute('aria-label', `Churn risk ${score} out of 100`);
   };
@@ -994,7 +922,6 @@ const FC_PAD = { t: 18, r: 16, b: 30, l: 46 };
 const FC_FIELDS: Field[] = [
   { key: 'horizon', label: 'Forecast horizon in months', min: 3, max: 12, step: 1, def: 6, fmt: (v) => `${int0.format(v)} months ahead` },
 ];
-const fcKey = (id: string) => (/horizon|month|ahead|period|forecast|range/.test(id) ? 'horizon' : null);
 
 const svgEl = <K extends keyof SVGElementTagNameMap>(name: K, attrs: Record<string, string | number>) => {
   const el = document.createElementNS('http://www.w3.org/2000/svg', name);
@@ -1003,7 +930,7 @@ const svgEl = <K extends keyof SVGElementTagNameMap>(name: K, attrs: Record<stri
 };
 
 each('[data-forecast-demo]', (root) => {
-  const map = bindFields(root, 'data-forecast-in', FC_FIELDS, fcKey);
+  const map = bindFields(root, 'data-forecast-in', FC_FIELDS);
   const stage = $<HTMLElement>('[data-forecast-plot]', root) ?? root.querySelector<HTMLElement>('.pg-fc__plot');
   if (!stage) return;
   const status = statusRegion(root, 'data-forecast-status');

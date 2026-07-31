@@ -10,22 +10,6 @@
    donuts a 240x240 one.
    ============================================================ */
 
-/* ---------- Visually hidden, still announced ---------- */
-/* Clip technique, not display:none — the chart data tables and
-   live regions depend on staying readable to assistive tech. */
-.ix-sr {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 /* ---------- Scroll lock while the lightbox is open ---------- */
 html.ix-noscroll { overflow: hidden; }
 
@@ -213,7 +197,7 @@ html.ix-noscroll { overflow: hidden; }
   border-radius: var(--radius-md);
 }
 
-/* The accessible fallback table — only ever seen via .ix-sr. */
+/* The accessible fallback table — only ever seen via .u-sr. */
 .ix-chart__table { border-collapse: collapse; }
 
 /* ============================================================

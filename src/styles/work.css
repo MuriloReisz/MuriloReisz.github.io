@@ -3,13 +3,8 @@
      .pc-*   the /work portfolio browser (hero, toolbar, grid, card)
      .cse-*  the /work/[slug] case-study reader
 
-   The reader builds on the ported .reader / .cs-* rules already in
-   global.css, so everything here EXTENDS those rather than
-   restating them. Two collisions are corrected below:
-     • .reader__bar is sticky at top:0, which would sit under the
-       site navbar — it is re-stuck at 56px with a lower z-index.
-     • .cse-bar__progress is a child of that flex bar, so it is
-       taken out of flow and pinned to the bar's bottom edge.
+   The reader builds on the .reader / .cs-* rules in global.css, so
+   everything here EXTENDS those rather than restating them.
    ============================================================ */
 
 /* ============================================================
@@ -79,16 +74,6 @@
 
 /* ---------- search ---------- */
 .pc-search { flex: 1 1 320px; min-width: 0; }
-/* The label is redundant beside the placeholder + icon, but must exist. */
-.pc-search__label {
-  position: absolute;
-  width: 1px; height: 1px;
-  margin: -1px; padding: 0; border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
 .pc-search__field {
   position: relative;
   display: flex;
@@ -222,8 +207,7 @@
 
 /* ============================================================
    /work — GRID
-   widgets.ts sets both data-view and .ix-view--<mode>; either is
-   enough to switch layout, so both are honoured.
+   The view toggle switches data-view on this container.
    ============================================================ */
 .pc-grid {
   display: grid;
@@ -232,8 +216,7 @@
   padding: 34px 0 0;
   align-items: start;
 }
-.pc-grid[data-view="list"],
-.pc-grid.ix-view--list {
+.pc-grid[data-view="list"]{
   grid-template-columns: minmax(0, 1fr);
   gap: 18px;
 }
@@ -365,28 +348,22 @@
 .pc-card:hover .pc-card__arrow { transform: translateX(4px); }
 
 /* ---------- list view: media beside a denser body ---------- */
-.pc-grid[data-view="list"] .pc-card,
-.pc-grid.ix-view--list .pc-card {
+.pc-grid[data-view="list"] .pc-card{
   flex-direction: row;
   align-items: stretch;
 }
-.pc-grid[data-view="list"] .pc-card__media,
-.pc-grid.ix-view--list .pc-card__media {
+.pc-grid[data-view="list"] .pc-card__media{
   width: 300px;
   flex-shrink: 0;
   aspect-ratio: auto;
   border-bottom: 0;
   border-right: 1px solid var(--color-divider-soft);
 }
-.pc-grid[data-view="list"] .pc-card__body,
-.pc-grid.ix-view--list .pc-card__body { padding: 22px 26px; gap: 8px; }
-.pc-grid[data-view="list"] .pc-card__title,
-.pc-grid.ix-view--list .pc-card__title { font-size: 22px; }
+.pc-grid[data-view="list"] .pc-card__body{ padding: 22px 26px; gap: 8px; }
+.pc-grid[data-view="list"] .pc-card__title{ font-size: 22px; }
 /* In list view the stats sit inline with the tags to keep rows short. */
-.pc-grid[data-view="list"] .pc-card__stats,
-.pc-grid.ix-view--list .pc-card__stats { gap: 26px; }
-.pc-grid[data-view="list"] .pc-card__stack,
-.pc-grid.ix-view--list .pc-card__stack { display: none; }
+.pc-grid[data-view="list"] .pc-card__stats{ gap: 26px; }
+.pc-grid[data-view="list"] .pc-card__stack{ display: none; }
 
 /* ============================================================
    /work — EMPTY STATE + CLOSING CTA
@@ -423,13 +400,7 @@
    ============================================================ */
 .cse-reader { position: relative; width: 100%; }
 
-/* Re-stick the ported bar under the site navbar instead of over it. */
-.cse-bar {
-  position: sticky;
-  top: 56px;
-  z-index: 20;                  /* navbar is 100 — stay under it */
-  max-width: none;
-}
+.cse-bar { max-width: none; }
 .cse-bar__title {
   flex: 1 1 auto;
   min-width: 0;
@@ -457,7 +428,6 @@
   bottom: -1px;
   height: 2px;
 }
-.cse-bar__progress-fill { position: absolute; inset: 0; width: 100%; }
 
 .cse-case { max-width: 1024px; }
 .cse-article { display: block; }
@@ -733,17 +703,14 @@
   .pc-toolbar__end { justify-content: space-between; }
   /* List view collapses back to a stack — 300px of media plus text
      does not fit a tablet column. */
-  .pc-grid[data-view="list"] .pc-card,
-  .pc-grid.ix-view--list .pc-card { flex-direction: column; }
-  .pc-grid[data-view="list"] .pc-card__media,
-  .pc-grid.ix-view--list .pc-card__media {
+  .pc-grid[data-view="list"] .pc-card { flex-direction: column; }
+  .pc-grid[data-view="list"] .pc-card__media {
     width: 100%;
     aspect-ratio: 16 / 10;
     border-right: 0;
     border-bottom: 1px solid var(--color-divider-soft);
   }
-  .pc-grid[data-view="list"] .pc-card__stack,
-  .pc-grid.ix-view--list .pc-card__stack { display: flex; }
+  .pc-grid[data-view="list"] .pc-card__stack { display: flex; }
   .cse-finding__v { font-size: 34px; }
   .cse-step { grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 18px 18px; }
   .cse-cta { padding: 32px 26px; }
@@ -754,7 +721,8 @@
 @media (max-width: 640px) {
   .pc-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .pc-hero__h1 { max-width: none; }
-  .pc-toolbar { top: 0; padding: 14px 0 12px; }
+  /* The navbar stays 56px tall at every width, so the sticky offset holds. */
+  .pc-toolbar { padding: 14px 0 12px; }
   .pc-toolbar__row--find { flex-direction: column; align-items: stretch; gap: 10px; }
   .pc-search__clear-t { display: none; }
   .pc-search__input { padding-right: 46px; }
@@ -762,7 +730,6 @@
   .pc-sort, .pc-view { flex: 0 1 auto; }
   .pc-card__body { padding: 20px 20px 22px; }
   .pc-card__title { font-size: 21px; }
-  .cse-bar { top: 0; }
   .cse-section { scroll-margin-top: 76px; }
   .cse-findings { gap: 20px; }
   .cse-finding { min-width: 100%; }

@@ -13,6 +13,7 @@
 // ---------------------------------------------------------------------------
 import Layout from '../layouts/Layout.astro';
 import { projectBySlug } from '../data/projects';
+import RoiCalculator from '../components/RoiCalculator.astro';
 
 const churn = projectBySlug('churn-early-warning');
 const forecast = projectBySlug('retail-demand-forecast');
@@ -33,15 +34,6 @@ const examples = [
   { id: 'channels', label: 'Revenue by channel' },
   { id: 'repeat', label: 'Repeat-purchase rate' },
   { id: 'stock', label: 'Slow-moving stock' },
-];
-
-const roiFields = [
-  { key: 'hours', label: 'Hours each person loses to manual reporting', hint: 'per week' },
-  { key: 'people', label: 'People doing that work', hint: '' },
-  { key: 'weeks', label: 'Working weeks per year', hint: '' },
-  { key: 'rate', label: 'Fully loaded hourly cost', hint: 'salary plus overhead' },
-  { key: 'share', label: 'Share of the work automation removes', hint: 'be conservative' },
-  { key: 'invest', label: 'One-off build cost', hint: '' },
 ];
 
 const churnFields = [
@@ -70,7 +62,7 @@ const stages = [
   <section class="tile tile--white pg-hero" id="playground-top">
     <div class="inner" data-stagger>
       <div class="eyebrow reveal">Playground</div>
-      <h1 class="metrics__h2 pg-hero__h1 reveal" data-reveal-words>
+      <h1 class="metrics__h2 pg-hero__h1" data-reveal-words>
         Don’t take my word for it. Drive it yourself.
       </h1>
       <p class="hero__sub reveal">
@@ -108,63 +100,7 @@ const stages = [
         </div>
       </div>
 
-      <div class="pg-panel reveal" data-roi-calc>
-        <div class="pg-panel__controls">
-          {roiFields.map((f) => (
-            <div class="ix-field">
-              <div class="ix-field__top">
-                <label class="ix-field__label" for={`roi-${f.key}`}>{f.label}</label>
-                <output class="ix-field__val" data-roi-val={f.key} for={`roi-${f.key}`}></output>
-              </div>
-              <input class="ix-range" id={`roi-${f.key}`} type="range" data-roi-in={f.key} />
-              {f.hint && <p class="ix-field__hint">{f.hint}</p>}
-            </div>
-          ))}
-        </div>
-
-        <div class="pg-panel__results">
-          <div class="pg-result pg-result--hero">
-            <div class="ix-out">
-              <span class="ix-out__v ix-out__v--accent" data-roi-out="annual">—</span>
-              <span class="ix-out__l">given back per year</span>
-            </div>
-          </div>
-          <div class="pg-result__row">
-            <div class="ix-out">
-              <span class="ix-out__v" data-roi-out="hoursword">—</span>
-              <span class="ix-out__l">returned to the team</span>
-            </div>
-            <div class="ix-out">
-              <span class="ix-out__v" data-roi-out="payback">—</span>
-              <span class="ix-out__l">to pay back the build</span>
-            </div>
-          </div>
-          <dl class="pg-result__facts">
-            <div class="pg-fact">
-              <dt class="pg-fact__k">Time spent today</dt>
-              <dd class="pg-fact__v" data-roi-out="baseline">—</dd>
-            </div>
-            <div class="pg-fact">
-              <dt class="pg-fact__k">Cost of that time</dt>
-              <dd class="pg-fact__v" data-roi-out="cost">—</dd>
-            </div>
-            <div class="pg-fact">
-              <dt class="pg-fact__k">Saving per month</dt>
-              <dd class="pg-fact__v" data-roi-out="monthly">—</dd>
-            </div>
-            <div class="pg-fact">
-              <dt class="pg-fact__k">In working days</dt>
-              <dd class="pg-fact__v" data-roi-out="days">—</dd>
-            </div>
-          </dl>
-          <div class="pg-formula">
-            <p class="pg-formula__k">The arithmetic</p>
-            <p class="pg-formula__v" data-roi-out="formula">—</p>
-            <p class="pg-formula__v pg-formula__v--sub" data-roi-out="paybackformula">—</p>
-          </div>
-          <p class="ix-status" data-roi-status></p>
-        </div>
-      </div>
+      <RoiCalculator idPrefix="roi" />
 
       <p class="pg-demo__foot reveal">
         This is the model behind the <a class="textlink" href={`/work/${automation?.slug}`}>automation &amp; BI practice</a>,
@@ -256,7 +192,7 @@ const stages = [
             </span>
             <span class="code-window__name">query.sql</span>
           </div>
-          <label class="ix-sr" for="sql-input">SQL query</label>
+          <label class="u-sr" for="sql-input">SQL query</label>
           <textarea
             class="pg-sql__input"
             id="sql-input"

@@ -13,20 +13,6 @@
      .hm-pipe      the ETL pipeline panel on /ai-services
    ============================================================ */
 
-/* Screen-reader-only lists that mirror decorative content. */
-.hm-sr {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 /* ============================================================
    HERO ROLE LINE — static role · rotating specialism
    ============================================================ */
@@ -156,17 +142,9 @@
   color: var(--color-ink-80);
   min-width: 0;
 }
-/* The meter is a .mo-bar in all but name — motion.ts fills the inner span. */
-.hm-skills__meter {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 7px;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-ink) 9%, transparent);
-  overflow: hidden;
-}
-[data-theme="dark"] .hm-skills__meter { background: rgba(255, 255, 255, 0.11); }
+/* The meter IS a .mo-bar (motion.ts adds the class and fills the inner span);
+   only the height differs, so vary just that. */
+.hm-skills__meter { --mo-bar-h: 7px; }
 .hm-skills__level {
   font-size: 13px;
   font-weight: 600;
@@ -404,6 +382,18 @@
 }
 .hm-pipe__stage-t { font-size: 15px; font-weight: 600; letter-spacing: -0.224px; color: var(--color-ink); }
 .hm-pipe__stage-d { font-size: 13.5px; line-height: 1.45; letter-spacing: -0.1px; color: var(--color-ink-48); }
+/* Run states. demos.ts hardcodes the pg-pipe__stage--* state classes, and the
+   <li> here wears both namespaces, so match on the state it really sets. The
+   equivalents in playground.css are written for a dark panel; this panel sits
+   on --surface-card, so the light skin needs its own colours. */
+.hm-pipe__stage.pg-pipe__stage--running {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+.hm-pipe__stage.pg-pipe__stage--done { border-color: color-mix(in srgb, #2e9e5b 55%, transparent); }
+.pg-pipe__stage--running .hm-pipe__stage-n,
+.hm-pipe__stage[data-pipeline-done] .hm-pipe__stage-n { color: var(--color-primary); }
+.hm-pipe__stage[data-pipeline-done] .hm-pipe__stage-n::after { content: " ✓"; color: #2e9e5b; }
 .hm-pipe__outs {
   margin: 0;
   display: flex;

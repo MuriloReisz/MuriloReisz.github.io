@@ -35,7 +35,7 @@ const groups = groupNames.map((name) => ({
 
     <div class="hm-skills__seg reveal" role="group" aria-label="Show one skill group">
       <button
-        class="filter-pill hm-skills__segbtn"
+        class="filter-pill"
         type="button"
         aria-pressed="true"
         aria-controls="hm-skills-list"
@@ -43,7 +43,7 @@ const groups = groupNames.map((name) => ({
       >All</button>
       {groups.map((g) => (
         <button
-          class="filter-pill hm-skills__segbtn"
+          class="filter-pill"
           type="button"
           aria-pressed="false"
           aria-controls="hm-skills-list"
@@ -64,7 +64,7 @@ const groups = groupNames.map((name) => ({
               <li class="hm-skills__row">
                 <span class="hm-skills__name">{s.name}</span>
                 <span
-                  class="hm-skills__meter"
+                  class="mo-bar hm-skills__meter"
                   data-bar-to={String(s.level)}
                   role="progressbar"
                   aria-label={`${s.name} — proficiency`}
