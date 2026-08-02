@@ -82,11 +82,11 @@ export const projects: Project[] = [
       'Region-wide sales visibility for Apple’s CEMEA Sales BPR & Systems team — one Tableau model replacing a fortnightly spreadsheet pack.',
     lead:
       'CEMEA sales performance lived in a fortnightly spreadsheet pack that took two days to assemble and was out of date the moment it landed. I rebuilt it as a governed Tableau model with a single certified data source, so channel leads, country managers and the BPR team all read the same numbers on the same morning.',
-    cover: '/images/proposal-overview.svg',
+    cover: '/images/dash/cemea-sales-dashboard.png',
     coverAlt:
-      'CEMEA Sales Performance dashboard in Tableau — revenue by region, segment mix and profit trend on one overview page',
-    coverWidth: 3092,
-    coverHeight: 2154,
+      'Screenshot of the CEMEA Sales Performance Dashboard: three headline metric cards above a bar chart of analyst hours per reporting cycle, 16 hours at Cycle 1 down to 1.5 by Cycle 8.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: '€6.2M', count: 6.2, prefix: '€', suffix: 'M', label: 'top region by revenue, surfaced for stakeholders' },
       { value: '39%', count: 39, suffix: '%', label: 'of sales from the leading segment' },
@@ -194,11 +194,11 @@ export const projects: Project[] = [
       'End-to-end data and automation delivery for small European teams — from first consultation to a deployed pipeline they own.',
     lead:
       'A rolling engagement rather than a single project: multiple clients, the same underlying problem. Skilled people spending their week moving data between systems by hand. I take those processes end to end — consultation, architecture, build, deployment, handover — and the manual effort typically falls by around 80%.',
-    cover: '/images/proposal-insights-1.svg',
+    cover: '/images/dash/freelance-automation-bi.png',
     coverAlt:
-      'Client reporting dashboard built on a BigQuery warehouse, showing pipeline health and weekly operational KPIs',
-    coverWidth: 2059,
-    coverHeight: 1182,
+      'Screenshot of the Freelance Automation & BI Solutions dashboard: three headline metric cards above a bar chart of manual hours per week across the automated processes, 38 hours/week at Baseline down to 7.5 by Wk 14.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: '−80%', count: 80, prefix: '−', suffix: '%', label: 'manual effort, via custom Python & RPA automation' },
       { value: 'End-to-end', label: 'solutions architected & deployed for multiple clients' },
@@ -302,11 +302,11 @@ export const projects: Project[] = [
       'A full-stack platform that deploys autonomous marine drones, streams their sensor telemetry and classifies the species they photograph.',
     lead:
       'My final-year project at FIAP: an end-to-end platform for autonomous marine monitoring. Operators plan a mission in the browser, the drone streams pH, temperature and high-resolution imagery back in real time, and machine-learning models turn that stream into an ecosystem-health readout rather than a pile of readings.',
-    cover: '/images/image02.svg',
+    cover: '/images/dash/ocean-drones.png',
     coverAlt:
-      'Ocean Drones mission console — live sensor telemetry, drone position and ecosystem-health scoring for a survey area',
-    coverWidth: 768,
-    coverHeight: 432,
+      'Screenshot of the Ocean Drones — Autonomous Marine Data Platform: three headline metric cards above a bar chart of species classification accuracy by training round, 64 % top-1 accuracy at Baseline up to 91 by R8.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: 'ML', label: 'predictive models & species image classification (Scikit-learn, TensorFlow)' },
       { value: 'Real-time', label: 'sensor pipeline (pH, temperature) + high-res imagery' },
@@ -410,11 +410,11 @@ export const projects: Project[] = [
       'SKU-level weekly forecasting across 34 stores, replacing a spreadsheet that ordered on last year’s numbers plus a feeling.',
     lead:
       'A 34-store grocery and convenience group in Munster ordered fresh stock from last year’s sales and a manager’s judgement. Waste was running at 6.4% of fresh revenue and availability on the top hundred lines at 93%. I built a SKU-store-week forecast and wired it into the ordering sheet buyers already used.',
-    cover: '/images/ai-report-01.svg',
+    cover: '/images/dash/retail-demand-forecast.png',
     coverAlt:
-      'Demand forecasting dashboard — forecast versus actual units by category, with weekly forecast error and waste tracked per store',
-    coverWidth: 1920,
-    coverHeight: 1080,
+      'Screenshot of the Demand Forecasting for an Irish Retail Group dashboard: three headline metric cards above a line chart of weekly forecast error (MAPE), 22.4 % MAPE at W1 down to 15.5 by W12.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: '−31%', count: 31, prefix: '−', suffix: '%', label: 'forecast error (MAPE) versus the previous method' },
       { value: '€214k', count: 214, prefix: '€', suffix: 'k', label: 'annualised fresh waste avoided across 34 stores' },
@@ -526,11 +526,11 @@ export const projects: Project[] = [
       'A daily churn score for 8,400 B2B accounts that gives customer success three weeks of warning instead of a renewal-week surprise.',
     lead:
       'Churn at a Dublin B2B SaaS company was discovered at renewal or not at all: 1.9% of its 8,400 accounts left every month, and customer success had capacity to work about 60 a week with no defensible way to choose which 60. I built a daily churn score, calibrated it so the probability means what it says, and shipped it as a ranked worklist.',
-    cover: '/images/ai-report-03.svg',
+    cover: '/images/dash/churn-early-warning.png',
     coverAlt:
-      'Churn early-warning dashboard — account risk distribution, driver breakdown and the ranked worklist for customer success',
-    coverWidth: 1920,
-    coverHeight: 1080,
+      'Screenshot of the Subscription Churn Early-Warning Scoring dashboard: three headline metric cards above a line chart of monthly logo churn in the worked cohort, 1.9 % of accounts at Jan down to 1.39 by Oct.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: '23 days', count: 23, suffix: ' days', label: 'median warning ahead of a churn event' },
       { value: '0.81', count: 0.81, label: 'ROC AUC on the held-out quarter, calibrated' },
@@ -636,11 +636,11 @@ export const projects: Project[] = [
       'A nine-day month-end close cut to three, by automating the reconciliation and consolidation steps rather than asking people to work faster.',
     lead:
       'Nine working days and two late nights — that was month-end for a manufacturing group with five legal entities. Nothing was broken exactly: 61 individually reasonable manual steps, chained together with no way to run any of them twice safely. I rebuilt the pipeline so the close is a checklist with a status board rather than a relay race.',
-    cover: '/images/ai-report-05.svg',
+    cover: '/images/dash/finance-close-automation.png',
     coverAlt:
-      'Month-end close status board — each entity’s reconciliation steps with pass, blocked and pending states and variance flags',
-    coverWidth: 1920,
-    coverHeight: 1080,
+      'Screenshot of the Month-End Close Automation dashboard: three headline metric cards above a bar chart of working days to close, by cycle, 9 working days at Baseline down to 3 by Cycle 6.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: '9 → 3', label: 'working days to close, across five entities' },
       { value: '−142h', count: 142, prefix: '−', suffix: 'h', label: 'manual finance effort per close cycle' },
@@ -743,11 +743,11 @@ export const projects: Project[] = [
       'One live view across four carriers and two hubs, so a delayed consignment is a phone call the same morning instead of a claim three weeks later.',
     lead:
       'Customers were the exception-detection system at a third-party logistics operator running 2,300 consignments a week out of Cork and Rotterdam, across four carrier systems that knew nothing of each other. I built a control tower that ingests all four feeds, reconciles them onto one consignment spine and puts the exceptions on a screen the operations floor actually watches.',
-    cover: '/images/ai-report-06.svg',
+    cover: '/images/dash/logistics-control-tower.png',
     coverAlt:
-      'Logistics control tower — consignments in transit by lane, exception queue by dwell time, and on-time delivery trend',
-    coverWidth: 1920,
-    coverHeight: 1080,
+      'Screenshot of the Live Logistics Control Tower: three headline metric cards above a line chart of on-time-in-full delivery, 88.9 % OTIF at Wk 1 up to 98.3 by Wk 19.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: '+9.4pp', count: 9.4, prefix: '+', suffix: 'pp', label: 'on-time-in-full delivery over two quarters' },
       { value: '4 → 1', label: 'carrier systems reconciled onto one consignment spine' },
@@ -853,11 +853,11 @@ export const projects: Project[] = [
       'Classifying and routing 1,900 inbound enquiries a week, with a hard rule that anything clinical or uncertain goes to a human immediately.',
     lead:
       'A private clinic group in Leinster received about 1,900 enquiries a week by email and web form into one shared inbox. Reception read every one to decide where it went; urgent items waited behind appointment-change requests. I built a triage classifier that routes the routine 70% automatically and escalates anything clinical or uncertain to a person straight away — deliberately not the other way round.',
-    cover: '/images/ai-report-08.svg',
+    cover: '/images/dash/clinic-nlp-triage.png',
     coverAlt:
-      'Enquiry triage dashboard — inbound volume by intent, routing accuracy and first-response time by queue',
-    coverWidth: 1920,
-    coverHeight: 1080,
+      'Screenshot of the NLP Triage of Inbound Clinic Enquiries dashboard: three headline metric cards above a line chart of median first-response time on routine enquiries, 6.2 hours at Wk 1 down to 1.6 by Wk 12.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: '−74%', count: 74, prefix: '−', suffix: '%', label: 'median first-response time on routine enquiries' },
       { value: '96.2%', count: 96.2, suffix: '%', label: 'routing accuracy on the held-out sample' },
@@ -969,11 +969,11 @@ export const projects: Project[] = [
       'Unsupervised detection across 1,480 meters that finds a failing plant item in hours instead of at the quarterly bill.',
     lead:
       'Every one of 1,480 half-hourly meters across a 62-building commercial portfolio was recording, and nothing was reading them. A fault surfaced when a quarterly bill looked high — typically 60 to 90 days after a chiller had started running through the night. I built unsupervised anomaly detection on the telemetry that raises a ranked, costed alert to the facilities team within hours.',
-    cover: '/images/ai-report-09.svg',
+    cover: '/images/dash/energy-anomaly-detection.png',
     coverAlt:
-      'Energy anomaly detection dashboard — half-hourly consumption against the learned baseline, with ranked open alerts by estimated cost',
-    coverWidth: 1920,
-    coverHeight: 1080,
+      'Screenshot of the Anomaly Detection on Building Energy Telemetry dashboard: three headline metric cards above a bar chart of median time to detect an energy anomaly, 1512 hours at Baseline down to 4.2 by Wk 14.',
+    coverWidth: 1600,
+    coverHeight: 1000,
     findings: [
       { value: '€318k', count: 318, prefix: '€', suffix: 'k', label: 'annualised energy waste identified across the portfolio' },
       { value: '4.2 h', count: 4.2, suffix: ' h', label: 'median detection time, from 60+ days' },
