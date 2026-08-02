@@ -72,7 +72,7 @@ const fullLinkClass = onDark
   </div>
 
   {feature ? (
-    <div class="tableau-showcase reveal">
+    <div class="tableau-showcase reveal" data-parallax="0.05" data-parallax-max="26">
       <div class="shot">
         <img
           src={project.cover}
@@ -85,7 +85,7 @@ const fullLinkClass = onDark
       </div>
     </div>
   ) : (
-    <a class="shot reveal" href={caseHref} aria-label={`Read the ${project.title} case study`}>
+    <a class="shot reveal" data-parallax="0.06" data-parallax-max="30" href={caseHref} aria-label={`Read the ${project.title} case study`}>
       <img
         src={project.cover}
         alt={project.coverAlt}

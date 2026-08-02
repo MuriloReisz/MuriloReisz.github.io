@@ -134,17 +134,6 @@ html.mo-js .mo-bar__fill { width: 0; }
 .mo-scale { will-change: scale; transform-origin: center; }
 
 /* ============================================================
-   STICKY STACK — [data-sticky-stack] > [data-sticky-card]
-   ============================================================ */
-.mo-stack { position: relative; }
-.mo-stack__card {
-  position: sticky;
-  top: 92px;                 /* clears the 56px nav with breathing room */
-  transform-origin: center top;
-  will-change: scale;
-}
-
-/* ============================================================
    POINTER TILT — [data-tilt]
    --mo-tilt-x / --mo-tilt-y are rotations, in deg
    ============================================================ */
@@ -314,8 +303,6 @@ html.mo-js .mo-bar__fill { width: 0; }
 @media (max-width: 833px) {
   .mo-ring { width: 116px; height: 116px; }
   .mo-ring__val { font-size: 28px; }
-  /* Sticky stacking is a desktop conceit — it fights short viewports. */
-  .mo-stack__card { position: static; top: auto; scale: 1 !important; }
 }
 @media (max-width: 640px) {
   .mo-marquee {
@@ -350,6 +337,5 @@ html.mo-js .mo-bar__fill { width: 0; }
   .mo-tilt, .mo-magnetic { transform: none !important; }
   .mo-parallax { translate: none !important; }
   .mo-scale { scale: none !important; }
-  .mo-stack__card { position: static; scale: 1 !important; }
   .mo-spotlight::before { display: none; }
 }

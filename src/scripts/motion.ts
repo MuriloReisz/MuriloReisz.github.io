@@ -184,51 +184,6 @@ $$('[data-scroll-scale]').forEach((el) => {
   });
 });
 
-/* ---------- Sticky card stack — [data-sticky-stack] > [data-sticky-card] ---------- */
-$$('[data-sticky-stack]').forEach((stack) => {
-  const cards = $$('[data-sticky-card]', stack);
-  if (!cards.length) return;
-  const shrink = clamp(num(stack.getAttribute('data-sticky-scale'), 0.055), 0, 0.3);
-  stack.classList.add('mo-stack');
-  cards.forEach((c, i) => {
-    c.classList.add('mo-stack__card');
-    c.style.setProperty('--i', String(i));
-    c.style.zIndex = String(i + 1);
-  });
-
-  let stickyTop = 88;
-  let tops: number[] = [];
-  let steps: number[] = [];
-  const ps: number[] = cards.map(() => 0);
-
-  scrollFx.push({
-    measure() {
-      stickyTop = num(getComputedStyle(cards[0]!).top, 88);
-      tops = cards.map((c) => docTop(c));
-      steps = tops.map((t, i) =>
-        i + 1 < tops.length ? Math.max(1, tops[i + 1]! - t) : Math.max(1, cards[i]!.offsetHeight)
-      );
-    },
-    compute(sy) {
-      const last = cards.length - 1;
-      for (let i = 0; i < cards.length; i++) {
-        ps[i] = i === last ? 0 : clamp01((sy - (tops[i]! - stickyTop)) / steps[i]!);
-      }
-    },
-    paint() {
-      cards.forEach((c, i) => {
-        const p = ps[i]!;
-        c.style.scale = (1 - p * shrink).toFixed(4);
-      });
-    },
-    reset() {
-      cards.forEach((c) => {
-        c.style.scale = '';
-      });
-    },
-  });
-});
-
 /* ---------- Word reveal — [data-reveal-words] ---------- */
 /* Walks text nodes so nested <strong>/<em>/<span>/<a> markup survives intact. */
 function splitWords(host: HTMLElement) {
