@@ -1,0 +1,171 @@
+---
+// /privacy — the real policy, replacing the placeholder that used to sit in the
+// modal and admit on screen that it was placeholder text.
+//
+// Everything below is written from what the site actually does, verified in the
+// source: FormSubmit is the only endpoint any form posts to, Google Fonts is the
+// only third party contacted on a normal page load, three keys are written to
+// localStorage, and no analytics is installed at all. If any of that changes,
+// this page has to change with it.
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+
+const updated = '3 August 2026';
+---
+
+<Layout
+  title="Privacy & cookies"
+  description="What happens to your information when you use this site or get in touch — in plain language."
+>
+  <section class="tile tile--white" id="privacy-top">
+    <div class="inner" data-stagger>
+      <div class="eyebrow" data-reveal-chars>Privacy</div>
+      <h1 class="metrics__h2 reveal" style="text-align:left;margin-left:0">
+        What happens to your information.
+      </h1>
+      <p class="hero__sub reveal" style="margin-left:0;text-align:left">
+        Short version: I collect nothing unless you send me a message, there is no advertising and
+        no cross-site tracking, and there is no analytics on this site at all. The longer version
+        is below, including the two third parties involved and exactly what is stored in your
+        browser.
+      </p>
+      <p class="cse-meta reveal" style="padding-top:18px">
+        <span class="cse-meta__item">Last updated {updated}</span>
+        <span class="cse-meta__sep" aria-hidden="true">·</span>
+        <span class="cse-meta__item">Controller: {site.name}, {site.location}</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="tile tile--parchment" id="privacy-detail">
+    <div class="inner">
+      <div class="cs-section cse-section">
+        <h2 class="cs-h">Who is responsible</h2>
+        <p class="cs-p">
+          This site belongs to {site.name}, trading as {site.brand}, based in {site.location}. For
+          anything on this page — including a request to see, correct or delete what I hold — email
+          <a class="textlink" href={`mailto:${site.email}`}>{site.email}</a>. I am the data
+          controller; there is no one else to escalate to.
+        </p>
+      </div>
+
+      <div class="cs-section cse-section">
+        <h2 class="cs-h">When you send me a message</h2>
+        <p class="cs-p">
+          The contact forms ask for your name, email address and message, and optionally your role,
+          which budget band fits and a rough timeline. I use those only to reply and to work out
+          whether I can help.
+        </p>
+        <p class="cs-p">
+          The forms post to <strong>FormSubmit</strong> (formsubmit.co), which forwards the
+          submission to my inbox. That means your message passes through FormSubmit’s servers on
+          the way to me — see their own privacy terms for what they do with it. The lawful basis is
+          legitimate interest in responding to an enquiry I have been sent; if we go on to work
+          together, the basis becomes performance of a contract.
+        </p>
+        <p class="cs-p">
+          I keep enquiry emails for as long as the conversation is live and for up to two years
+          afterwards, so I can pick up a thread that goes quiet. Ask me to delete yours sooner and
+          I will.
+        </p>
+      </div>
+
+      <div class="cs-section cse-section">
+        <h2 class="cs-h">What is stored in your browser</h2>
+        <p class="cs-p">
+          No advertising or tracking cookies. Three values are written to your browser’s local
+          storage, all of them so the site behaves the way you left it:
+        </p>
+        <ul class="cse-results" data-stagger>
+          <li class="cse-result">
+            <svg class="cse-result__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+            <span class="cse-result__t"><strong>theme</strong> — whether you chose light or dark.</span>
+          </li>
+          <li class="cse-result">
+            <svg class="cse-result__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+            <span class="cse-result__t"><strong>consent</strong> — your answer to the notice at the bottom of the screen, so you are not asked twice.</span>
+          </li>
+          <li class="cse-result">
+            <svg class="cse-result__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+            <span class="cse-result__t"><strong>ix:view</strong> — whether you prefer the portfolio as a grid or a list.</span>
+          </li>
+        </ul>
+        <p class="cs-p">
+          None of these leaves your device, none identifies you, and none is readable by another
+          site. Clearing your browser storage removes all three.
+        </p>
+      </div>
+
+      <div class="cs-section cse-section">
+        <h2 class="cs-h">Analytics</h2>
+        <p class="cs-p">
+          <strong>There is none.</strong> No Google Analytics, no Plausible, no Fathom, no
+          heat-mapping, no pixels. I do not know which pages you read. The consent notice exists
+          because I may add privacy-friendly, cookie-free analytics later; if I do, it will be
+          named here before it runs, and it will stay off unless you accept.
+        </p>
+      </div>
+
+      <div class="cs-section cse-section">
+        <h2 class="cs-h">Third parties, and what each one sees</h2>
+        <div class="cmp cmp--inline">
+          <div class="cmp__scroll">
+            <table class="ix-table">
+              <thead>
+                <tr>
+                  <th scope="col">Who</th>
+                  <th scope="col">When</th>
+                  <th scope="col">What they receive</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Google Fonts</td>
+                  <td>Every page load</td>
+                  <td>Your IP address and browser, because the Inter typeface is requested from Google’s servers</td>
+                </tr>
+                <tr>
+                  <td>FormSubmit</td>
+                  <td>Only when you submit a form</td>
+                  <td>Everything you typed into that form</td>
+                </tr>
+                <tr>
+                  <td>GitHub Pages</td>
+                  <td>Every page load</td>
+                  <td>Standard server-log data, including your IP, as the host of this site</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="cs-p">
+          Links out to GitHub, LinkedIn or a booking page only share anything once you click them.
+          All three third parties above may process data outside the EU/EEA under the relevant
+          transfer safeguards.
+        </p>
+      </div>
+
+      <div class="cs-section cse-section">
+        <h2 class="cs-h">Your rights</h2>
+        <p class="cs-p">
+          Under the GDPR you can ask me for a copy of what I hold about you, ask me to correct or
+          delete it, ask me to restrict what I do with it, or object to it entirely. Email
+          <a class="textlink" href={`mailto:${site.email}`}>{site.email}</a> and I will answer
+          within one month. If you are not satisfied, you can complain to the Irish Data Protection
+          Commission at <a class="textlink" href="https://www.dataprotection.ie" target="_blank" rel="noopener">dataprotection.ie</a>.
+        </p>
+      </div>
+
+      <div class="cs-section cse-section">
+        <h2 class="cs-h">Changes</h2>
+        <p class="cs-p">
+          If what the site does changes, this page changes with it, and the date at the top moves.
+          There is no version history — the current text is the whole policy.
+        </p>
+        <p class="cse-cta__p" style="padding-top:22px">
+          <a class="textlink" href="/">Back to the home page</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

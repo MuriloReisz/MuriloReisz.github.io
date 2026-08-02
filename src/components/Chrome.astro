@@ -4,7 +4,7 @@ import { site } from '../data/site';
 
 <!-- Cookie consent -->
 <div class="consent" id="consentBanner" role="dialog" aria-label="Cookie consent" hidden>
-  <p class="consent__text">I use privacy-friendly analytics to see which pages are useful and keep improving the site. No ads, and no tracking across other sites. <a href="#" data-legal-open>Privacy &amp; cookies</a>.</p>
+  <p class="consent__text">This site stores your theme and layout choices in your browser so it looks the way you left it. No advertising, no cross-site tracking, and no analytics running today. <a href="#" data-legal-open>What is stored</a> · <a href="/privacy">full policy</a>.</p>
   <div class="consent__actions">
     <button class="pill pill--ghost consent__btn" type="button" id="consentDecline">Decline</button>
     <button class="pill pill--primary consent__btn" type="button" id="consentAccept">Accept</button>
@@ -21,14 +21,16 @@ import { site } from '../data/site';
       </button>
     </div>
     <div class="legal__body">
-      <p class="legal__updated">Last updated {site.year}</p>
-      <p>Short and plain. This explains what happens to your information when you use this site or get in touch. <em>(Placeholder text — replace with your own policy before launch.)</em></p>
+      <p class="legal__updated">Last updated 3 August 2026</p>
+      <p>The short version. The <a href="/privacy">full privacy page</a> has the detail, including which third parties see what.</p>
       <h3>Who I am</h3>
       <p>This site belongs to {site.name}, trading as {site.brand}, based in {site.location}. Reach me at <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
       <h3>What I collect, and why</h3>
-      <p>When you send an enquiry, the contact form asks for your name, email and message. I use this only to reply and to talk about working together.</p>
+      <p>Only what you type into a contact form — your name, email, message and the optional role, budget and timeline fields. I use it to reply and to work out whether I can help. The forms post via FormSubmit, so your message passes through their servers on the way to my inbox.</p>
       <h3>Cookies and similar storage</h3>
-      <p>No analytics run until you click Accept. The site stores your theme choice and cookie decision in your browser — these stay on your device and don’t track you. Change your choice any time from “Cookie settings” in the footer.</p>
+      <p>No advertising or tracking cookies, and no analytics installed at all. Three values sit in your browser’s local storage — your theme, your answer to the notice at the bottom of the screen, and whether you prefer the portfolio as a grid or a list. They stay on your device. Change your answer any time from “Cookie settings” in the footer.</p>
+      <h3>Your rights</h3>
+      <p>You can ask to see, correct or delete anything I hold, or complain to the Irish Data Protection Commission. See the <a href="/privacy">full page</a>.</p>
     </div>
   </div>
 </div>
