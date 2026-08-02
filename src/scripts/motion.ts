@@ -3,7 +3,7 @@
 //  Pairs with motion2.ts (pointer / loop / navigation effects).
 //  Every class this file injects is namespaced .mo-* and styled in
 //  src/styles/motion.css. Nothing here duplicates a site.ts hook:
-//  site.ts owns [data-count]; this file owns [data-counter-to].
+//  This file owns [data-counter-to] — the only count-up in the codebase.
 //
 //  Architecture
 //   • ONE rAF frame pipeline for all scroll-driven effects:
@@ -311,7 +311,7 @@ $$('[data-reveal-chars]').forEach((host) => {
   );
 });
 
-/* ---------- Count-up — [data-counter-to] (site.ts owns [data-count]) ---------- */
+/* ---------- Count-up — [data-counter-to] ---------- */
 $$('[data-counter-to]').forEach((el) => {
   if (el.dataset.moCounted) return;
   const raw = el.getAttribute('data-counter-to') ?? '0';

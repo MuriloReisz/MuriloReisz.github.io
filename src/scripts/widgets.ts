@@ -12,7 +12,7 @@
 //        → all three drive the same [data-filter-item] set.
 //
 //  Nothing here duplicates a site.ts hook: site.ts owns
-//  .toolfilter / [data-count] / .cs-qa; motion.ts owns
+//  .toolfilter / .cs-qa; motion.ts owns
 //  [data-counter-to]. This file owns the attributes listed above.
 // ============================================================
 

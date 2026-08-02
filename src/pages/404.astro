@@ -1,0 +1,49 @@
+---
+// 404 — GitHub Pages serves /404.html automatically for unmatched paths.
+// Written as a real page so it keeps the nav, footer, theme and ⌘K palette:
+// a dead end that still lets someone find what they came for.
+import Layout from '../layouts/Layout.astro';
+import { featured } from '../data/projects';
+---
+
+<Layout
+  title="Page not found"
+  description="That page does not exist — here are the useful ones."
+>
+  <section class="tile tile--white center" id="notfound">
+    <div class="inner center" data-stagger>
+      <div class="eyebrow reveal">404</div>
+      <h1 class="metrics__h2 reveal" data-reveal-words>That page has moved on.</h1>
+      <p class="hero__sub reveal">
+        The link is broken or the page has been renamed. Nothing here is lost — the portfolio,
+        the case studies and the demos are all one click away.
+      </p>
+
+      <div class="hm-more__link-row reveal" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;padding-top:32px">
+        <a class="pill pill--primary" href="/" data-magnetic>Back to the home page</a>
+        <a class="pill pill--ghost" href="/work">Browse the portfolio</a>
+      </div>
+
+      <p class="pc-hero__jump reveal" style="padding-top:26px">
+        Or press <kbd>⌘</kbd><kbd>K</kbd> to search the whole site.
+      </p>
+    </div>
+  </section>
+
+  <section class="tile tile--parchment" id="notfound-work">
+    <div class="inner" data-stagger>
+      <div class="eyebrow reveal">Most read</div>
+      <h2 class="metrics__h2 reveal">Start with one of these.</h2>
+      <ul class="cse-toc__list reveal" style="padding-top:26px">
+        {
+          featured.map((p) => (
+            <li class="cse-toc__item">
+              <a class="cse-toc__link" href={`/work/${p.slug}/`}>{p.title}</a>
+            </li>
+          ))
+        }
+        <li class="cse-toc__item"><a class="cse-toc__link" href="/playground">Interactive demos</a></li>
+      </ul>
+    </div>
+  </section>
+</Layout>
