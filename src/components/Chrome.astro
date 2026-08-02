@@ -28,19 +28,20 @@ import { site } from '../data/site';
       <h3>What I collect, and why</h3>
       <p>When you send an enquiry, the contact form asks for your name, email and message. I use this only to reply and to talk about working together.</p>
       <h3>Cookies and similar storage</h3>
-      <p>No analytics run until you click Accept. The site stores your theme choice and cookie decision in your browser — these stay on your device and don't track you. Change your choice any time from "Cookie settings" in the footer.</p>
+      <p>No analytics run until you click Accept. The site stores your theme choice and cookie decision in your browser — these stay on your device and don’t track you. Change your choice any time from “Cookie settings” in the footer.</p>
     </div>
   </div>
 </div>
 
 <!-- Command palette (⌘K) -->
 <div class="cmdk-scrim" id="cmdk" role="dialog" aria-modal="true" aria-label="Search the site">
-  <div class="cmdk-panel" role="document">
+  <div class="cmdk-panel">
     <div class="cmdk-inputwrap">
       <svg class="cmdk-inputicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
       <input id="cmdkInput" class="cmdk-input" type="text" role="combobox" aria-expanded="true" aria-controls="cmdkList" autocomplete="off" spellcheck="false" placeholder="Jump to a page, link, or action…" aria-label="Jump to a page, link, or action" />
     </div>
     <ul id="cmdkList" class="cmdk-list" role="listbox" aria-label="Search results"></ul>
+    <p class="cmdk-empty" id="cmdkEmpty" role="status" aria-live="polite" hidden>No results</p>
     <div class="cmdk-hint" aria-hidden="true">
       <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
       <span><kbd>↵</kbd> select</span>

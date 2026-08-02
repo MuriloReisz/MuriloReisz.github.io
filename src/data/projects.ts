@@ -124,7 +124,7 @@ export const projects: Project[] = [
     results: [
       'The €6.2M top-performing region and its 39% segment concentration became visible for the first time in a single view, and reshaped how quarterly targets were set.',
       '€5.5M of seasonal profit is now tracked continuously rather than reconstructed after the fact.',
-      'Pack assembly dropped from roughly 16 analyst hours a fortnight to a scheduled refresh with a 10-minute validation check.',
+      'Pack assembly fell from roughly 16 analyst hours a fortnight to a scheduled refresh and a validation pass — about an hour and a half a cycle by the eighth.',
       'Weekly active users grew from 9 to 74 across the region within two months of rollout.',
     ],
     chart: {
@@ -220,7 +220,7 @@ export const projects: Project[] = [
       {
         title: 'Land the data once, properly',
         body:
-          'Terabytes of source data from disparate systems consolidated into governed BigQuery tables through incremental, idempotent ETL. Re-running a load never duplicates rows, and every table carries a load timestamp and source lineage.',
+          'I consolidate terabytes of source data from disparate systems into governed BigQuery tables through incremental, idempotent ETL. Re-running a load never duplicates rows, and every table carries a load timestamp and its source lineage.',
       },
       {
         title: 'Automate the edges with Python and RPA',
@@ -234,9 +234,9 @@ export const projects: Project[] = [
       },
     ],
     results: [
-      'Manual effort on the automated processes down by up to 80%, verified against the timed observation taken before the build.',
+      'Manual effort on the automated processes down by roughly 80% — 38 hours a week to 7.5 — verified against the timed observation taken before the build.',
       'Reporting that previously arrived on a Monday afternoon now lands at 07:00 daily, from a single reconciled source.',
-      'Exploratory analysis and statistical modelling surfaced forecast-grade demand signals clients were previously guessing at.',
+      'Exploratory analysis and statistical modelling turned demand patterns clients had been guessing at into a weekly forecast they order from.',
       'Every deployment is version-controlled and re-runnable — no engagement has needed a rebuild.',
     ],
     chart: {
@@ -409,7 +409,7 @@ export const projects: Project[] = [
     summary:
       'SKU-level weekly forecasting across 34 stores, replacing a spreadsheet that ordered on last year’s numbers plus a feeling.',
     lead:
-      'A 34-store grocery and convenience group in Munster was ordering fresh stock from last year’s sales plus a manager’s judgement. Waste was running at 6.4% of fresh revenue and the top hundred lines were out of stock more often than anyone wanted to admit. I built a SKU-store-week forecast and wired it into the ordering sheet buyers already used.',
+      'A 34-store grocery and convenience group in Munster ordered fresh stock from last year’s sales and a manager’s judgement. Waste was running at 6.4% of fresh revenue and availability on the top hundred lines at 93%. I built a SKU-store-week forecast and wired it into the ordering sheet buyers already used.',
     cover: '/images/ai-report-01.svg',
     coverAlt:
       'Demand forecasting dashboard — forecast versus actual units by category, with weekly forecast error and waste tracked per store',
@@ -525,7 +525,7 @@ export const projects: Project[] = [
     summary:
       'A daily churn score for 8,400 B2B accounts that gives customer success three weeks of warning instead of a renewal-week surprise.',
     lead:
-      'A Dublin B2B SaaS company with 8,400 paying accounts was losing 1.9% of recurring revenue a month and only finding out at renewal. Customer success had capacity to work about 60 accounts a week and no defensible way to choose which 60. I built a daily churn score, calibrated it so the probability means what it says, and shipped it as a ranked worklist.',
+      'Churn at a Dublin B2B SaaS company was discovered at renewal or not at all: 1.9% of its 8,400 accounts left every month, and customer success had capacity to work about 60 a week with no defensible way to choose which 60. I built a daily churn score, calibrated it so the probability means what it says, and shipped it as a ranked worklist.',
     cover: '/images/ai-report-03.svg',
     coverAlt:
       'Churn early-warning dashboard — account risk distribution, driver breakdown and the ranked worklist for customer success',
@@ -572,7 +572,7 @@ export const projects: Project[] = [
       'Precision at the team’s working capacity of 60 accounts a week is 0.46 — roughly one in two calls reaches an account that would otherwise have left.',
     ],
     chart: {
-      title: 'Monthly logo churn — worked cohort vs matched control',
+      title: 'Monthly logo churn in the worked cohort',
       unit: '% of accounts',
       series: [
         { label: 'Jan', value: 1.9 },
@@ -606,7 +606,7 @@ export const projects: Project[] = [
     faq: [
       {
         q: 'Why did the previous rules-based health score fail?',
-        a: 'It measured absolute usage, so every large account looked healthy and every small one looked at risk. Normalising each feature against the account’s own trailing baseline was the change that made the model useful.',
+        a: 'It measured absolute usage, so every large account looked healthy and every small one looked at risk. Normalising each feature against the account’s own trailing baseline fixed that — though it does depend on a product event stream. On billing data alone, three weeks of warning is not available.',
       },
       {
         q: 'How do you know the 27% reduction was the model?',
@@ -635,7 +635,7 @@ export const projects: Project[] = [
     summary:
       'A nine-day month-end close cut to three, by automating the reconciliation and consolidation steps rather than asking people to work faster.',
     lead:
-      'A manufacturing group with five legal entities closed its books in nine working days, and the finance team worked two late nights doing it. Nothing was broken exactly — it was 60-odd manual steps, each individually reasonable, chained together with no way to run them twice safely. I rebuilt the pipeline so the close is a checklist with a status board, not a relay race.',
+      'Nine working days and two late nights — that was month-end for a manufacturing group with five legal entities. Nothing was broken exactly: 61 individually reasonable manual steps, chained together with no way to run any of them twice safely. I rebuilt the pipeline so the close is a checklist with a status board rather than a relay race.',
     cover: '/images/ai-report-05.svg',
     coverAlt:
       'Month-end close status board — each entity’s reconciliation steps with pass, blocked and pending states and variance flags',
@@ -676,7 +676,7 @@ export const projects: Project[] = [
       },
     ],
     results: [
-      'Close time fell from 9 working days to 3, sustained across six consecutive cycles.',
+      'Close time fell from 9 working days to 3 over six cycles, with no cycle regressing.',
       'Around 142 hours of manual finance effort removed per cycle, redeployed onto variance analysis and forecasting.',
       'Reconciliation breaks are now surfaced on day one rather than discovered on day six; average break count per close fell from 38 to 9 as upstream causes became visible.',
       'No late nights in any of the six cycles since go-live.',
@@ -742,7 +742,7 @@ export const projects: Project[] = [
     summary:
       'One live view across four carriers and two hubs, so a delayed consignment is a phone call the same morning instead of a claim three weeks later.',
     lead:
-      'A third-party logistics operator running out of Cork and Rotterdam tracked 2,300 consignments a week across four carrier systems, none of which spoke to each other. Exceptions were found by customers. I built a control tower that ingests all four feeds, reconciles them onto one consignment spine and puts the exceptions on a screen the operations floor actually watches.',
+      'Customers were the exception-detection system at a third-party logistics operator running 2,300 consignments a week out of Cork and Rotterdam, across four carrier systems that knew nothing of each other. I built a control tower that ingests all four feeds, reconciles them onto one consignment spine and puts the exceptions on a screen the operations floor actually watches.',
     cover: '/images/ai-report-06.svg',
     coverAlt:
       'Logistics control tower — consignments in transit by lane, exception queue by dwell time, and on-time delivery trend',
@@ -757,7 +757,7 @@ export const projects: Project[] = [
     role: 'Consulting analyst — data model, ingestion, dashboard, floor rollout',
     duration: '10 weeks',
     problem: [
-      'Four carriers, four portals, four different status vocabularies and four different ideas of what a delivery date means. Operations kept a spreadsheet to bridge them, updated twice a day, which meant a consignment could sit stuck for 20 hours before anyone noticed. On-time-in-full was reported at 88.9% but calculated from carrier self-reporting, so nobody quite trusted it.',
+      'Four carriers, four portals, four different status vocabularies and four different ideas of what a delivery date means. Operations kept a spreadsheet to bridge them, rebuilt once a day, which meant a consignment could sit stuck for 20 hours before anyone noticed. On-time-in-full was reported at 88.9% but calculated from carrier self-reporting, so nobody quite trusted it.',
       'The commercial cost was concentrated in a small number of lanes and a small number of accounts — but with the data fragmented, nobody could prove which.',
     ],
     approach: [
@@ -783,7 +783,7 @@ export const projects: Project[] = [
       },
     ],
     results: [
-      'On-time-in-full rose from 88.9% to 98.3% over two quarters, measured from reconciled event data rather than carrier self-reporting.',
+      'On-time-in-full rose from 88.9% to 98.3% over two quarters — the first reconciled week came out level with the carrier-reported baseline, so the gain is not an artefact of the new measure.',
       'Data latency fell from a 24-hour spreadsheet cycle to 11 minutes end to end.',
       'Two lanes were shown to generate 61% of all exceptions; renegotiating one carrier’s cut-off time removed most of them.',
       'Customer-raised exception queries fell by roughly half, because operations now make the call first.',
@@ -894,7 +894,7 @@ export const projects: Project[] = [
     ],
     results: [
       'Median first-response time on routine enquiries fell from 6.2 hours to 1.6 hours — a 74% reduction — and urgent items no longer queue behind them.',
-      'Routing accuracy of 96.2% on a held-out sample of 600 enquiries, with the model abstaining on 11% rather than guessing.',
+      'Routing accuracy of 96.2% on a held-out sample of 600 enquiries, measured on the 89% the model did not abstain on.',
       'Every enquiry caught by the clinical-flag layer reached a human on first touch across the twelve-week evaluation, with no auto-routing exceptions.',
       'Reception time spent sorting the inbox fell by around 14 hours a week and moved to patient-facing work.',
     ],
@@ -968,7 +968,7 @@ export const projects: Project[] = [
     summary:
       'Unsupervised detection across 1,480 meters that finds a failing plant item in hours instead of at the quarterly bill.',
     lead:
-      'A commercial property portfolio of 62 buildings had 1,480 half-hourly meters and no way to read them. Faults were discovered when a quarterly bill looked high — typically 60 to 90 days after a chiller started running through the night. I built unsupervised anomaly detection on the telemetry that raises a ranked, costed alert to the facilities team within hours.',
+      'Every one of 1,480 half-hourly meters across a 62-building commercial portfolio was recording, and nothing was reading them. A fault surfaced when a quarterly bill looked high — typically 60 to 90 days after a chiller had started running through the night. I built unsupervised anomaly detection on the telemetry that raises a ranked, costed alert to the facilities team within hours.',
     cover: '/images/ai-report-09.svg',
     coverAlt:
       'Energy anomaly detection dashboard — half-hourly consumption against the learned baseline, with ranked open alerts by estimated cost',
@@ -983,7 +983,7 @@ export const projects: Project[] = [
     role: 'Consulting data scientist — detection design, deployment, FM handover',
     duration: '13 weeks',
     problem: [
-      'Half-hourly data existed for every meter and was effectively unread. With 1,480 series there was no realistic way for a facilities team to eyeball them, and the two thresholds someone had configured were static — so they fired constantly in January and never in June. Most alerts were ignored, which is the normal end state for an alert nobody trusts.',
+      'Half-hourly data existed for every meter and was effectively unread. With 1,480 series there was no realistic way for a facilities team to eyeball them, and the few thresholds someone had configured were static — so they fired constantly in January and never in June. Most alerts were ignored, which is the normal end state for an alert nobody trusts.',
       'The failures being missed were mundane and expensive: schedules left on after a bank holiday, a stuck valve, simultaneous heating and cooling, a chiller cycling all night in an empty building.',
     ],
     approach: [

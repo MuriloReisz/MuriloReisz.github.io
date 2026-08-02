@@ -72,7 +72,15 @@ megaItems.forEach((item) => {
   trigger.addEventListener('focus', open);
   // Let the trigger also work as a real link on click (don't hijack navigation).
 });
-addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllMegas(); });
+addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  /* The panel hides via visibility, so focus inside it would be orphaned —
+     hand it back to the trigger before closing. */
+  const openItem = megaItems.find((it) => $<HTMLAnchorElement>('a', it)?.getAttribute('aria-expanded') === 'true');
+  const inside = allMegas.some((m) => m.contains(document.activeElement));
+  closeAllMegas();
+  if (inside) $<HTMLAnchorElement>('a', openItem ?? megaItems[0])?.focus();
+});
 
 /* ---------- Nav: burger (mobile) ---------- */
 const burger = $('#navBurger');
@@ -213,16 +221,20 @@ $$('[data-carousel]').forEach((carousel) => {
 
 /* ---------- Compare table: select a plan column ---------- */
 $$('.cmp, table').forEach((table) => {
-  const heads = $$<HTMLElement>('.cmp__plan[data-col]', table);
-  if (!heads.length) return;
+  /* The control is a real <button> nested inside the <th>, so the header keeps
+     its columnheader role and the data cells keep their association. */
+  const btns = $$<HTMLButtonElement>('.cmp__plan-btn[data-col]', table);
+  if (!btns.length) return;
   const select = (col: string) => {
-    heads.forEach((h) => { const on = h.dataset.col === col; h.classList.toggle('is-sel', on); h.setAttribute('aria-pressed', String(on)); });
+    btns.forEach((b) => {
+      const on = b.dataset.col === col;
+      b.setAttribute('aria-pressed', String(on));
+      b.closest('.cmp__plan')?.classList.toggle('is-sel', on);
+    });
     $$<HTMLElement>('.cmp__cell[data-col]', table).forEach((c) => c.classList.toggle('cmp__col-sel', c.dataset.col === col));
   };
-  heads.forEach((h) => {
-    h.addEventListener('click', () => select(h.dataset.col!));
-    h.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(h.dataset.col!); } });
-  });
+  /* A <button> handles Enter and Space natively — no key handler needed. */
+  btns.forEach((b) => b.addEventListener('click', () => select(b.dataset.col!)));
 });
 
 /* ---------- Scroll-linked timeline fill (.tl__rail / .tl__fill) ---------- */
@@ -284,11 +296,78 @@ $('#consentAccept')?.addEventListener('click', () => setConsent('granted'));
 $('#consentDecline')?.addEventListener('click', () => setConsent('denied'));
 $('#cookieSettings')?.addEventListener('click', (e) => { e.preventDefault(); consent?.removeAttribute('hidden'); });
 
+/* ---------- Modal focus management ----------
+   Shared by the legal dialog and the ⌘K palette. Both are
+   role="dialog" aria-modal="true", which makes everything outside them
+   inert to assistive tech — so Tab must not be allowed to leave, Esc
+   must close, and focus must return to whatever opened it. */
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+function focusablesIn(root: HTMLElement) {
+  return $$<HTMLElement>(FOCUSABLE, root).filter(
+    (el) => el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement
+  );
+}
+
+/** Keeps Tab inside `root` while it is open. */
+function trapTab(root: HTMLElement, e: KeyboardEvent) {
+  if (e.key !== 'Tab') return;
+  const f = focusablesIn(root);
+  if (!f.length) {
+    e.preventDefault();
+    return;
+  }
+  const first = f[0];
+  const last = f[f.length - 1];
+  const active = document.activeElement as HTMLElement | null;
+  if (e.shiftKey && (active === first || !root.contains(active))) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && (active === last || !root.contains(active))) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
 /* ---------- Legal modal ---------- */
 const legal = $('#legalScrim');
-$$('[data-legal-open]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); legal?.classList.add('is-open'); ($('#legalBox') as HTMLElement)?.focus(); }));
-$('#legalClose')?.addEventListener('click', () => legal?.classList.remove('is-open'));
-legal?.addEventListener('click', (e) => { if (e.target === legal) legal.classList.remove('is-open'); });
+if (legal) {
+  const box = $<HTMLElement>('#legalBox');
+  let legalOpener: HTMLElement | null = null;
+
+  const onLegalKey = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeLegal();
+      return;
+    }
+    trapTab(legal, e);
+  };
+  const openLegal = (trigger: HTMLElement) => {
+    legalOpener = trigger;
+    legal.classList.add('is-open');
+    document.addEventListener('keydown', onLegalKey);
+    ($<HTMLElement>('#legalClose') ?? box)?.focus();
+  };
+  function closeLegal() {
+    legal!.classList.remove('is-open');
+    document.removeEventListener('keydown', onLegalKey);
+    legalOpener?.focus();
+    legalOpener = null;
+  }
+
+  $$('[data-legal-open]').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      openLegal(a as HTMLElement);
+    })
+  );
+  $('#legalClose')?.addEventListener('click', closeLegal);
+  legal.addEventListener('click', (e) => {
+    if (e.target === legal) closeLegal();
+  });
+}
 
 /* ---------- Command palette (⌘K) ---------- */
 const cmdk = $('#cmdk');
@@ -324,17 +403,58 @@ const INDEX: CmdkEntry[] = [
   ...projectEntries(),
 ];
 let cmdkActive = 0;
+const cmdkEmpty = $('#cmdkEmpty');
+let cmdkOpener: HTMLElement | null = null;
+
+/** Mirrors the active option into aria-activedescendant, which is the only
+    thing a screen reader listens to here — a CSS class alone is silent. */
+function paintCmdkActive(items: HTMLElement[]) {
+  items.forEach((it, i) => {
+    const on = i === cmdkActive;
+    it.classList.toggle('is-active', on);
+    it.setAttribute('aria-selected', String(on));
+  });
+  const active = items[cmdkActive];
+  if (active?.id) cmdkInput?.setAttribute('aria-activedescendant', active.id);
+  else cmdkInput?.removeAttribute('aria-activedescendant');
+  active?.scrollIntoView({ block: 'nearest' });
+}
+
 function renderCmdk(q: string) {
   if (!cmdkList) return;
   const ql = q.trim().toLowerCase();
   const items = INDEX.filter((i) => !ql || (i.label + ' ' + i.kw).toLowerCase().includes(ql));
   cmdkActive = 0;
-  cmdkList.innerHTML = items.map((i, idx) =>
-    `<li class="cmdk-item${idx === 0 ? ' is-active' : ''}" role="option" data-href="${i.href}"><span>${i.label}</span></li>`
-  ).join('') || '<li class="cmdk-empty">No results</li>';
+  cmdkList.innerHTML = items
+    .map(
+      (i, idx) =>
+        `<li class="cmdk-item" id="cmdk-opt-${idx}" role="option" aria-selected="false" data-href="${i.href}"><span>${i.label}</span></li>`
+    )
+    .join('');
+  /* The empty state lives outside the listbox — a non-option child of
+     role="listbox" is invalid, and it needs a live region to be announced. */
+  cmdkEmpty?.toggleAttribute('hidden', items.length > 0);
+  paintCmdkActive($$<HTMLElement>('.cmdk-item', cmdkList));
 }
-function openCmdk() { cmdk?.classList.add('is-open'); renderCmdk(''); setTimeout(() => cmdkInput?.focus(), 20); }
-function closeCmdk() { cmdk?.classList.remove('is-open'); if (cmdkInput) cmdkInput.value = ''; }
+
+function openCmdk() {
+  if (!cmdk) return;
+  cmdkOpener = document.activeElement as HTMLElement | null;
+  cmdk.classList.add('is-open');
+  renderCmdk('');
+  setTimeout(() => cmdkInput?.focus(), 20);
+}
+function closeCmdk() {
+  if (!cmdk) return;
+  cmdk.classList.remove('is-open');
+  if (cmdkInput) {
+    cmdkInput.value = '';
+    cmdkInput.removeAttribute('aria-activedescendant');
+  }
+  /* Focus would otherwise be left on a display:none input and fall to <body>. */
+  (cmdkOpener ?? $<HTMLElement>('#navSearch'))?.focus();
+  cmdkOpener = null;
+}
 $('#navSearch')?.addEventListener('click', openCmdk);
 cmdkInput?.addEventListener('input', () => renderCmdk(cmdkInput.value));
 cmdk?.addEventListener('click', (e) => {
@@ -345,12 +465,16 @@ cmdk?.addEventListener('click', (e) => {
 addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); cmdk?.classList.contains('is-open') ? closeCmdk() : openCmdk(); }
   if (!cmdk?.classList.contains('is-open')) return;
-  const items = $$('.cmdk-item', cmdkList!);
-  if (e.key === 'Escape') closeCmdk();
-  else if (e.key === 'ArrowDown') { e.preventDefault(); cmdkActive = Math.min(items.length - 1, cmdkActive + 1); }
+  const items = $$<HTMLElement>('.cmdk-item', cmdkList!);
+  if (e.key === 'Escape') { e.preventDefault(); closeCmdk(); return; }
+  if (e.key === 'Tab') { trapTab(cmdk, e); return; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); cmdkActive = Math.min(items.length - 1, cmdkActive + 1); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); cmdkActive = Math.max(0, cmdkActive - 1); }
+  else if (e.key === 'Home') { e.preventDefault(); cmdkActive = 0; }
+  else if (e.key === 'End') { e.preventDefault(); cmdkActive = items.length - 1; }
   else if (e.key === 'Enter') { const h = items[cmdkActive]?.dataset.href; if (h) location.href = h; return; }
-  items.forEach((it, i) => it.classList.toggle('is-active', i === cmdkActive));
+  else return;
+  paintCmdkActive(items);
 });
 
 /* ---------- Hero constellation (animated tech background) ---------- */

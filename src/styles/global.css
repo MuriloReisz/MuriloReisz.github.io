@@ -82,6 +82,7 @@
     --color-divider-soft: rgba(255, 255, 255, 0.08);
     --color-hairline: rgba(255, 255, 255, 0.16);
     --color-primary: #a78bfa;          /* accent text/links/eyebrows on dark */
+    --color-primary-focus: #a78bfa;    /* 5.12:1 on tile-dark-2; the light value was 2.99:1 */
     /* --accent-fill stays #6d5ef0 so white button text remains ≥ 4.5:1 */
     --color-tile-dark: #1c1c1e;
     --color-tile-dark-2: #2c2c2e;
@@ -202,6 +203,12 @@
     cursor: pointer;
   }
   .textlink--dark { color: var(--color-primary-on-dark); }
+  /* Small accent text on the tinted light surfaces falls to 4.28:1 (parchment)
+     --accent-fill-hover is 5.35:1 there. Dark mode re-tints the surface, so
+     scope this to light mode only. */
+  html:not([data-theme="dark"]) .tile--parchment :is(.textlink, .eyebrow--mono) {
+    color: var(--accent-fill-hover);
+  }
   .textlink:hover { opacity: 0.7; }
 
   /* ============================================================
@@ -1054,7 +1061,21 @@
   .cmp__table tr:last-child td { border-bottom: 0; }
   .cmp__thead th { background: var(--surface-card); vertical-align: top; padding-top: 20px; padding-bottom: 20px; }
   .cmp__corner { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-ink-48); }
-  .cmp__plan { cursor: pointer; user-select: none; vertical-align: top; }
+  .cmp__plan { user-select: none; vertical-align: top; }
+  /* The real control is a nested button, so the th keeps its columnheader role.
+     The button fills the cell so the whole header stays clickable. */
+  .cmp__plan-btn {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    cursor: pointer;
+  }
+  .cmp__plan-btn:focus-visible { outline: 2px solid var(--color-primary-focus); outline-offset: -2px; }
   .cmp__plan-name { font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--color-ink); display: flex; align-items: flex-start; justify-content: center; min-height: 2.4em; line-height: 1.2; }
   .cmp__plan-price { font-size: 13px; color: var(--color-ink-48); display: block; margin-top: 4px; font-variant-numeric: tabular-nums; }
   .cmp__plan-badge { display: block; margin-top: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-primary); }
@@ -1065,7 +1086,6 @@
   .cmp__col-sel { background: color-mix(in srgb, var(--color-primary) 8%, transparent); }
   [data-theme="dark"] .cmp__col-sel { background: rgba(167, 139, 250,0.12); }
   .cmp__plan.is-sel .cmp__plan-name { color: var(--color-primary); }
-  .cmp__plan:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
   .cmp__table tbody tr:nth-child(even) td { background: var(--color-divider-soft); }
   .cmp__table tbody tr:nth-child(even) td.cmp__col-sel { background: color-mix(in srgb, var(--color-primary) 8%, var(--color-divider-soft)); }
 
@@ -2721,7 +2741,11 @@
   .cta__submit[disabled] { opacity: 0.55; cursor: default; }
   /* honeypot — hidden from humans, catches bots */
   .cta__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-  .cta__field[aria-invalid="true"] { border-color: #ff6b6b; outline: none; }
+  /* Keep the focus ring: this is the field the keyboard user has to find.
+     #d93636 is 4.28:1 on white, over the 3:1 that 1.4.11 needs for a
+     non-text indicator (#ff6b6b was 2.78:1). */
+  .cta__field[aria-invalid="true"] { border-color: #d93636; }
+  [data-theme="dark"] .cta__field[aria-invalid="true"] { border-color: #ff8585; }
   .cta__err { display: none; font-size: 14px; letter-spacing: -0.224px; color: #ff8a8a; text-align: left; padding: 0 22px; margin-top: -6px; }
   .cta__err.is-shown { display: block; }
   .cta__status { font-size: 16px; line-height: 1.5; letter-spacing: -0.224px; text-align: center; margin-top: 6px; min-height: 1px; }

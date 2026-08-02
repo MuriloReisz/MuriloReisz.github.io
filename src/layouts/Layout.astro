@@ -6,7 +6,9 @@ import '../styles/motion.css';
 import '../styles/ix.css';
 import '../styles/work.css';
 import '../styles/playground.css';
-import '../styles/home.css';import Nav from '../components/Nav.astro';
+import '../styles/home.css';
+
+import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Chrome from '../components/Chrome.astro';
 import { site } from '../data/site';
@@ -117,12 +119,14 @@ const cmdkProjects = projects.map((p) => ({
   </head>
   <body data-measure={wide ? 'wide' : undefined}>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Chrome />
     <Nav />
     <main id="main">
       <slot />
     </main>
     <Footer />
+    <!-- Fixed-position overlays last: keeps the page h1 first in source order
+         and puts this chrome at the end of the focus order. -->
+    <Chrome />
     <script type="application/json" id="cmdkProjects" set:html={JSON.stringify(cmdkProjects)} is:inline />
     <script src="../scripts/site.ts"></script>
     <script src="../scripts/motion.ts"></script>
