@@ -30,7 +30,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      # npm ci occasionally dies with "Exit handler never called!" (npm/cli#4028),
+      # a race in npm itself unrelated to the lockfile — retry once before failing.
+      - run: npm ci || npm ci
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
