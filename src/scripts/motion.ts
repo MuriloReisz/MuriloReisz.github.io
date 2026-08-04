@@ -184,6 +184,31 @@ $$('[data-scroll-scale]').forEach((el) => {
   });
 });
 
+/* ---------- Scroll tilt + fade — [data-scroll-tilt] (3D card settling flat as it enters view) ---------- */
+$$('[data-scroll-tilt]').forEach((el) => {
+  const deg = clamp(num(el.getAttribute('data-scroll-tilt'), 50), 0, 80);
+  const minOpacity = clamp(num(el.getAttribute('data-scroll-tilt-opacity'), 0.3), 0, 1);
+  let top = 0;
+  let p = 0;
+  scrollFx.push({
+    measure() {
+      top = docTop(el);
+    },
+    compute(sy, vh) {
+      const rectTop = top - sy;
+      p = easeOut(clamp01((vh - rectTop) / (vh * 0.62)));
+    },
+    paint() {
+      el.style.transform = `rotateX(${(deg * (1 - p)).toFixed(2)}deg)`;
+      el.style.opacity = (minOpacity + (1 - minOpacity) * p).toFixed(3);
+    },
+    reset() {
+      el.style.transform = '';
+      el.style.opacity = '';
+    },
+  });
+});
+
 /* ---------- Word reveal — [data-reveal-words] ---------- */
 /* Walks text nodes so nested <strong>/<em>/<span>/<a> markup survives intact. */
 function splitWords(host: HTMLElement) {

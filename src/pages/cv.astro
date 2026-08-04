@@ -1,0 +1,160 @@
+---
+// /cv — a single print-friendly page covering the same ground as the .docx
+// résumé, so a visitor (or Murilo) can preview it in the browser and use
+// Print → Save as PDF without opening a Word doc. Content is a deliberate
+// duplicate of the Experience/Education section on the homepage, not a
+// shared data source — this page renders everything expanded (no read-more
+// toggles) and needs its own print stylesheet, so keeping it independent
+// avoids coupling two very different presentations to one markup shape.
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+import { skills } from '../data/extras';
+
+const groups = [...new Set(skills.map((s) => s.group))];
+---
+
+<Layout title="CV" description={`${site.role} — ${site.tagline}`}>
+  <section class="tile tile--white cv-page">
+    <div class="inner">
+      <div class="cv-toolbar no-print">
+        <button class="pill pill--primary" id="cvPrint" type="button">Print / Save as PDF</button>
+        <a class="pill pill--ghost" href={site.resume} download>Download .docx</a>
+        <a class="pill pill--ghost" href="/">Back to portfolio</a>
+      </div>
+
+      <header class="cv-head">
+        <h1 class="cv-name">{site.name}</h1>
+        <p class="cv-role">{site.role}</p>
+        <p class="cv-contact">
+          {site.location} · <a href={`mailto:${site.email}`}>{site.email}</a> · <a href={`tel:${site.phone.replace(/\s+/g, '')}`}>{site.phone}</a>
+          <br />
+          <a href={site.socials.linkedin} target="_blank" rel="noopener">{site.socials.linkedin.replace('https://', '')}</a> · <a href={site.socials.github} target="_blank" rel="noopener">{site.socials.github.replace('https://', '')}</a>
+        </p>
+        <p class="cv-summary">{site.tagline}</p>
+      </header>
+
+      <section class="cv-section">
+        <h2 class="cv-h2">Experience</h2>
+        <div class="exp__list">
+          <div class="exp__item">
+            <div class="exp__when">
+              <div class="exp__role">Data Analyst</div>
+              <div class="exp__dates">Present</div>
+            </div>
+            <div class="exp__body">
+              <div class="exp__org">Apple</div>
+              <p class="exp__intro">On the <strong>CEMEA Sales BPR &amp; Systems</strong> team — building browser-based automation, processing large-scale cross-regional sales data, and turning it into Tableau dashboards and predictive models that give stakeholders visibility into performance and KPIs.</p>
+              <p class="exp__tools"><strong>Tools:</strong> Tableau · SQL · Python (Pandas, Playwright, Selenium) · Google BigQuery · Microsoft Excel</p>
+              <ul class="exp__points">
+                <li>Develop and maintain <strong>browser-based automation workflows with Playwright</strong> to streamline data collection, validation and reporting for the CEMEA Sales BPR &amp; Systems team.</li>
+                <li>Design and build <strong>interactive Tableau dashboards</strong> giving stakeholders visibility into sales performance and key business KPIs across the CEMEA region.</li>
+                <li><strong>Manage and process large-scale datasets</strong> supporting cross-regional sales business-process re-engineering (BPR), ensuring data accuracy and integrity.</li>
+                <li>Build <strong>predictive scripts and statistical models</strong> to analyse sales trends and support forecasting and data-driven decisions.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="exp__item">
+            <div class="exp__when">
+              <div class="exp__role">Freelance Data &amp; Automation Engineer</div>
+              <div class="exp__dates">Oct 2024 — Present · Remote</div>
+            </div>
+            <div class="exp__body">
+              <div class="exp__org">Freelance · Remote</div>
+              <ul class="exp__points">
+                <li>Manage the full project lifecycle for multiple clients — from consultation and stakeholder engagement to architecting and deploying <strong>end-to-end data &amp; automation solutions</strong>.</li>
+                <li>Engineer custom automation with <strong>Python and RPA</strong>, streamlining complex processes and <strong>reducing manual effort by up to 80%</strong>.</li>
+                <li>Perform exploratory data analysis and statistical modelling to surface KPIs and predictive insight for forecasting; version control with Git / GitHub / GitLab.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="exp__item">
+            <div class="exp__when">
+              <div class="exp__role">Data Analyst</div>
+              <div class="exp__dates">Nov 2022 — Oct 2024</div>
+            </div>
+            <div class="exp__body">
+              <div class="exp__org">Porto · São Paulo, Brazil</div>
+              <ul class="exp__points">
+                <li>Engineered and maintained scalable <strong>ETL pipelines processing terabytes</strong> of data from disparate sources into <strong>Google BigQuery</strong>, ensuring integrity and data governance.</li>
+                <li>Delivered dynamic <strong>BI dashboards</strong> that guided strategic decisions, and drove process improvements with low-code apps (AppSheet) and AI automation (n8n).</li>
+                <li>Automated extraction from legacy systems (RPA) and external sites (web scraping), and optimised BigQuery performance with complex SQL and stored procedures.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="exp__item">
+            <div class="exp__when">
+              <div class="exp__role">IT Assistant</div>
+              <div class="exp__dates">Dec 2021 — May 2022</div>
+            </div>
+            <div class="exp__body">
+              <div class="exp__org">Marcelo Tostes Advogados · São Paulo, Brazil</div>
+              <ul class="exp__points">
+                <li>First point of contact for all IT issues, providing timely hardware and software support to a busy legal office.</li>
+                <li>Managed system maintenance, network configuration and software updates to keep workstations stable and secure.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cv-section">
+        <h2 class="cv-h2">Skills</h2>
+        <div class="cv-skills">
+          {groups.map((g) => (
+            <div class="cv-skillgroup">
+              <p class="cv-skillgroup__name">{g}</p>
+              <p class="cv-skillgroup__items">{skills.filter((s) => s.group === g).map((s) => s.name).join(' · ')}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="cv-section">
+        <h2 class="cv-h2">Education &amp; languages</h2>
+        <div class="creds">
+          <div class="cred">
+            <div>
+              <div class="cred__name">BSc — Analysis &amp; Development of Systems</div>
+              <div class="cred__meta">FIAP · São Paulo · 2022–2024</div>
+            </div>
+          </div>
+          <div class="cred">
+            <div>
+              <div class="cred__name">Fluent in 5 languages</div>
+              <div class="cred__meta">Portuguese (native) · English C2 · Spanish C1 · French &amp; Italian B2</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  document.getElementById('cvPrint')?.addEventListener('click', () => window.print());
+</script>
+
+<style>
+  .cv-page { padding-top: 32px; }
+  .cv-toolbar { display: flex; gap: 12px; flex-wrap: wrap; padding-bottom: 32px; }
+  .cv-head { padding-bottom: 8px; border-bottom: 1px solid var(--color-hairline); }
+  .cv-name { font-family: var(--font-display); font-size: 40px; font-weight: 600; letter-spacing: -0.6px; margin: 0; }
+  .cv-role { font-size: 18px; color: var(--color-primary); font-weight: 600; padding-top: 4px; }
+  .cv-contact { font-size: 14.5px; line-height: 1.6; color: var(--color-ink-48); padding-top: 10px; }
+  .cv-summary { font-size: 16px; line-height: 1.55; color: var(--color-ink-80); padding-top: 14px; max-width: 640px; }
+  .cv-section { padding-top: 40px; }
+  .cv-h2 { font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -0.4px; padding-bottom: 8px; }
+  .cv-skills { display: flex; flex-direction: column; gap: 10px; }
+  .cv-skillgroup__name { font-weight: 600; font-size: 14px; color: var(--color-ink); }
+  .cv-skillgroup__items { font-size: 14.5px; color: var(--color-ink-48); padding-top: 2px; }
+
+  @media print {
+    :global(.navbar), :global(.footer), :global(.advisor-fab), :global(.scroll-progress), .no-print { display: none !important; }
+    :global(body) { background: #fff; }
+    .cv-page { padding-top: 0; }
+    .exp__item, .cred { break-inside: avoid; }
+  }
+</style>

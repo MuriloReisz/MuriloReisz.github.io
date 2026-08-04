@@ -143,18 +143,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/proposal-top-performers.svg',
+        src: '/images/gallery/cemea-sales-dashboard-1.png',
         alt: 'Top-performers view ranking countries and channels by revenue contribution and year-on-year growth',
         caption: 'Top performers — ranked by contribution, with year-on-year growth alongside so a big number and a falling number are never confused.',
-        width: 2832,
-        height: 1982,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/proposal-insights-2.svg',
+        src: '/images/gallery/cemea-sales-dashboard-2.png',
         alt: 'Segment and margin detail page showing profit trend against revenue mix by quarter',
         caption: 'Margin detail. Revenue mix and profit sit on the same page because the interesting cases are the ones that move in opposite directions.',
-        width: 2460,
-        height: 1390,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [
@@ -255,18 +255,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/proposal-spec.svg',
+        src: '/images/gallery/freelance-automation-bi-1.png',
         alt: 'Pipeline specification sheet listing source systems, load cadence, validation rules and owners',
         caption: 'The spec sheet each engagement is signed off against — sources, cadence, validation rules and a named owner per table.',
-        width: 2776,
-        height: 1568,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/proposal-wireframe.svg',
+        src: '/images/gallery/freelance-automation-bi-2.png',
         alt: 'Wireframe of the client reporting layout, mapping each KPI to its underlying warehouse table',
         caption: 'Reporting wireframe. Every tile is traced back to a warehouse table before anyone opens Power BI.',
-        width: 5248,
-        height: 2562,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [
@@ -363,18 +363,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/image03.svg',
+        src: '/images/gallery/ocean-drones-1.png',
         alt: 'Telemetry view plotting pH and temperature against the seasonal baseline for one survey area',
         caption: 'Telemetry against the seasonal baseline — divergence is the thing worth looking at, so it is what the chart encodes.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/image07.svg',
+        src: '/images/gallery/ocean-drones-2.png',
         alt: 'Classification review queue showing captured frames with candidate species and confidence scores',
         caption: 'The review queue. Low-confidence frames go to a human rather than being reported as identified.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [
@@ -475,18 +475,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/ai-report-02.svg',
+        src: '/images/gallery/retail-demand-forecast-1.png',
         alt: 'Forecast accuracy breakdown by fresh category, comparing the model against the seasonal-naïve benchmark',
         caption: 'Accuracy by category against the seasonal-naïve benchmark. Bakery gained most; loose produce needed a separate weather feature.',
-        width: 1920,
-        height: 1080,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/image10.svg',
+        src: '/images/gallery/retail-demand-forecast-2.png',
         alt: 'Store-level waste and availability view used in the weekly ordering review',
         caption: 'The weekly review page — waste and availability side by side, because improving one at the other’s expense is easy and pointless.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [
@@ -589,18 +589,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/ai-report-04.svg',
+        src: '/images/gallery/churn-early-warning-1.png',
         alt: 'Model evaluation page showing the calibration curve and precision at the team’s working capacity',
         caption: 'Calibration and precision-at-capacity. The threshold was set from this page and the team’s weekly headcount, not from a default of 0.5.',
-        width: 1920,
-        height: 1080,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/image11.svg',
+        src: '/images/gallery/churn-early-warning-2.png',
         alt: 'Per-account driver breakdown showing the three largest contributors to a risk score',
         caption: 'Per-account drivers. A score without a reason gets ignored on the second week.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [
@@ -696,18 +696,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/image12.svg',
+        src: '/images/gallery/finance-close-automation-1.png',
         alt: 'Reconciliation exception queue showing unmatched intercompany rows with both source ledgers side by side',
         caption: 'The exception queue. Matched items clear silently; the accountant only ever sees the breaks, with both source rows attached.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/image13.svg',
+        src: '/images/gallery/finance-close-automation-2.png',
         alt: 'Process map of the close before and after automation, showing manual steps replaced by scheduled jobs',
         caption: 'Before and after. Eleven duplicated steps and four unread outputs were deleted rather than automated.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [
@@ -806,18 +806,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/ai-report-07.svg',
+        src: '/images/gallery/logistics-control-tower-1.png',
         alt: 'Lane performance view ranking trunk and delivery lanes by exception rate and average dwell time',
         caption: 'Lane performance. Two lanes accounted for 61% of exceptions — invisible while the data sat in four portals.',
-        width: 1920,
-        height: 1080,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/image14.svg',
+        src: '/images/gallery/logistics-control-tower-2.png',
         alt: 'Floor display layout showing exception count, worst lanes and the oldest open consignment',
         caption: 'The floor display. Three numbers, readable from across the room, refreshing every ten minutes.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [
@@ -918,18 +918,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/image15.svg',
+        src: '/images/gallery/clinic-nlp-triage-1.png',
         alt: 'Intent confusion matrix across the nine enquiry categories, with the abstain band shown separately',
         caption: 'Confusion across the nine intents, with abstentions counted separately — a model that declines to answer is behaving correctly here.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/image16.svg',
+        src: '/images/gallery/clinic-nlp-triage-2.png',
         alt: 'Routing audit log showing each decision, its confidence and any reversal made by reception',
         caption: 'The audit log. Every decision is reversible in one click, and every reversal feeds the weekly review.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [
@@ -1030,18 +1030,18 @@ export const projects: Project[] = [
     },
     gallery: [
       {
-        src: '/images/image17.svg',
+        src: '/images/gallery/energy-anomaly-detection-1.png',
         alt: 'Half-hourly consumption for one meter plotted against its learned baseline, with the anomalous overnight period shaded',
         caption: 'One meter against its own baseline. The overnight shoulder is the chiller — invisible in the daily total, obvious in the profile.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
       {
-        src: '/images/image20.svg',
+        src: '/images/gallery/energy-anomaly-detection-2.png',
         alt: 'Open alert queue ranked by estimated cost per day with cause codes from closed alerts',
         caption: 'The alert queue, ordered by euros per day. Cause codes from closed alerts are what lifted precision from 21% to 68%.',
-        width: 768,
-        height: 432,
+        width: 1400,
+        height: 800,
       },
     ],
     faq: [

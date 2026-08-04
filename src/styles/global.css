@@ -190,6 +190,8 @@
   .pill--ghost-dark:hover { background: rgba(167, 139, 250, 0.10); }
   .pill:active { transform: scale(0.95); }
   .pill--sm { height: 32px; padding: 0 16px; font-size: 14px; }
+  .pill__arrow { margin-left: 6px; transition: transform 0.15s ease; }
+  .pill:hover .pill__arrow { transform: translateX(2px); }
 
   .textlink {
     font-family: var(--font-text);
@@ -234,13 +236,12 @@
     align-items: center;
     justify-content: space-between;
   }
-  .navbar__brand { display: flex; align-items: center; gap: 13px; }
-  .navbar__logo { height: 38px; width: auto; display: block; object-fit: contain; }
-  /* Logo swaps to a light-on-dark variant in dark mode (nav + intro splash) */
-  .navbar__logo--dark, .intro__logo--dark { display: none; }
-  [data-theme="dark"] .navbar__logo--light,
+  .navbar__brand { display: flex; align-items: center; gap: 10px; }
+  .navbar__logo { height: 36px; width: 36px; display: block; }
+  .navbar__brand-name { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -0.4px; color: var(--color-ink); }
+  /* Logo swaps to a light-on-dark variant in dark mode (intro splash) */
+  .intro__logo--dark { display: none; }
   [data-theme="dark"] .intro__logo--light { display: none; }
-  [data-theme="dark"] .navbar__logo--dark { display: block; }
   [data-theme="dark"] .intro__logo--dark { display: block; }
   .navbar__links { display: flex; align-items: center; gap: 34px; }
   .navbar__links a {
@@ -1338,7 +1339,7 @@
   #ai-services-command > .inner, #ai-services-command > .ccd-stage, #ai-services-command > .ccd__feats { position: relative; z-index: 1; }
 
   /* fold-down stage (perspective lives on the parent; the panel rotates) */
-  .ccd-stage { perspective: 1600px; max-width: 1120px; margin: clamp(34px,5vw,56px) auto 0; }
+  .ccd-stage { perspective: 1600px; max-width: 1240px; margin: clamp(34px,5vw,56px) auto 0; }
   /* scroll-scrubbed fold: JS maps scroll position to the fold angle each frame, so it
      holds wherever the scroll stops (no triggered CSS transition). Pre-folded before JS. */
   html.js #ai-services-command .ccd { transform: rotateX(50deg); transform-origin: 50% 0%; opacity: 0.3; will-change: transform, opacity; }
@@ -1352,10 +1353,7 @@
   .ccd__body { padding: clamp(16px, 2.4vw, 26px); }
 
   .ccd__head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-  .ccd__logo { height: 30px; width: auto; display: block; }
-  .ccd__logo--dark { display: none; }
-  [data-theme="dark"] .ccd__logo--light { display: none; }
-  [data-theme="dark"] .ccd__logo--dark { display: block; }
+  .ccd__logo { height: 30px; width: 30px; display: block; }
   .ccd__head-tx { line-height: 1.25; }
   .ccd__title { font-family: var(--font-display); font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: var(--color-ink); }
   .ccd__sub { font-size: 12.5px; color: var(--dash-muted); display: flex; align-items: center; }
@@ -1393,10 +1391,32 @@
   .ccd__feat-h { font-family: var(--font-text); font-size: 16px; font-weight: 600; color: var(--color-ink); margin-bottom: 6px; letter-spacing: -0.2px; }
   .ccd__feat-p { font-size: 13.5px; line-height: 1.5; color: var(--dash-muted); }
 
-  /* cards fold with the panel — no separate reveal (scrub drives the whole frame) */
+  /* cards fold with the panel on scroll-in, then lift individually from the
+     top; specificity (id + 2 classes) beats .mo-tilt's single class so this
+     transition list wins the cascade regardless of stylesheet order. */
+  #ai-services-command .ccd__card,
+  #ai-services-command .ccd__stat {
+    transition: opacity 0.6s var(--reveal-ease), translate 0.6s var(--reveal-ease),
+                transform 0.5s var(--reveal-ease), border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  html.js #ai-services-command .ccd__card,
+  html.js #ai-services-command .ccd__stat { opacity: 0; translate: 0 -22px; }
+  html.js #ai-services-command .ccd__card.is-visible,
+  html.js #ai-services-command .ccd__stat.is-visible { opacity: 1; translate: 0 0; }
+  #ai-services-command .ccd__row--hero > *:nth-child(1) { transition-delay: 0s; }
+  #ai-services-command .ccd__row--hero > *:nth-child(2) { transition-delay: 0.1s; }
+  #ai-services-command .ccd__row--hero > *:nth-child(3) { transition-delay: 0.2s; }
+  #ai-services-command .ccd__row--stats > *:nth-child(1) { transition-delay: 0s; }
+  #ai-services-command .ccd__row--stats > *:nth-child(2) { transition-delay: 0.08s; }
+  #ai-services-command .ccd__row--stats > *:nth-child(3) { transition-delay: 0.16s; }
+  #ai-services-command .ccd__row--stats > *:nth-child(4) { transition-delay: 0.24s; }
+  #ai-services-command .ccd__card:hover,
+  #ai-services-command .ccd__stat:hover { border-color: var(--color-primary); box-shadow: 0 10px 28px rgba(109,94,240,0.18); }
 
   @media (prefers-reduced-motion: reduce) {
     html.js #ai-services-command .ccd { transform: none !important; opacity: 1 !important; }
+    html.js #ai-services-command .ccd__card,
+    html.js #ai-services-command .ccd__stat { opacity: 1 !important; translate: 0 !important; }
     .ccd__live { animation: none; }
   }
   @media (max-width: 860px) {
@@ -2568,10 +2588,14 @@
   /* Apple glyph (adapts to theme via currentColor) */
   .exp__logo-glyph { width: 26px; height: 26px; display: block; color: var(--color-ink); }
   /* Full-bleed brand logo that carries its own background (e.g. DataForce) */
-  .exp__logo--fill { padding: 0; }
+  .exp__logo--fill { padding: 0; background: none; border: none; }
   .exp__logo--fill img { object-fit: cover; padding: 0; }
-  /* TU/e typographic lettermark in its brand red */
-  .exp__logo--tue { color: #c8102e; font-size: 15px; letter-spacing: -0.5px; }
+  /* Logo "loads in" with a soft pop every time the section scrolls into view */
+  html.js .exp__logo.reveal { opacity: 0; transform: scale(0.6); transition: opacity 0.5s var(--reveal-ease), transform 0.5s var(--reveal-ease); }
+  html.js .exp__logo.reveal.is-visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html.js .exp__logo.reveal { transition: none; }
+  }
   .exp__sum { font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: var(--color-ink-80); padding-top: 10px; }
   .exp__tags { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 16px; }
   .tag {
@@ -2595,8 +2619,9 @@
   .exp__tools strong { color: var(--color-ink-80); font-weight: 600; }
 
   /* Inline "read more" within a single role (Apple) */
-  .exp__inline-more { overflow: hidden; }
-  html.js .exp__inline-more { height: 0; transition: height 0.5s var(--reveal-ease); }
+  html.js .exp__inline-more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--reveal-ease); }
+  html.js .exp__inline-more.is-open { grid-template-rows: 1fr; }
+  .exp__inline-more > .exp__points { overflow: hidden; min-height: 0; }
   .exp__readmore {
     margin-top: 4px;
     display: inline-flex;
@@ -2623,8 +2648,9 @@
   }
 
   /* Progressive disclosure: earlier roles collapse behind a disclosure button */
-  .exp__more { overflow: hidden; }
-  html.js .exp__more { height: 0; transition: height 0.5s var(--reveal-ease); }
+  html.js .exp__more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--reveal-ease); }
+  html.js .exp__more.is-open { grid-template-rows: 1fr; }
+  .exp__more-inner { overflow: hidden; min-height: 0; }
   html.js .exp__more .exp__item { opacity: 0; transform: translateY(14px); transition: opacity 0.5s var(--reveal-ease), transform 0.5s var(--reveal-ease); }
   html.js .exp__more .exp__item.is-in { opacity: 1; transform: none; }
   .exp__toggle-wrap { display: flex; justify-content: center; padding-top: 40px; }

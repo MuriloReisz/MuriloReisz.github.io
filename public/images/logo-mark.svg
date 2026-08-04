@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="240" height="170" viewBox="0 0 240 170">
-  <text x="6" y="70" fill="#1d1d1f" font-family="Inter,system-ui,sans-serif" font-size="52" font-weight="800" letter-spacing="-2">MR</text>
-  <path d="M92 62 L108 42 L120 54 L146 24" fill="none" stroke="#6d5ef0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M146 24 l-4 15 l15 -3 z" fill="#6d5ef0"/>
-  <text x="7" y="111" fill="#1d1d1f" font-family="Inter,system-ui,sans-serif" font-size="21" font-weight="700" letter-spacing="-0.6">Murilo Reis</text>
-  <text x="8" y="133" fill="#6d5ef0" font-family="Inter,system-ui,sans-serif" font-size="11.5" font-weight="600" letter-spacing="3">DATA &amp; AI</text>
-</svg>

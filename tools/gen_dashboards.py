@@ -82,18 +82,33 @@ def chart_bars(x, y, w, h, series, unit):
     n = len(series)
     gap = 14
     bw = (w - gap * (n - 1)) / n
-    parts = [f'<g>']
+    parts = [
+        '<defs>',
+        f'<linearGradient id="barHi" x1="0" y1="0" x2="0" y2="1">'
+        f'<stop offset="0" stop-color="#8f7ff5"/><stop offset="1" stop-color="{RAMP[0]}"/></linearGradient>',
+        f'<linearGradient id="barLo" x1="0" y1="0" x2="0" y2="1">'
+        f'<stop offset="0" stop-color="{RAMP[3]}"/><stop offset="1" stop-color="{RAMP[2]}"/></linearGradient>',
+        '</defs>',
+        '<g>',
+    ]
     # gridlines + y labels
     for i in range(5):
         gy = y + h - (h * i / 4)
-        parts.append(f'<line x1="{x}" y1="{gy:.1f}" x2="{x+w}" y2="{gy:.1f}" stroke="{HAIR}" stroke-width="1"/>')
+        parts.append(f'<line x1="{x}" y1="{gy:.1f}" x2="{x+w}" y2="{gy:.1f}" stroke="{HAIR}" '
+                     f'stroke-width="1" stroke-dasharray="{"0" if i == 0 else "3 5"}"/>')
         parts.append(f'<text x="{x-12}" y="{gy+5:.1f}" text-anchor="end" font-family="{FONT}" '
                      f'font-size="17" fill="{INK48}">{format(hi*i/4, fmt)}</text>')
     for i, (lab, v) in enumerate(series):
         bh = (v / hi) * h
         bx = x + i * (bw + gap)
-        parts.append(f'<rect x="{bx:.1f}" y="{y+h-bh:.1f}" width="{bw:.1f}" height="{bh:.1f}" '
-                     f'rx="5" fill="{RAMP[0] if i == n-1 else RAMP[2]}"/>')
+        by = y + h - bh
+        last = i == n - 1
+        parts.append(f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bw:.1f}" height="{bh:.1f}" '
+                     f'rx="7" fill="url(#{"barHi" if last else "barLo"})"/>')
+        if last:
+            parts.append(f'<text x="{bx+bw/2:.1f}" y="{by-14:.1f}" text-anchor="middle" '
+                         f'font-family="{FONT}" font-size="17" font-weight="700" fill="{RAMP[0]}">'
+                         f'{format(v, fmt)}</text>')
         parts.append(f'<text x="{bx+bw/2:.1f}" y="{y+h+30:.0f}" text-anchor="middle" '
                      f'font-family="{FONT}" font-size="17" fill="{INK48}">{esc(clip(lab,10))}</text>')
     parts.append('</g>')
@@ -113,15 +128,23 @@ def chart_line(x, y, w, h, series, unit):
     px = lambda i: x + (w * i / (n - 1))
     py = lambda v: y + h - ((v - lo) / span) * h
     pts = [(px(i), py(v)) for i, (_, v) in enumerate(series)]
-    parts = ['<g>']
+    parts = [
+        '<defs>',
+        f'<linearGradient id="lineArea" x1="0" y1="0" x2="0" y2="1">'
+        f'<stop offset="0" stop-color="{RAMP[0]}" stop-opacity="0.28"/>'
+        f'<stop offset="1" stop-color="{RAMP[0]}" stop-opacity="0"/></linearGradient>',
+        '</defs>',
+        '<g>',
+    ]
     for i in range(5):
         gy = y + h - (h * i / 4)
-        parts.append(f'<line x1="{x}" y1="{gy:.1f}" x2="{x+w}" y2="{gy:.1f}" stroke="{HAIR}" stroke-width="1"/>')
+        parts.append(f'<line x1="{x}" y1="{gy:.1f}" x2="{x+w}" y2="{gy:.1f}" stroke="{HAIR}" '
+                     f'stroke-width="1" stroke-dasharray="{"0" if i == 0 else "3 5"}"/>')
         parts.append(f'<text x="{x-12}" y="{gy+5:.1f}" text-anchor="end" font-family="{FONT}" '
                      f'font-size="17" fill="{INK48}">{format(lo + span*i/4, fmt)}</text>')
     d = 'M ' + ' L '.join(f'{a:.1f} {b:.1f}' for a, b in pts)
     parts.append(f'<path d="{d} L {pts[-1][0]:.1f} {y+h:.1f} L {pts[0][0]:.1f} {y+h:.1f} Z" '
-                 f'fill="{RAMP[0]}" fill-opacity="0.13"/>')
+                 f'fill="url(#lineArea)"/>')
     parts.append(f'<path d="{d}" fill="none" stroke="{RAMP[0]}" stroke-width="3.5" '
                  f'stroke-linecap="round" stroke-linejoin="round"/>')
     for i, (a, b) in enumerate(pts):
@@ -149,11 +172,17 @@ def build(p: dict) -> str:
     dcol = '#1f7a44' if good else '#b5342b'
 
     o = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">',
-         f'<rect width="{W}" height="{H}" fill="{PARCH}"/>']
+         '<defs>',
+         f'<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">'
+         f'<stop offset="0" stop-color="#f8f8fb"/><stop offset="1" stop-color="{PARCH}"/></linearGradient>',
+         f'<linearGradient id="cardTop" x1="0" y1="0" x2="1" y2="0">'
+         f'<stop offset="0" stop-color="{RAMP[0]}"/><stop offset="1" stop-color="{RAMP[1]}"/></linearGradient>',
+         '</defs>',
+         f'<rect width="{W}" height="{H}" fill="url(#bg)"/>']
 
     # window chrome, echoing .ccd__bar on the site
     o.append(f'<rect x="0" y="0" width="{W}" height="52" fill="{CANVAS}"/>')
-    o.append(f'<line x1="0" y1="52" x2="{W}" y2="52" stroke="{HAIR}"/>')
+    o.append(f'<rect x="0" y="50" width="{W}" height="2" fill="url(#cardTop)"/>')
     for i, c in enumerate(['#ff5f57', '#febc2e', '#28c840']):
         o.append(f'<circle cx="{28+i*22}" cy="26" r="6.5" fill="{c}"/>')
     o.append(f'<text x="112" y="32" font-family="{FONT}" font-size="17" fill="{INK48}">'
@@ -178,9 +207,10 @@ def build(p: dict) -> str:
         x = cx0 + i * (cw + 20)
         o.append(f'<rect x="{x:.0f}" y="{cy}" width="{cw:.0f}" height="136" rx="14" '
                  f'fill="{CANVAS}" stroke="{HAIR}"/>')
-        o.append(f'<text x="{x+26:.0f}" y="{cy+42}" font-family="{FONT}" font-size="17" '
+        o.append(f'<rect x="{x:.0f}" y="{cy}" width="46" height="5" rx="2.5" fill="url(#cardTop)"/>')
+        o.append(f'<text x="{x+26:.0f}" y="{cy+50}" font-family="{FONT}" font-size="17" '
                  f'fill="{INK48}">{esc(clip(lab, 46))}</text>')
-        o.append(f'<text x="{x+26:.0f}" y="{cy+104}" font-family="{FONT}" font-size="46" '
+        o.append(f'<text x="{x+26:.0f}" y="{cy+108}" font-family="{FONT}" font-size="46" '
                  f'font-weight="700" letter-spacing="-1.4" fill="{PRIMARY}">{esc(clip(val, 13))}</text>')
 
     # main chart panel

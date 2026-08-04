@@ -125,52 +125,15 @@ export const skills: Skill[] = [
 
 // ------------------------------------------------------------
 //  CREDENTIALS
+//
+//  Empty until real certifications are confirmed — add entries
+//  here (name, issuer, year, blurb) and they render automatically
+//  in the Education & Languages section on the homepage. Nothing
+//  goes on the CV that hasn't actually been earned.
 // ------------------------------------------------------------
 
-export const certs: Cert[] = [
-  {
-    name: 'BSc — Analysis & Development of Systems',
-    issuer: 'FIAP',
-    year: 2024,
-    blurb:
-      'Three-year degree in São Paulo covering databases, software engineering and applied statistics; final-year project was a churn-prediction pipeline.',
-  },
-  {
-    name: 'Tableau Desktop Specialist',
-    issuer: 'Tableau · Salesforce',
-    year: 2023,
-    blurb:
-      'Certification on data connections, level-of-detail expressions and dashboard design for production reporting.',
-  },
-  {
-    name: 'Power BI Data Analyst Associate (PL-300)',
-    issuer: 'Microsoft',
-    year: 2024,
-    blurb:
-      'Modelling, DAX and row-level security for governed self-service reporting across an organisation.',
-  },
-  {
-    name: 'Professional Data Engineer',
-    issuer: 'Google Cloud',
-    year: 2025,
-    blurb:
-      'Designing and operating batch and streaming pipelines on BigQuery, Dataflow and Cloud Composer.',
-  },
-  {
-    name: 'dbt Analytics Engineering Certification',
-    issuer: 'dbt Labs',
-    year: 2025,
-    blurb:
-      'Testing, documentation and incremental modelling patterns for a warehouse that other people have to maintain.',
-  },
-  {
-    name: 'Certified Data Analyst Associate',
-    issuer: 'Databricks',
-    year: 2026,
-    blurb:
-      'Lakehouse SQL, Unity Catalog governance and analytics workloads over large partitioned tables.',
-  },
-];
+export const certs: Cert[] = [];
+
 
 // ------------------------------------------------------------
 //  HEADLINE STATS — four numbers, count-up ready

@@ -8,6 +8,7 @@ import SkillsPanel from '../components/SkillsPanel.astro';
 import TechMarquee from '../components/TechMarquee.astro';
 import ActivityHeatmap from '../components/ActivityHeatmap.astro';
 import Testimonials from '../components/Testimonials.astro';
+import { certs } from '../data/extras';
 
 // The rotating line beside the static role. First phrase is the no-JS fallback;
 // motion2.ts reads data-typing-words and injects its own .u-sr copy.
@@ -40,7 +41,7 @@ const rolePhrases = [
       </aside>
       <div class="ph-main reveal">
         <div class="ph-cta">
-          <a class="pill pill--primary" href="/#contact" data-magnetic data-magnetic-strength="7">Get in touch <span aria-hidden="true">›</span></a>
+          <a class="pill pill--primary" href="/#contact" data-magnetic data-magnetic-strength="7">Get in touch</a>
           <a class="pill pill--ghost" href="/#work" data-magnetic data-magnetic-strength="7">View portfolio</a>
         </div>
         <h1 class="ph-name" data-reveal-words>{site.name}</h1>
@@ -109,7 +110,7 @@ const rolePhrases = [
   <section class="tile tile--white center hm-more">
     <div class="inner center reveal">
       <p class="hm-more__hint">Three of {projects.length}. The rest — Power BI models, forecasting, cloud pipelines — sit in the full archive, each written up end to end.</p>
-      <a class="pill pill--ghost hm-more__link" href="/work" data-magnetic data-magnetic-strength="6">See all {projects.length} projects <span aria-hidden="true">→</span></a>
+      <a class="pill pill--ghost hm-more__link" href="/work" data-magnetic data-magnetic-strength="6">See all {projects.length} projects <span class="pill__arrow" aria-hidden="true">→</span></a>
     </div>
   </section>
 
@@ -158,6 +159,7 @@ const rolePhrases = [
         </div>
 
         <div class="exp__more" id="expMore">
+          <div class="exp__more-inner">
           <div class="exp__item">
             <div class="exp__when">
               <div class="exp__role">Freelance Data &amp; Automation Engineer</div>
@@ -165,7 +167,9 @@ const rolePhrases = [
             </div>
             <div class="exp__body">
               <div class="exp__head">
-                <span class="exp__logo exp__logo--tue" aria-hidden="true">FL</span>
+                <span class="exp__logo exp__logo--fill reveal" aria-hidden="true">
+                  <img src="/images/logo-icon.png" alt="" width="46" height="46" loading="lazy" />
+                </span>
                 <div class="exp__org">Freelance · Remote</div>
               </div>
               <ul class="exp__points">
@@ -184,7 +188,9 @@ const rolePhrases = [
             </div>
             <div class="exp__body">
               <div class="exp__head">
-                <span class="exp__logo exp__logo--tue" aria-hidden="true">P</span>
+                <span class="exp__logo exp__logo--fill reveal" aria-hidden="true">
+                  <img src="/images/logos/porto.png" alt="" width="46" height="46" loading="lazy" />
+                </span>
                 <div class="exp__org">Porto · São Paulo, Brazil</div>
               </div>
               <ul class="exp__points">
@@ -203,7 +209,9 @@ const rolePhrases = [
             </div>
             <div class="exp__body">
               <div class="exp__head">
-                <span class="exp__logo exp__logo--tue" aria-hidden="true">MT</span>
+                <span class="exp__logo exp__logo--fill reveal" aria-hidden="true">
+                  <img src="/images/logos/marcelo-tostes.png" alt="" width="46" height="46" loading="lazy" />
+                </span>
                 <div class="exp__org">Marcelo Tostes Advogados · São Paulo, Brazil</div>
               </div>
               <ul class="exp__points">
@@ -212,6 +220,7 @@ const rolePhrases = [
               </ul>
               <div class="exp__tags"><span class="tag">IT support</span><span class="tag">Systems &amp; networks</span></div>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -246,6 +255,15 @@ const rolePhrases = [
           <div class="cred__meta">Portuguese (native) · English C2 · Spanish C1 · French &amp; Italian B2</div>
         </div>
       </div>
+      {certs.map((c) => (
+        <div class="cred reveal">
+          <div class="cred__badge"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 15l-2 6 6-3 6 3-2-6"></path><circle cx="12" cy="8" r="6"></circle></svg></div>
+          <div>
+            <div class="cred__name">{c.name}</div>
+            <div class="cred__meta">{c.issuer} · {c.year}</div>
+          </div>
+        </div>
+      ))}
     </div>
   </section>
 

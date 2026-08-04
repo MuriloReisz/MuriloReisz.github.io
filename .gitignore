@@ -7,6 +7,8 @@ node_modules/
 # os / editor
 .DS_Store
 *.log
+# python generator scratch
+__pycache__/
 # reference source (extraction scratch — safe to delete)
 _source/
 # personal working drafts — not site source, and this repo is public

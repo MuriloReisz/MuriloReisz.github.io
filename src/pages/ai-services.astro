@@ -316,8 +316,8 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
       <p class="hero__sub" style="max-width:648px">A single dashboard for every call answered, message handled, and hour your team gets back &mdash; so every decision is backed by what&rsquo;s actually happening.</p>
     </div>
 
-    <div class="ccd-stage" data-scroll-scale="0.96">
-      <div class="ccd" data-dash>
+    <div class="ccd-stage" data-scroll-scale="0.86">
+      <div class="ccd" data-scroll-tilt>
         <div class="ccd__frame">
           <div class="ccd__bar" aria-hidden="true">
             <span class="ccd__dots"><i></i><i></i><i></i></span>
@@ -325,22 +325,21 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
           </div>
           <div class="ccd__body">
             <div class="ccd__head">
-              <img class="ccd__logo ccd__logo--light" src="/images/logo-mark.svg" alt={site.brand} width="240" height="170" />
-              <img class="ccd__logo ccd__logo--dark" src="/images/logo-mark-dark.svg" alt={site.brand} width="240" height="170" />
+              <img class="ccd__logo" src="/images/logo-icon.png" alt={site.brand} width="30" height="30" />
               <div class="ccd__head-tx">
                 <div class="ccd__title">AI Command Centre</div>
                 <div class="ccd__sub"><span class="ccd__live" aria-hidden="true"></span>This week &middot; live</div>
               </div>
             </div>
 
-            <div class="ccd__row ccd__row--hero">
-              <div class="ccd__card ccd__card--wide">
+            <div class="ccd__row ccd__row--hero" data-stagger>
+              <div class="ccd__card ccd__card--wide" data-tilt data-tilt-max="5">
                 <div class="ccd__k">Hours saved</div>
                 <div class="ccd__big"><span data-counter-to="6.4" data-counter-dec="1">6.4</span><span class="ccd__unit">/wk</span></div>
                 <div class="ccd__spark" aria-hidden="true"><i style="height:32%"></i><i style="height:50%"></i><i style="height:42%"></i><i style="height:68%"></i><i style="height:84%"></i><i style="height:100%"></i></div>
                 <div class="ccd__delta">&#9650; 18% vs last week</div>
               </div>
-              <div class="ccd__card">
+              <div class="ccd__card" data-tilt data-tilt-max="5">
                 <div class="ccd__k">Handled by AI</div>
                 <ul class="ccd__list">
                   <li><span>Calls answered</span><b data-counter-to="128">128</b></li>
@@ -349,7 +348,7 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
                   <li><span>Escalated to you</span><b data-counter-to="6">6</b></li>
                 </ul>
               </div>
-              <div class="ccd__card ccd__card--live">
+              <div class="ccd__card ccd__card--live" data-tilt data-tilt-max="5">
                 <div class="ccd__k">Live now</div>
                 <div class="ccd__big ccd__big--sm"><span data-counter-to="3">3</span></div>
                 <div class="ccd__muted">automations running</div>
@@ -361,11 +360,11 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
               </div>
             </div>
 
-            <div class="ccd__row ccd__row--stats">
-              <div class="ccd__stat"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span><div class="ccd__stat-k">Tasks automated</div><div class="ccd__stat-v"><span data-counter-to="47">47</span></div></div>
-              <div class="ccd__stat"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg></span><div class="ccd__stat-k">Avg. response</div><div class="ccd__stat-v"><span data-counter-to="1.2" data-counter-dec="1">1.2</span>s</div></div>
-              <div class="ccd__stat"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span><div class="ccd__stat-k">Automations live</div><div class="ccd__stat-v"><span data-counter-to="9">9</span></div></div>
-              <div class="ccd__stat"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 1.5"></path><line x1="9.5" y1="2" x2="14.5" y2="2"></line></svg></span><div class="ccd__stat-k">Hours saved (MTD)</div><div class="ccd__stat-v"><span data-counter-to="26">26</span>h</div></div>
+            <div class="ccd__row ccd__row--stats" data-stagger>
+              <div class="ccd__stat" data-tilt data-tilt-max="5"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span><div class="ccd__stat-k">Tasks automated</div><div class="ccd__stat-v"><span data-counter-to="47">47</span></div></div>
+              <div class="ccd__stat" data-tilt data-tilt-max="5"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg></span><div class="ccd__stat-k">Avg. response</div><div class="ccd__stat-v"><span data-counter-to="1.2" data-counter-dec="1">1.2</span>s</div></div>
+              <div class="ccd__stat" data-tilt data-tilt-max="5"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span><div class="ccd__stat-k">Automations live</div><div class="ccd__stat-v"><span data-counter-to="9">9</span></div></div>
+              <div class="ccd__stat" data-tilt data-tilt-max="5"><span class="ccd__stat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 1.5"></path><line x1="9.5" y1="2" x2="14.5" y2="2"></line></svg></span><div class="ccd__stat-k">Hours saved (MTD)</div><div class="ccd__stat-v"><span data-counter-to="26">26</span>h</div></div>
             </div>
           </div>
         </div>
@@ -438,15 +437,15 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
           </div>
           <div class="cs-gallery" data-carousel>
             <div class="cs-gallery__track carousel__track">
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-01.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="AI Tools Assessment report cover" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">AI Tools Assessment — cover</p></figcaption></figure>
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-02.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Financial impact page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Financial impact — the ROI in your numbers</p></figcaption></figure>
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-03.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Executive summary page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Executive summary</p></figcaption></figure>
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-04.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Impact-effort matrix" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Impact vs effort matrix</p></figcaption></figure>
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-05.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Quick wins page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Quick wins</p></figcaption></figure>
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-06.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Recommended solutions page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Recommended solutions</p></figcaption></figure>
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-07.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Four-day quick-start plan" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Your 4-day quick-start plan</p></figcaption></figure>
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-08.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="What comes after page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">What comes after</p></figcaption></figure>
-              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-09.svg" width="1920" height="1080" loading="lazy" decoding="async" alt="Next steps page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Your next steps</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-01.svg" width="1400" height="800" loading="lazy" decoding="async" alt="AI Tools Assessment report cover" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">AI Tools Assessment — cover</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-02.svg" width="1400" height="800" loading="lazy" decoding="async" alt="Financial impact page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Financial impact — the ROI in your numbers</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-03.svg" width="1400" height="800" loading="lazy" decoding="async" alt="Executive summary page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Executive summary</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-04.svg" width="1400" height="800" loading="lazy" decoding="async" alt="Impact-effort matrix" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Impact vs effort matrix</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-05.svg" width="1400" height="800" loading="lazy" decoding="async" alt="Quick wins page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Quick wins</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-06.svg" width="1400" height="800" loading="lazy" decoding="async" alt="Recommended solutions page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Recommended solutions</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-07.svg" width="1400" height="800" loading="lazy" decoding="async" alt="Four-day quick-start plan" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Your 4-day quick-start plan</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-08.svg" width="1400" height="800" loading="lazy" decoding="async" alt="What comes after page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">What comes after</p></figcaption></figure>
+              <figure class="cs-gallery__slide"><div class="cs-gallery__media"><img src="/images/ai-report-09.svg" width="1400" height="800" loading="lazy" decoding="async" alt="Next steps page" /></div><figcaption class="cs-gallery__cap"><p class="tl__gcap">Your next steps</p></figcaption></figure>
             </div>
             <div class="carousel__nav">
               <button class="carousel__btn carousel__prev" type="button" aria-label="Previous report page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
@@ -490,19 +489,19 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
           <div class="tl__links"><a href={bookHref} {...bookAttrs}>Book a call now</a></div>
           <ul class="tl__pillars">
             <li class="tl__pillar" data-tilt data-tilt-max="4">
-              <div class="tl__pillar__media"><img src="/images/concierge-01-questionnaire.svg" width="816" height="1258" loading="lazy" decoding="async" alt="Pre-call intake questionnaire" /></div>
+              <div class="tl__pillar__media"><img src="/images/concierge-01-questionnaire.svg" width="1600" height="1000" loading="lazy" decoding="async" alt="Pre-call intake questionnaire" /></div>
               <div class="tl__pillar__body"><h4 class="tl__pillar__t">Pre-call questionnaire</h4><p class="tl__pillar__tag">Surfaces your bottlenecks and time-heavy workflows.</p><div class="tl__links"><a href="#ai-services-book">Fill in the intake form <span aria-hidden="true">&#8599;</span></a></div></div>
             </li>
             <li class="tl__pillar" data-tilt data-tilt-max="4">
-              <div class="tl__pillar__media"><img src="/images/concierge-02-strategy-calls.svg" width="872" height="700" loading="lazy" decoding="async" alt="Booking a 45-minute strategy call" /></div>
+              <div class="tl__pillar__media"><img src="/images/concierge-02-strategy-calls.svg" width="1600" height="1000" loading="lazy" decoding="async" alt="Booking a 45-minute strategy call" /></div>
               <div class="tl__pillar__body"><h4 class="tl__pillar__t">Two 45-min calls a month</h4><p class="tl__pillar__tag">Working sessions where we build automated workflows, live.</p><div class="tl__pillar__cta"><a class="pill pill--primary pill--sm" href={bookHref} {...bookAttrs}>Book a call</a></div></div>
             </li>
             <li class="tl__pillar" data-tilt data-tilt-max="4">
-              <div class="tl__pillar__media"><img src="/images/concierge-04-notion.svg" width="1362" height="1696" loading="lazy" decoding="async" alt="Documentation hub logging every call and build" /></div>
+              <div class="tl__pillar__media"><img src="/images/concierge-04-notion.svg" width="1600" height="1000" loading="lazy" decoding="async" alt="Documentation hub logging every call and build" /></div>
               <div class="tl__pillar__body"><h4 class="tl__pillar__t">Documentation hub</h4><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>All recordings and transcripts</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Top takeaways and action items per call</li></ul></div>
             </li>
             <li class="tl__pillar" data-tilt data-tilt-max="4">
-              <div class="tl__pillar__media"><img src="/images/concierge-03-voxer.svg" width="995" height="483" loading="lazy" decoding="async" alt="Unlimited voice-and-text access between sessions" /></div>
+              <div class="tl__pillar__media"><img src="/images/concierge-03-voxer.svg" width="1600" height="1000" loading="lazy" decoding="async" alt="Unlimited voice-and-text access between sessions" /></div>
               <div class="tl__pillar__body"><h4 class="tl__pillar__t">Always-on messaging access</h4><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>Voice and text, like a walkie-talkie</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>No waiting two weeks for help</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>12-business-hour response</li></ul></div>
             </li>
           </ul>
