@@ -29,23 +29,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      # npm ci has a documented crash (npm/cli#4028, "Exit handler never
-      # called!") that can leave a dependency entirely unextracted while
-      # still exiting 0. npm install doesn't share that code path, so use
-      # it instead — trading strict lockfile enforcement for actually
-      # finishing the install, which matters more for a solo deploy.
+      # This runner's bundled npm (10.8.2) deterministically hits
+      # npm/cli#4028 ("Exit handler never called!") on this project — it
+      # exits 0 while leaving a dependency unextracted. Fixed upstream in
+      # later npm releases, so upgrade before installing anything else.
+      - run: npm install -g npm@latest
+      # Verify against the real symptom (module missing), not npm's exit
+      # code, and retry a few times as a backstop in case it recurs.
       - name: Install dependencies
         run: |
-          set -o pipefail
-          pwd
-          cat package.json
-          npm install 2>&1 | tee /tmp/install.log
-      - name: Diagnose environment
-        if: always()
-        run: |
-          echo "::notice title=versions::node $(node -v) / npm $(npm -v)"
-          tail -n 40 /tmp/install.log 2>&1 | sed 's/^/::notice title=install-log::/'
-          ls -la node_modules 2>&1 | head -20 | sed 's/^/::notice title=nm-ls::/'
+          for i in 1 2 3; do
+            npm install
+            if [ -f node_modules/astro/astro.js ]; then
+              echo "astro installed on attempt $i"
+              exit 0
+            fi
+            echo "astro missing after attempt $i — retrying"
+            rm -rf node_modules
+          done
+          echo "astro still missing after 3 attempts"
+          exit 1
       - run: node node_modules/astro/astro.js build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
