@@ -35,13 +35,17 @@ jobs:
       # it instead — trading strict lockfile enforcement for actually
       # finishing the install, which matters more for a solo deploy.
       - name: Install dependencies
-        run: npm install
+        run: |
+          set -o pipefail
+          pwd
+          cat package.json
+          npm install 2>&1 | tee /tmp/install.log
       - name: Diagnose environment
         if: always()
         run: |
           echo "::notice title=versions::node $(node -v) / npm $(npm -v)"
-          ls -la node_modules/.bin/astro 2>&1 | sed 's/^/::notice title=bin-ls::/'
-          node node_modules/astro/astro.js --version 2>&1 | sed 's/^/::notice title=astro-version::/'
+          tail -n 40 /tmp/install.log 2>&1 | sed 's/^/::notice title=install-log::/'
+          ls -la node_modules 2>&1 | head -20 | sed 's/^/::notice title=nm-ls::/'
       - run: node node_modules/astro/astro.js build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
