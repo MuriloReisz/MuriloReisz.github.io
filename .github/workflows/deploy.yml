@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           for i in 1 2 3; do
-            npm install
+            npm install 2>&1 | tee "/tmp/install-$i.log"
             if [ -f node_modules/astro/astro.js ]; then
               echo "astro installed on attempt $i"
               exit 0
@@ -49,6 +49,13 @@ jobs:
           done
           echo "astro still missing after 3 attempts"
           exit 1
+      - name: Diagnose environment
+        if: always()
+        run: |
+          echo "::notice title=versions::node $(node -v) / npm $(npm -v)"
+          for f in /tmp/install-*.log; do
+            tail -n 15 "$f" | sed "s/^/::notice title=$(basename "$f")::/"
+          done
       - run: node node_modules/astro/astro.js build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
