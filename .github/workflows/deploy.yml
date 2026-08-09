@@ -29,19 +29,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      # npm ci can hit "Exit handler never called!" (npm/cli#4028) and still
-      # exit 0 despite an incomplete install, so `npm ci || npm ci` never
-      # retries when it matters. Check for the actual binary instead.
+      # npm ci has a documented crash (npm/cli#4028, "Exit handler never
+      # called!") that can leave a dependency entirely unextracted while
+      # still exiting 0. npm install doesn't share that code path, so use
+      # it instead — trading strict lockfile enforcement for actually
+      # finishing the install, which matters more for a solo deploy.
       - name: Install dependencies
-        run: |
-          npm ci
-          if [ ! -x node_modules/.bin/astro ]; then
-            echo "astro binary missing after npm ci — reinstalling"
-            rm -rf node_modules
-            npm ci
-          fi
-      # Emitted as ::notice:: so the output is readable from the Checks API
-      # (annotations) even without a signed-in browser session on the logs.
+        run: npm install
       - name: Diagnose environment
         if: always()
         run: |
