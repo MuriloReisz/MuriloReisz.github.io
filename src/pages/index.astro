@@ -8,7 +8,7 @@ import SkillsPanel from '../components/SkillsPanel.astro';
 import TechMarquee from '../components/TechMarquee.astro';
 import ActivityHeatmap from '../components/ActivityHeatmap.astro';
 import Testimonials from '../components/Testimonials.astro';
-import { certs } from '../data/extras';
+import { certs, learning } from '../data/extras';
 
 // The rotating line beside the static role. First phrase is the no-JS fallback;
 // motion2.ts reads data-typing-words and injects its own .u-sr copy.
@@ -72,7 +72,7 @@ const rolePhrases = [
       <div class="about-v2__text" data-stagger>
         <div class="eyebrow" data-reveal-chars>About</div>
         <h2 class="about-v2__lead reveal">Hi, I’m {site.name}</h2>
-        <p class="about-v2__intro reveal">I’m a <strong>Data Analyst</strong> and <strong>AI Specialist</strong> who turns messy, real-world data into clear decisions — dashboards, models, and automation that leaders can act on.</p>
+        <p class="about-v2__intro reveal">I’m a <strong>Data &amp; AI Specialist</strong> who turns messy, real-world data into clear decisions — dashboards, models, and automation that leaders can act on.</p>
         <p class="about-v2__intro reveal">I’m currently a <strong>Data Analyst at Apple</strong>, working on the analytics and insight behind the numbers, and I take on <strong>freelance AI &amp; automation</strong> work on the side.</p>
         <p class="about-v2__intro reveal">I’ve spent countless hours on <strong>agentic AI &amp; automation</strong> — building scripts and data products that drive decisions, save time, and cut cost. Example work is showcased across this site and on GitHub.</p>
         <div class="about-v2__achv-h reveal">Notable achievements</div>
@@ -260,11 +260,23 @@ const rolePhrases = [
           <div class="cred__badge"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 15l-2 6 6-3 6 3-2-6"></path><circle cx="12" cy="8" r="6"></circle></svg></div>
           <div>
             <div class="cred__name">{c.name}</div>
-            <div class="cred__meta">{c.issuer} · {c.year}</div>
+            <div class="cred__meta">{c.issuer}{c.year ? ` · ${c.year}` : ''}</div>
           </div>
         </div>
       ))}
     </div>
+
+    <div class="inner reveal" style="padding-top: 40px;">
+      <p class="eyebrow eyebrow--mono">Currently learning</p>
+    </div>
+    <ul class="inner learning-list" data-stagger aria-label="Topics currently being studied, not certifications">
+      {learning.map((l) => (
+        <li class="learning-item reveal">
+          <span class="learning-item__topic">{l.topic}</span>
+          <span class="learning-item__note">{l.note}</span>
+        </li>
+      ))}
+    </ul>
   </section>
 
   <!-- ===================== CONTACT CTA ===================== -->

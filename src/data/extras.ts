@@ -25,8 +25,17 @@ export interface Skill {
 export interface Cert {
   name: string;
   issuer: string;
-  year: number;
+  /** Left unset where the exact year isn't confirmed — never guessed. */
+  year?: number;
   blurb: string;
+}
+
+/** Skills currently being studied, not yet a passed exam or issued
+    credential — kept separate from `certs` so the site never implies a
+    credential that doesn't exist. */
+export interface LearningItem {
+  topic: string;
+  note: string;
 }
 
 export interface StatItem {
@@ -132,7 +141,37 @@ export const skills: Skill[] = [
 //  goes on the CV that hasn't actually been earned.
 // ------------------------------------------------------------
 
-export const certs: Cert[] = [];
+export const certs: Cert[] = [
+  {
+    name: 'Power BI Data Analyst Associate (PL-300)',
+    issuer: 'Microsoft',
+    blurb:
+      'Data modelling, DAX and report design for governed, production Power BI reporting.',
+  },
+];
+
+// ------------------------------------------------------------
+//  CURRENTLY LEARNING
+//
+//  Topics being actively studied — not a credential, and never
+//  rendered next to `certs`. If one of these turns into a passed
+//  exam, move it up and give it a real issuer + name.
+// ------------------------------------------------------------
+
+export const learning: LearningItem[] = [
+  {
+    topic: 'Data storytelling',
+    note: 'Structuring an analysis so the recommendation is obvious, not just the numbers.',
+  },
+  {
+    topic: 'Cloud & AI platforms',
+    note: 'Applied GenAI and managed ML services on Google Cloud and Azure.',
+  },
+  {
+    topic: 'Full-stack engineering',
+    note: 'Shipping the interface around a model or pipeline, not just the analysis behind it.',
+  },
+];
 
 
 // ------------------------------------------------------------

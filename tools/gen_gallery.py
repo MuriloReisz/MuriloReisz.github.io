@@ -16,8 +16,13 @@ import tempfile
 from pathlib import Path
 
 from gen_dashboards import (
-    CANVAS, PARCH, INK, INK48, HAIR, PRIMARY, RAMP, FONT, esc, clip,
+    CANVAS, PARCH, INK, INK48, HAIR, PRIMARY, RAMP, FONT, esc, clip, parse, hex_ramp,
 )
+
+# Mutated per-project in main() so every drawing function below picks up
+# that project's brand colour instead of the site's own violet.
+ACCENT = PRIMARY
+PROJRAMP = list(RAMP)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'public/images/gallery'
@@ -31,7 +36,7 @@ def frame(inner: str, title: str) -> str:
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">'
         f'<rect width="{W}" height="{H}" fill="{CANVAS}"/>'
         f'<text x="48" y="56" font-family="{FONT}" font-size="15" font-weight="600" '
-        f'letter-spacing="1.6" fill="{PRIMARY}">{esc(title.upper())}</text>'
+        f'letter-spacing="1.6" fill="{ACCENT}">{esc(title.upper())}</text>'
         f'{inner}</svg>'
     )
 
@@ -46,7 +51,7 @@ def ranked_bars(items, unit='', signed=False):
     for i, (label, v, tag) in enumerate(items):
         y = y0 + i * (row_h + gap)
         bw = (abs(v) / hi) * w
-        color = RAMP[0] if i == 0 else RAMP[2]
+        color = PROJRAMP[0] if i == 0 else PROJRAMP[2]
         if signed:
             color = GOOD if v >= 0 else BAD
         parts.append(f'<text x="{x0-16}" y="{y+row_h/2+6:.0f}" text-anchor="end" font-family="{FONT}" '
@@ -71,17 +76,17 @@ def grouped_bars(categories, label_a, label_b):
     slot = w / n
     bw = slot * 0.32
     parts = [f'<line x1="{x0}" y1="{y0}" x2="{x0+w}" y2="{y0}" stroke="{HAIR}"/>']
-    parts.append(f'<rect x="{x0}" y="140" width="18" height="18" rx="4" fill="{RAMP[0]}"/>'
+    parts.append(f'<rect x="{x0}" y="140" width="18" height="18" rx="4" fill="{PROJRAMP[0]}"/>'
                  f'<text x="{x0+28}" y="154" font-family="{FONT}" font-size="17" fill="{INK48}">{esc(label_a)}</text>')
     parts.append(f'<rect x="{x0+180}" y="140" width="18" height="18" rx="4" fill="{HAIR}"/>'
                  f'<text x="{x0+208}" y="154" font-family="{FONT}" font-size="17" fill="{INK48}">{esc(label_b)}</text>')
     for i, (cat, a, b) in enumerate(categories):
         cx = x0 + i * slot + slot / 2
         ha, hb = (a / 100) * h, (b / 100) * h
-        parts.append(f'<rect x="{cx-bw-4:.1f}" y="{y0-ha:.1f}" width="{bw:.1f}" height="{ha:.1f}" rx="6" fill="{RAMP[0]}"/>')
+        parts.append(f'<rect x="{cx-bw-4:.1f}" y="{y0-ha:.1f}" width="{bw:.1f}" height="{ha:.1f}" rx="6" fill="{PROJRAMP[0]}"/>')
         parts.append(f'<rect x="{cx+4:.1f}" y="{y0-hb:.1f}" width="{bw:.1f}" height="{hb:.1f}" rx="6" fill="{HAIR}"/>')
         parts.append(f'<text x="{cx:.1f}" y="{y0-ha-14:.1f}" text-anchor="middle" font-family="{FONT}" '
-                     f'font-size="17" font-weight="700" fill="{RAMP[0]}">{a:.0f}</text>')
+                     f'font-size="17" font-weight="700" fill="{PROJRAMP[0]}">{a:.0f}</text>')
         parts.append(f'<text x="{cx:.1f}" y="{y0+34:.0f}" text-anchor="middle" font-family="{FONT}" '
                      f'font-size="17" fill="{INK48}">{esc(clip(cat, 12))}</text>')
     return ''.join(parts)
@@ -129,15 +134,15 @@ def line_band(series, band_lo, band_hi, anom_start, anom_label):
         parts.append(f'<line x1="{x0}" y1="{gy:.1f}" x2="{x0+w}" y2="{gy:.1f}" stroke="{HAIR}" stroke-dasharray="{"0" if i==0 else "3 5"}"/>')
         parts.append(f'<text x="{x0-14}" y="{gy+5:.1f}" text-anchor="end" font-family="{FONT}" font-size="15" fill="{INK48}">{lo+span*i/4:.0f}</text>')
     by0, by1 = py(band_hi), py(band_lo)
-    parts.append(f'<rect x="{x0}" y="{by0:.1f}" width="{w}" height="{by1-by0:.1f}" fill="{RAMP[3]}" fill-opacity="0.35"/>')
+    parts.append(f'<rect x="{x0}" y="{by0:.1f}" width="{w}" height="{by1-by0:.1f}" fill="{PROJRAMP[3]}" fill-opacity="0.35"/>')
     ax0 = px(anom_start)
     parts.append(f'<rect x="{ax0:.1f}" y="0" width="{x0+w-ax0:.1f}" height="{H}" fill="{BAD}" fill-opacity="0.07"/>')
     parts.append(f'<text x="{ax0+12:.1f}" y="130" font-family="{FONT}" font-size="16" font-weight="600" fill="{BAD}">{esc(anom_label)}</text>')
     pts = [(px(i), py(v)) for i, (_, v) in enumerate(series)]
     d = 'M ' + ' L '.join(f'{a:.1f} {b:.1f}' for a, b in pts)
-    parts.append(f'<path d="{d}" fill="none" stroke="{RAMP[0]}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>')
+    parts.append(f'<path d="{d}" fill="none" stroke="{PROJRAMP[0]}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>')
     for i, (a, b) in enumerate(pts):
-        parts.append(f'<circle cx="{a:.1f}" cy="{b:.1f}" r="4" fill="{CANVAS}" stroke="{RAMP[0]}" stroke-width="2.4"/>')
+        parts.append(f'<circle cx="{a:.1f}" cy="{b:.1f}" r="4" fill="{CANVAS}" stroke="{PROJRAMP[0]}" stroke-width="2.4"/>')
     step = max(1, n // 7)
     for i, (lab, _) in enumerate(series):
         if i % step == 0 or i == n - 1:
@@ -153,14 +158,14 @@ def calibration(points, precision):
              f'<text x="{x0+size+16}" y="{y0-size+6}" font-family="{FONT}" font-size="15" fill="{INK48}">perfectly calibrated</text>']
     for p, a in points:
         cx, cy = x0 + p * size, y0 - a * size
-        parts.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="7" fill="{RAMP[0]}" fill-opacity="0.85"/>')
+        parts.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="7" fill="{PROJRAMP[0]}" fill-opacity="0.85"/>')
     parts.append(f'<text x="{x0}" y="{y0+40}" font-family="{FONT}" font-size="16" fill="{INK48}">predicted probability →</text>')
     # precision-at-capacity gauge
     gx, gy, gw, gh = x0 + size + 140, 220, 380, 34
     parts.append(f'<text x="{gx}" y="{gy-18}" font-family="{FONT}" font-size="16" fill="{INK48}">Precision at working capacity</text>')
     parts.append(f'<rect x="{gx}" y="{gy}" width="{gw}" height="{gh}" rx="{gh/2}" fill="{PARCH}"/>')
-    parts.append(f'<rect x="{gx}" y="{gy}" width="{gw*precision:.1f}" height="{gh}" rx="{gh/2}" fill="{RAMP[0]}"/>')
-    parts.append(f'<text x="{gx+gw+16}" y="{gy+gh-8}" font-family="{FONT}" font-size="24" font-weight="700" fill="{RAMP[0]}">{precision:.2f}</text>')
+    parts.append(f'<rect x="{gx}" y="{gy}" width="{gw*precision:.1f}" height="{gh}" rx="{gh/2}" fill="{PROJRAMP[0]}"/>')
+    parts.append(f'<text x="{gx+gw+16}" y="{gy+gh-8}" font-family="{FONT}" font-size="24" font-weight="700" fill="{PROJRAMP[0]}">{precision:.2f}</text>')
     return ''.join(parts)
 
 
@@ -188,13 +193,13 @@ def matrix(labels, abstain):
         for j in range(n):
             v = 0.86 if i == j else (0.10 if abs(i - j) == 1 else 0.02)
             parts.append(f'<rect x="{x0+j*cell:.1f}" y="{y0+i*cell:.1f}" width="{cell-2:.1f}" height="{cell-2:.1f}" rx="4" '
-                         f'fill="{PRIMARY}" fill-opacity="{v:.2f}"/>')
+                         f'fill="{ACCENT}" fill-opacity="{v:.2f}"/>')
         parts.append(f'<text x="{x0-12}" y="{y0+i*cell+cell/2+5:.1f}" text-anchor="end" font-family="{FONT}" '
                      f'font-size="14" fill="{INK48}">{esc(clip(labels[i], 16))}</text>')
         ax, ay = x0 + n * cell + 40, y0 + i * cell
         ab = abstain[i]
         parts.append(f'<rect x="{ax}" y="{ay:.1f}" width="140" height="{cell-6:.1f}" rx="5" fill="{PARCH}"/>')
-        parts.append(f'<rect x="{ax}" y="{ay:.1f}" width="{140*ab:.1f}" height="{cell-6:.1f}" rx="5" fill="{RAMP[3]}"/>')
+        parts.append(f'<rect x="{ax}" y="{ay:.1f}" width="{140*ab:.1f}" height="{cell-6:.1f}" rx="5" fill="{PROJRAMP[3]}"/>')
     parts.append(f'<text x="{x0+n*cell+40}" y="{y0-16}" font-family="{FONT}" font-size="15" fill="{INK48}">abstain rate</text>')
     for j in range(n):
         parts.append(f'<text x="{x0+j*cell+cell/2:.1f}" y="{y0-16}" text-anchor="middle" font-family="{FONT}" '
@@ -214,8 +219,8 @@ def process_before_after(before_n, after_n, note):
     parts.append(f'<text x="{x0+90}" y="{y0+50}" font-family="{FONT}" font-size="18" fill="{INK48}">manual steps</text>')
     for i in range(after_n):
         y = y0 - i * (200 / after_n)
-        parts.append(f'<rect x="{x0+560}" y="{y-18:.1f}" width="360" height="15" rx="6" fill="{RAMP[0]}" fill-opacity="{0.5+0.5*i/after_n:.2f}"/>')
-    parts.append(f'<text x="{x0+560}" y="{y0+50}" font-family="{FONT}" font-size="56" font-weight="700" fill="{RAMP[0]}">{after_n}</text>')
+        parts.append(f'<rect x="{x0+560}" y="{y-18:.1f}" width="360" height="15" rx="6" fill="{PROJRAMP[0]}" fill-opacity="{0.5+0.5*i/after_n:.2f}"/>')
+    parts.append(f'<text x="{x0+560}" y="{y0+50}" font-family="{FONT}" font-size="56" font-weight="700" fill="{PROJRAMP[0]}">{after_n}</text>')
     parts.append(f'<text x="{x0+660}" y="{y0+50}" font-family="{FONT}" font-size="18" fill="{INK48}">idempotent jobs</text>')
     parts.append(f'<path d="M{x0+380} {y0-100} L{x0+540} {y0-100}" stroke="{INK48}" stroke-width="2.4" '
                  f'stroke-dasharray="2 7" marker-end="url(#arrow)"/>')
@@ -230,7 +235,7 @@ def wireframe(tiles, table_label):
     for i, lab in enumerate(tiles):
         x = x0 + i * (tw + gap)
         parts.append(f'<rect x="{x}" y="{y0}" width="{tw}" height="{th}" rx="14" fill="{CANVAS}" stroke="{HAIR}" stroke-width="1.4"/>')
-        parts.append(f'<rect x="{x+24}" y="{y0+24}" width="90" height="12" rx="6" fill="{RAMP[3]}"/>')
+        parts.append(f'<rect x="{x+24}" y="{y0+24}" width="90" height="12" rx="6" fill="{PROJRAMP[3]}"/>')
         parts.append(f'<text x="{x+24}" y="{y0+80}" font-family="{FONT}" font-size="22" font-weight="700" fill="{INK}">{esc(lab)}</text>')
         parts.append(f'<rect x="{x+24}" y="{y0+110}" width="{tw-48}" height="10" rx="5" fill="{PARCH}"/>')
         parts.append(f'<rect x="{x+24}" y="{y0+132}" width="{(tw-48)*0.6:.0f}" height="10" rx="5" fill="{PARCH}"/>')
@@ -251,12 +256,12 @@ def queue_list(rows, unit=''):
     for i, (title, meta, val) in enumerate(rows):
         y = y0 + i * (rh + gap)
         parts.append(f'<rect x="{x0}" y="{y}" width="{w}" height="{rh}" rx="12" fill="{PARCH}"/>')
-        parts.append(f'<rect x="{x0}" y="{y}" width="6" height="{rh}" rx="3" fill="{RAMP[0] if i==0 else RAMP[2]}"/>')
+        parts.append(f'<rect x="{x0}" y="{y}" width="6" height="{rh}" rx="3" fill="{PROJRAMP[0] if i==0 else PROJRAMP[2]}"/>')
         parts.append(f'<text x="{x0+34}" y="{y+38}" font-family="{FONT}" font-size="19" font-weight="600" fill="{INK}">{esc(clip(title, 48))}</text>')
         parts.append(f'<text x="{x0+34}" y="{y+68}" font-family="{FONT}" font-size="16" fill="{INK48}">{esc(clip(meta, 60))}</text>')
         bw = (val / hi) * 160
         parts.append(f'<rect x="{x0+w-260}" y="{y+rh/2-10:.0f}" width="160" height="20" rx="10" fill="{CANVAS}"/>')
-        parts.append(f'<rect x="{x0+w-260}" y="{y+rh/2-10:.0f}" width="{max(bw,6):.1f}" height="20" rx="10" fill="{RAMP[0]}"/>')
+        parts.append(f'<rect x="{x0+w-260}" y="{y+rh/2-10:.0f}" width="{max(bw,6):.1f}" height="20" rx="10" fill="{PROJRAMP[0]}"/>')
         parts.append(f'<text x="{x0+w-24}" y="{y+rh/2+6:.0f}" text-anchor="end" font-family="{FONT}" '
                      f'font-size="17" font-weight="700" fill="{INK}">{esc(str(val))}{unit}</text>')
     return ''.join(parts)
@@ -276,7 +281,7 @@ def donut_and_line(donut, line_series, line_unit):
         y0p = cy + r * math.sin(math.radians(a0))
         x1p = cx + r * math.cos(math.radians(a1))
         y1p = cy + r * math.sin(math.radians(a1))
-        color = RAMP[i % len(RAMP)]
+        color = PROJRAMP[i % len(PROJRAMP)]
         parts.append(f'<path d="M{cx} {cy} L{x0p:.1f} {y0p:.1f} A{r} {r} 0 {large} 1 {x1p:.1f} {y1p:.1f} Z" fill="{color}"/>')
         a0 = a1
     parts.append(f'<circle cx="{cx}" cy="{cy}" r="{r*0.55:.0f}" fill="{CANVAS}"/>')
@@ -284,7 +289,7 @@ def donut_and_line(donut, line_series, line_unit):
     parts.append(f'<text x="{cx}" y="{cy+24}" text-anchor="middle" font-family="{FONT}" font-size="14" fill="{INK48}">{esc(clip(donut[0][0],18))}</text>')
     ly = cy - r
     for i, (lab, v) in enumerate(donut):
-        parts.append(f'<rect x="{cx+r+60}" y="{ly+i*32:.0f}" width="14" height="14" rx="3" fill="{RAMP[i % len(RAMP)]}"/>')
+        parts.append(f'<rect x="{cx+r+60}" y="{ly+i*32:.0f}" width="14" height="14" rx="3" fill="{PROJRAMP[i % len(PROJRAMP)]}"/>')
         parts.append(f'<text x="{cx+r+82}" y="{ly+i*32+12:.0f}" font-family="{FONT}" font-size="16" fill="{INK}">{esc(lab)} — {v:.0f}%</text>')
     # profit line, right half
     lx0, ly0, lw, lh = cx + r + 60, 560, 460, 200
@@ -297,11 +302,11 @@ def donut_and_line(donut, line_series, line_unit):
     pts = [(px(i), py(v)) for i, (_, v) in enumerate(line_series)]
     d = 'M ' + ' L '.join(f'{a:.1f} {b:.1f}' for a, b in pts)
     parts.append(f'<text x="{lx0}" y="{ly0-lh-24}" font-family="{FONT}" font-size="16" fill="{INK48}">Profit by quarter ({line_unit})</text>')
-    parts.append(f'<path d="{d} L{pts[-1][0]:.1f} {ly0:.1f} L{pts[0][0]:.1f} {ly0:.1f} Z" fill="{RAMP[0]}" fill-opacity="0.15"/>')
-    parts.append(f'<path d="{d}" fill="none" stroke="{RAMP[0]}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>')
+    parts.append(f'<path d="{d} L{pts[-1][0]:.1f} {ly0:.1f} L{pts[0][0]:.1f} {ly0:.1f} Z" fill="{PROJRAMP[0]}" fill-opacity="0.15"/>')
+    parts.append(f'<path d="{d}" fill="none" stroke="{PROJRAMP[0]}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>')
     for i, (lab, v) in enumerate(line_series):
         x, y = px(i), py(v)
-        parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4.5" fill="{CANVAS}" stroke="{RAMP[0]}" stroke-width="2.4"/>')
+        parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4.5" fill="{CANVAS}" stroke="{PROJRAMP[0]}" stroke-width="2.4"/>')
         parts.append(f'<text x="{x:.1f}" y="{ly0+26}" text-anchor="middle" font-family="{FONT}" font-size="14" fill="{INK48}">{lab}</text>')
     return ''.join(parts)
 
@@ -455,11 +460,16 @@ SPECS = {
 
 
 def main() -> None:
+    global ACCENT, PROJRAMP
     OUT.mkdir(parents=True, exist_ok=True)
+    brands = {p['slug']: (p['accent'], p['accent2']) for p in parse()}
     total = 0.0
     count = 0
     with tempfile.TemporaryDirectory() as tmp:
         for slug, slots in SPECS.items():
+            accent, accent2 = brands.get(slug, (PRIMARY, RAMP[1]))
+            ACCENT = accent
+            PROJRAMP = hex_ramp(accent, accent2)
             for i, (_, builder) in enumerate(slots, start=1):
                 svg_content = builder()
                 svg = Path(tmp) / f'{slug}-{i}.svg'

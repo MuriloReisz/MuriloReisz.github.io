@@ -7,7 +7,7 @@
 export const site = {
   brand: 'Murilo Reis',                 // company / personal brand (updated below via logo choice)
   name: 'Murilo Reis',                  // your full name
-  role: 'Data Analyst · AI Specialist', // headline role
+  role: 'Data & AI Specialist',         // headline role
   location: 'Cork City, Ireland',
   tagline:
     'Dashboards, machine-learning models, and data pipelines that turn raw data into decisions leaders can act on.',

@@ -64,7 +64,10 @@ const stats = project.findings.slice(0, 3);
       loading="lazy"
       decoding="async"
     />
-    <span class="pc-card__badge">{project.org}</span>
+    <span
+      class="pc-card__badge"
+      style={`--chip-a:${project.brand.accent}; --chip-a2:${project.brand.accent2}`}
+    >{project.brand.wordmark}</span>
   </div>
 
   <div class="pc-card__body">

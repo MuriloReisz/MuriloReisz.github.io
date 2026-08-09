@@ -2717,6 +2717,28 @@
   .cred__name { font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.25; }
   .cred__meta { font-size: 14px; letter-spacing: -0.224px; color: var(--color-primary); padding-top: 5px; }
 
+  /* Deliberately plainer than .cred — these are study topics, not
+     credentials, and should never look like a badge/certificate. */
+  .learning-list {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding-top: 20px;
+    list-style: none;
+  }
+  .learning-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 18px;
+    border: 1px dashed var(--color-hairline);
+    border-radius: var(--radius-lg);
+    min-width: 220px;
+    flex: 1 1 0;
+  }
+  .learning-item__topic { font-family: var(--font-text); font-size: 14.5px; font-weight: 600; letter-spacing: -0.1px; }
+  .learning-item__note { font-size: 13px; line-height: 1.4; color: var(--color-ink-48); }
+
   /* Viz-of-the-Day award chip (used on Featured Work 01, on-dark) */
   .votd-chip {
     display: inline-flex;

@@ -46,6 +46,10 @@ const fullLinkClass = onDark
 <section class={tileClass} data-tags={project.tags.join(' ')}>
   <div class={textClass}>
     <div class={eyebrowClass}>{project.eyebrow}</div>
+    <span
+      class="work__brandchip"
+      style={`--chip-a:${project.brand.accent}; --chip-a2:${project.brand.accent2}`}
+    >{project.brand.wordmark}</span>
     <h2 class="work__title">{project.title}</h2>
     <div class="work__meta">
       <span class="work__date">{dateline}</span>

@@ -34,6 +34,16 @@ export interface GalleryItem {
   height: number;
 }
 
+/** The internal tool identity for this engagement — not the client's own
+    brand, but the product name and colourway the dashboard was skinned in,
+    so each case study reads as its own build rather than a Murilo-violet
+    template. */
+export interface ProjectBrand {
+  wordmark: string;
+  accent: string;
+  accent2: string;
+}
+
 export interface Project {
   slug: string;
   title: string;
@@ -45,6 +55,7 @@ export interface Project {
   tags: ToolKey[];
   summary: string;
   lead: string;
+  brand: ProjectBrand;
   cover: string;
   coverAlt: string;
   coverWidth: number;
@@ -74,6 +85,7 @@ export const projects: Project[] = [
     title: 'CEMEA Sales Performance Dashboard',
     eyebrow: 'TABLEAU',
     org: 'Apple',
+    brand: { wordmark: 'CEMEA Pulse', accent: '#0071e3', accent2: '#42a5f5' },
     period: '2025',
     year: 2025,
     readMinutes: 6,
@@ -186,6 +198,7 @@ export const projects: Project[] = [
     title: 'Freelance Automation & BI Solutions',
     eyebrow: 'PYTHON · RPA · SQL',
     org: 'Freelance',
+    brand: { wordmark: 'Freelance BI Suite', accent: '#6d5ef0', accent2: '#8f7ff5' },
     period: '2024 — Present',
     year: 2024,
     readMinutes: 5,
@@ -294,6 +307,7 @@ export const projects: Project[] = [
     title: 'Ocean Drones — Autonomous Marine Data Platform',
     eyebrow: 'PYTHON · ML',
     org: 'FIAP',
+    brand: { wordmark: 'DriftWatch', accent: '#0ea5a5', accent2: '#5fd0c9' },
     period: 'Final-year project · FIAP',
     year: 2024,
     readMinutes: 8,
@@ -402,6 +416,7 @@ export const projects: Project[] = [
     title: 'Demand Forecasting for an Irish Retail Group',
     eyebrow: 'PYTHON · ML · POWER BI',
     org: 'Grocery & convenience group, Munster',
+    brand: { wordmark: 'ShelfPulse', accent: '#e8871e', accent2: '#f5b962' },
     period: '2025',
     year: 2025,
     readMinutes: 7,
@@ -518,6 +533,7 @@ export const projects: Project[] = [
     title: 'Subscription Churn Early-Warning Scoring',
     eyebrow: 'PYTHON · ML · CLOUD',
     org: 'B2B SaaS, Dublin',
+    brand: { wordmark: 'ChurnRadar', accent: '#4361ee', accent2: '#7b93f5' },
     period: '2025',
     year: 2025,
     readMinutes: 6,
@@ -628,6 +644,7 @@ export const projects: Project[] = [
     title: 'Month-End Close Automation',
     eyebrow: 'AUTOMATION · PYTHON · SQL',
     org: 'Manufacturing group, five entities',
+    brand: { wordmark: 'CloseFlow', accent: '#1f7a54', accent2: '#4caf82' },
     period: '2025',
     year: 2025,
     readMinutes: 6,
@@ -735,6 +752,7 @@ export const projects: Project[] = [
     title: 'Live Logistics Control Tower',
     eyebrow: 'POWER BI · SQL · CLOUD',
     org: '3PL operator, Cork & Rotterdam',
+    brand: { wordmark: 'RouteWatch', accent: '#1d4ed8', accent2: '#5b7fe8' },
     period: '2026',
     year: 2026,
     readMinutes: 6,
@@ -845,6 +863,7 @@ export const projects: Project[] = [
     title: 'NLP Triage of Inbound Clinic Enquiries',
     eyebrow: 'PYTHON · NLP · AUTOMATION',
     org: 'Private clinic group, Leinster',
+    brand: { wordmark: 'TriageLens', accent: '#0f9d84', accent2: '#4fc9ae' },
     period: '2026',
     year: 2026,
     readMinutes: 7,
@@ -961,6 +980,7 @@ export const projects: Project[] = [
     title: 'Anomaly Detection on Building Energy Telemetry',
     eyebrow: 'PYTHON · ML · CLOUD',
     org: 'Commercial property portfolio, 62 buildings',
+    brand: { wordmark: 'GridWatch', accent: '#c2410c', accent2: '#f0834a' },
     period: '2026',
     year: 2026,
     readMinutes: 7,

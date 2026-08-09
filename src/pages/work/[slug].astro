@@ -47,6 +47,27 @@ const chartMax = Math.max(...project.chart.series.map((p) => p.value));
 
 const lbGroup = `case-${project.slug}`;
 
+/** A 6-step ramp from the brand accent toward its softer tone and out to a
+    near-white version, so the interactive chart's CSS --c1..--c6 stay in
+    this project's colourway however many bars/segments it draws. */
+function hexRamp(from: string, via: string, steps = 6): string[] {
+  const rgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const [r1, g1, b1] = rgb(from);
+  const [r2, g2, b2] = rgb(via);
+  return Array.from({ length: steps }, (_, i) => {
+    const t = i / (steps - 1);
+    // First half glides toward the softer accent, second half fades toward white.
+    const tone = t < 0.4 ? t / 0.4 : 1;
+    const fade = t < 0.4 ? 0 : (t - 0.4) / 0.6;
+    const r = Math.round(r1 + (r2 - r1) * tone + (255 - (r1 + (r2 - r1) * tone)) * fade * 0.85);
+    const g = Math.round(g1 + (g2 - g1) * tone + (255 - (g1 + (g2 - g1) * tone)) * fade * 0.85);
+    const b = Math.round(b1 + (b2 - b1) * tone + (255 - (b1 + (b2 - b1) * tone)) * fade * 0.85);
+    return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+  });
+}
+const chartRamp = hexRamp(project.brand.accent, project.brand.accent2);
+const chartRampVars = chartRamp.map((c, i) => `--c${i + 1}:${c}`).join('; ');
+
 const sections = [
   { id: 'cs-problem', label: 'The problem' },
   { id: 'cs-approach', label: 'The approach' },
@@ -100,7 +121,13 @@ const pageDesc = project.summary;
     <div class="reader__content reader__case cse-case">
       <article id="csBody" class="cse-article">
         <header class="cse-hero" data-stagger>
-          <p class="eyebrow reveal">{project.eyebrow} · {project.org}</p>
+          <div class="cse-brandrow reveal">
+            <p class="eyebrow">{project.eyebrow} · {project.org}</p>
+            <span
+              class="cse-brandchip"
+              style={`--chip-a:${project.brand.accent}; --chip-a2:${project.brand.accent2}`}
+            >{project.brand.wordmark}</span>
+          </div>
           <h1 class="cs-title reveal">{project.title}</h1>
           <p class="cse-meta reveal">
             <span class="cse-meta__item">{project.period}</span>
@@ -198,16 +225,20 @@ const pageDesc = project.summary;
             Tracked as {project.chart.unit}, from {project.chart.series[0].label} through {project.chart.series[project.chart.series.length - 1].label} —
             low {chartMin}, high {chartMax}.
           </p>
-          <figure class="cse-chart reveal">
+          <figure
+            class="cse-chart reveal"
+            style={chartRampVars}
+          >
             <div
               class="cse-chart__frame"
               data-chart={chartKind}
               data-series={chartSeries}
               data-chart-title={`${project.chart.title} (${project.chart.unit})`}
               data-chart-unit={project.chart.unit}
+              data-chart-color={project.brand.accent}
               data-chart-dec={chartDec}
             ></div>
-            <figcaption class="cse-chart__cap">{project.chart.title} — {project.chart.unit}, {project.period}.</figcaption>
+            <figcaption class="cse-chart__cap">{project.brand.wordmark} — {project.chart.title}, {project.chart.unit}, {project.period}.</figcaption>
           </figure>
         </section>
 

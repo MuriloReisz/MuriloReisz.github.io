@@ -260,7 +260,7 @@
   z-index: 2;
   padding: 5px 11px;
   border-radius: var(--radius-pill);
-  background: rgba(0, 0, 0, 0.62);
+  background: linear-gradient(135deg, var(--chip-a, rgba(0, 0, 0, 0.62)), var(--chip-a2, rgba(0, 0, 0, 0.62)));
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   color: #fff;
@@ -436,6 +436,23 @@
    CASE STUDY — HERO
    ============================================================ */
 .cse-hero { display: flex; flex-direction: column; }
+.cse-brandrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cse-brandchip,
+.work__brandchip {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-family: var(--font-text);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--chip-a), var(--chip-a2));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.work__brandchip { margin-top: 10px; width: fit-content; }
 .cse-meta {
   display: flex;
   align-items: center;

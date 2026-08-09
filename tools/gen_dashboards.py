@@ -53,6 +53,27 @@ def clip(t: str, n: int) -> str:
     return t if len(t) <= n else t[: n - 1].rstrip() + '…'
 
 
+def hex_ramp(accent: str, accent2: str, steps: int = 6) -> list[str]:
+    """Mirror of the ts hexRamp in work/[slug].astro — accent, softening
+    toward accent2, then fading toward white, so a project's generated
+    dashboard and its on-site interactive chart share one colourway."""
+    r1, g1, b1 = (int(accent[i:i + 2], 16) for i in (1, 3, 5))
+    r2, g2, b2 = (int(accent2[i:i + 2], 16) for i in (1, 3, 5))
+    out = []
+    for i in range(steps):
+        t = i / (steps - 1)
+        tone = t / 0.4 if t < 0.4 else 1.0
+        fade = 0.0 if t < 0.4 else (t - 0.4) / 0.6
+        r = r1 + (r2 - r1) * tone
+        g = g1 + (g2 - g1) * tone
+        b = b1 + (b2 - b1) * tone
+        r = round(r + (255 - r) * fade * 0.85)
+        g = round(g + (255 - g) * fade * 0.85)
+        b = round(b + (255 - b) * fade * 0.85)
+        out.append(f'#{r:02x}{g:02x}{b:02x}')
+    return out
+
+
 def parse() -> list[dict]:
     src = DATA.read_text(encoding='utf-8')
     out = []
@@ -61,6 +82,9 @@ def parse() -> list[dict]:
         if not m:
             continue
         get = lambda k: (re.search(rf"{k}: '((?:[^'\\]|\\.)*)'", block) or [None, ''])[1]
+        brand_m = re.search(
+            r"brand: \{ wordmark: '([^']*)', accent: '([^']*)', accent2: '([^']*)' \}", block)
+        wordmark, accent, accent2 = brand_m.groups() if brand_m else (get('org'), PRIMARY, RAMP[1])
         series = [(lab, float(val)) for lab, val in
                   re.findall(r"\{ label: '([^']*)', value: ([\d.]+) \}", block)]
         chart_title = (re.search(r"chart: \{\s*title: '((?:[^'\\]|\\.)*)'", block) or [None, ''])[1]
@@ -69,12 +93,14 @@ def parse() -> list[dict]:
             r"value: '((?:[^'\\]|\\.)*)',(?:[^}]*?)label: '((?:[^'\\]|\\.)*)'", block)
         out.append(dict(slug=m.group(1), title=get('title'), org=get('org'),
                         period=get('period'), eyebrow=get('eyebrow'),
+                        wordmark=wordmark, accent=accent, accent2=accent2,
                         chart_title=chart_title, unit=unit,
                         series=series, findings=findings[:3]))
     return out
 
 
-def chart_bars(x, y, w, h, series, unit):
+
+def chart_bars(x, y, w, h, series, unit, ramp):
     """Bar chart — used for short series."""
     vals = [v for _, v in series]
     hi = max(vals) or 1
@@ -85,9 +111,9 @@ def chart_bars(x, y, w, h, series, unit):
     parts = [
         '<defs>',
         f'<linearGradient id="barHi" x1="0" y1="0" x2="0" y2="1">'
-        f'<stop offset="0" stop-color="#8f7ff5"/><stop offset="1" stop-color="{RAMP[0]}"/></linearGradient>',
+        f'<stop offset="0" stop-color="{ramp[0]}"/><stop offset="1" stop-color="{ramp[1]}"/></linearGradient>',
         f'<linearGradient id="barLo" x1="0" y1="0" x2="0" y2="1">'
-        f'<stop offset="0" stop-color="{RAMP[3]}"/><stop offset="1" stop-color="{RAMP[2]}"/></linearGradient>',
+        f'<stop offset="0" stop-color="{ramp[3]}"/><stop offset="1" stop-color="{ramp[2]}"/></linearGradient>',
         '</defs>',
         '<g>',
     ]
@@ -107,7 +133,7 @@ def chart_bars(x, y, w, h, series, unit):
                      f'rx="7" fill="url(#{"barHi" if last else "barLo"})"/>')
         if last:
             parts.append(f'<text x="{bx+bw/2:.1f}" y="{by-14:.1f}" text-anchor="middle" '
-                         f'font-family="{FONT}" font-size="17" font-weight="700" fill="{RAMP[0]}">'
+                         f'font-family="{FONT}" font-size="17" font-weight="700" fill="{ramp[0]}">'
                          f'{format(v, fmt)}</text>')
         parts.append(f'<text x="{bx+bw/2:.1f}" y="{y+h+30:.0f}" text-anchor="middle" '
                      f'font-family="{FONT}" font-size="17" fill="{INK48}">{esc(clip(lab,10))}</text>')
@@ -115,7 +141,7 @@ def chart_bars(x, y, w, h, series, unit):
     return '\n'.join(parts)
 
 
-def chart_line(x, y, w, h, series, unit):
+def chart_line(x, y, w, h, series, unit, ramp):
     """Line + area — used for longer series, so trend reads clearly."""
     vals = [v for _, v in series]
     hi, lo = max(vals), min(vals)
@@ -131,8 +157,8 @@ def chart_line(x, y, w, h, series, unit):
     parts = [
         '<defs>',
         f'<linearGradient id="lineArea" x1="0" y1="0" x2="0" y2="1">'
-        f'<stop offset="0" stop-color="{RAMP[0]}" stop-opacity="0.28"/>'
-        f'<stop offset="1" stop-color="{RAMP[0]}" stop-opacity="0"/></linearGradient>',
+        f'<stop offset="0" stop-color="{ramp[0]}" stop-opacity="0.28"/>'
+        f'<stop offset="1" stop-color="{ramp[0]}" stop-opacity="0"/></linearGradient>',
         '</defs>',
         '<g>',
     ]
@@ -145,12 +171,12 @@ def chart_line(x, y, w, h, series, unit):
     d = 'M ' + ' L '.join(f'{a:.1f} {b:.1f}' for a, b in pts)
     parts.append(f'<path d="{d} L {pts[-1][0]:.1f} {y+h:.1f} L {pts[0][0]:.1f} {y+h:.1f} Z" '
                  f'fill="url(#lineArea)"/>')
-    parts.append(f'<path d="{d}" fill="none" stroke="{RAMP[0]}" stroke-width="3.5" '
+    parts.append(f'<path d="{d}" fill="none" stroke="{ramp[0]}" stroke-width="3.5" '
                  f'stroke-linecap="round" stroke-linejoin="round"/>')
     for i, (a, b) in enumerate(pts):
         last = i == n - 1
         parts.append(f'<circle cx="{a:.1f}" cy="{b:.1f}" r="{7 if last else 5}" '
-                     f'fill="{RAMP[0] if last else CANVAS}" stroke="{RAMP[0]}" stroke-width="3"/>')
+                     f'fill="{ramp[0] if last else CANVAS}" stroke="{ramp[0]}" stroke-width="3"/>')
     step = max(1, n // 6)
     for i, (lab, _) in enumerate(series):
         if i % step == 0 or i == n - 1:
@@ -170,13 +196,15 @@ def build(p: dict) -> str:
     good = delta < 0 if any(k in p['unit'].lower() or k in p['chart_title'].lower()
                             for k in ('error', 'hour', 'churn', 'day', 'mape', 'detect', 'response')) else delta > 0
     dcol = '#1f7a44' if good else '#b5342b'
+    accent = p['accent']
+    ramp = hex_ramp(p['accent'], p['accent2'])
 
     o = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">',
          '<defs>',
          f'<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">'
          f'<stop offset="0" stop-color="#f8f8fb"/><stop offset="1" stop-color="{PARCH}"/></linearGradient>',
          f'<linearGradient id="cardTop" x1="0" y1="0" x2="1" y2="0">'
-         f'<stop offset="0" stop-color="{RAMP[0]}"/><stop offset="1" stop-color="{RAMP[1]}"/></linearGradient>',
+         f'<stop offset="0" stop-color="{ramp[0]}"/><stop offset="1" stop-color="{ramp[1]}"/></linearGradient>',
          '</defs>',
          f'<rect width="{W}" height="{H}" fill="url(#bg)"/>']
 
@@ -185,12 +213,13 @@ def build(p: dict) -> str:
     o.append(f'<rect x="0" y="50" width="{W}" height="2" fill="url(#cardTop)"/>')
     for i, c in enumerate(['#ff5f57', '#febc2e', '#28c840']):
         o.append(f'<circle cx="{28+i*22}" cy="26" r="6.5" fill="{c}"/>')
-    o.append(f'<text x="112" y="32" font-family="{FONT}" font-size="17" fill="{INK48}">'
-             f'{esc(p["slug"])} · internal</text>')
+    o.append(f'<rect x="98" y="14" width="{18 + len(p["wordmark"]) * 9}" height="24" rx="12" fill="{accent}"/>')
+    o.append(f'<text x="{98 + 9 + len(p["wordmark"]) * 4.5:.0f}" y="30" text-anchor="middle" '
+             f'font-family="{FONT}" font-size="14" font-weight="700" fill="#fff">{esc(p["wordmark"])}</text>')
 
     # header
     o.append(f'<text x="44" y="112" font-family="{FONT}" font-size="19" font-weight="600" '
-             f'letter-spacing="2.2" fill="{PRIMARY}">{esc(p["eyebrow"][:44])}</text>')
+             f'letter-spacing="2.2" fill="{accent}">{esc(p["eyebrow"][:44])}</text>')
     o.append(f'<text x="44" y="164" font-family="{FONT}" font-size="42" font-weight="700" '
              f'letter-spacing="-1.2" fill="{INK}">{esc(clip(p["title"], 46))}</text>')
     o.append(f'<text x="44" y="200" font-family="{FONT}" font-size="20" fill="{INK48}">'
@@ -211,7 +240,7 @@ def build(p: dict) -> str:
         o.append(f'<text x="{x+26:.0f}" y="{cy+50}" font-family="{FONT}" font-size="17" '
                  f'fill="{INK48}">{esc(clip(lab, 46))}</text>')
         o.append(f'<text x="{x+26:.0f}" y="{cy+108}" font-family="{FONT}" font-size="46" '
-                 f'font-weight="700" letter-spacing="-1.4" fill="{PRIMARY}">{esc(clip(val, 13))}</text>')
+                 f'font-weight="700" letter-spacing="-1.4" fill="{accent}">{esc(clip(val, 13))}</text>')
 
     # main chart panel
     py0 = 412
@@ -227,7 +256,7 @@ def build(p: dict) -> str:
              f'font-size="17" fill="{INK48}">first to latest</text>')
 
     plot = (140, py0 + 118, W - 140 - 80, H - py0 - 44 - 118 - 62)
-    o.append((chart_line if kind == 'line' else chart_bars)(*plot, s, p['unit']))
+    o.append((chart_line if kind == 'line' else chart_bars)(*plot, s, p['unit'], ramp))
     o.append('</svg>')
     return '\n'.join(o)
 
