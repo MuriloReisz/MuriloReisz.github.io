@@ -29,9 +29,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-      # npm ci occasionally dies with "Exit handler never called!" (npm/cli#4028),
-      # a race in npm itself unrelated to the lockfile — retry once before failing.
+      # No npm cache: the first run's "Exit handler never called!" crash
+      # (npm/cli#4028) can poison the cache keyed on this lockfile, which
+      # then gets restored — and fails the same way — on every later run
+      # until the key changes. A clean install every time avoids that.
       - run: npm ci || npm ci
       - run: npm run build
       - uses: actions/configure-pages@v5
