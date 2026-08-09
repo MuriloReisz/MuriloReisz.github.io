@@ -40,7 +40,15 @@ jobs:
             rm -rf node_modules
             npm ci
           fi
-      - run: npm run build
+      # Emitted as ::notice:: so the output is readable from the Checks API
+      # (annotations) even without a signed-in browser session on the logs.
+      - name: Diagnose environment
+        if: always()
+        run: |
+          echo "::notice title=versions::node $(node -v) / npm $(npm -v)"
+          ls -la node_modules/.bin/astro 2>&1 | sed 's/^/::notice title=bin-ls::/'
+          node node_modules/astro/astro.js --version 2>&1 | sed 's/^/::notice title=astro-version::/'
+      - run: node node_modules/astro/astro.js build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
