@@ -28,12 +28,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-      # This runner's bundled npm (10.8.2) deterministically hits
-      # npm/cli#4028 ("Exit handler never called!") on this project — it
-      # exits 0 while leaving a dependency unextracted. Fixed upstream in
-      # later npm releases, so upgrade before installing anything else.
-      - run: npm install -g npm@latest
+          # Node 20's bundled npm (10.8.2 on this runner image)
+          # deterministically hits npm/cli#4028 ("Exit handler never
+          # called!") on this project — it exits 0 while leaving a
+          # dependency unextracted. Node 22 ships a newer npm with that
+          # fixed, and Astro 4's engines field allows anything >=21.
+          node-version: 22
       # Verify against the real symptom (module missing), not npm's exit
       # code, and retry a few times as a backstop in case it recurs.
       - name: Install dependencies
