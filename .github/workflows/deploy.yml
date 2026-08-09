@@ -34,28 +34,21 @@ jobs:
           # dependency unextracted. Node 22 ships a newer npm with that
           # fixed, and Astro 4's engines field allows anything >=21.
           node-version: 22
-      # Verify against the real symptom (module missing), not npm's exit
-      # code, and retry a few times as a backstop in case it recurs.
+      # Single attempt this round — we need npm's own debug log, not just
+      # stdout, to see what it was actually doing when it crashed.
       - name: Install dependencies
-        run: |
-          for i in 1 2 3; do
-            npm install 2>&1 | tee "/tmp/install-$i.log"
-            if [ -f node_modules/astro/astro.js ]; then
-              echo "astro installed on attempt $i"
-              exit 0
-            fi
-            echo "astro missing after attempt $i — retrying"
-            rm -rf node_modules
-          done
-          echo "astro still missing after 3 attempts"
-          exit 1
+        run: npm install --loglevel verbose 2>&1 | tee /tmp/install.log
+        continue-on-error: true
       - name: Diagnose environment
         if: always()
         run: |
           echo "::notice title=versions::node $(node -v) / npm $(npm -v)"
-          for f in /tmp/install-*.log; do
-            tail -n 15 "$f" | sed "s/^/::notice title=$(basename "$f")::/"
-          done
+          echo "::notice title=astro-file::$([ -f node_modules/astro/astro.js ] && echo present || echo MISSING)"
+          tail -n 60 /tmp/install.log | sed 's/^/::notice title=install-tail::/'
+          debuglog=$(ls -t /home/runner/.npm/_logs/*-debug-0.log 2>/dev/null | head -1)
+          if [ -n "$debuglog" ]; then
+            tail -n 80 "$debuglog" | sed 's/^/::notice title=npm-debug::/'
+          fi
       - run: node node_modules/astro/astro.js build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
