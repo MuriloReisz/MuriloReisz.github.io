@@ -53,24 +53,23 @@ def clip(t: str, n: int) -> str:
     return t if len(t) <= n else t[: n - 1].rstrip() + '…'
 
 
-def hex_ramp(accent: str, accent2: str, steps: int = 6) -> list[str]:
+def hex_ramp(accent: str, accent2: str) -> list[str]:
     """Mirror of the ts hexRamp in work/[slug].astro — accent, softening
     toward accent2, then fading toward white, so a project's generated
     dashboard and its on-site interactive chart share one colourway."""
-    r1, g1, b1 = (int(accent[i:i + 2], 16) for i in (1, 3, 5))
-    r2, g2, b2 = (int(accent2[i:i + 2], 16) for i in (1, 3, 5))
+    STEPS = 6
+    rgb1 = [int(accent[i:i + 2], 16) for i in (1, 3, 5)]
+    rgb2 = [int(accent2[i:i + 2], 16) for i in (1, 3, 5)]
     out = []
-    for i in range(steps):
-        t = i / (steps - 1)
+    for i in range(STEPS):
+        t = i / (STEPS - 1)
         tone = t / 0.4 if t < 0.4 else 1.0
         fade = 0.0 if t < 0.4 else (t - 0.4) / 0.6
-        r = r1 + (r2 - r1) * tone
-        g = g1 + (g2 - g1) * tone
-        b = b1 + (b2 - b1) * tone
-        r = round(r + (255 - r) * fade * 0.85)
-        g = round(g + (255 - g) * fade * 0.85)
-        b = round(b + (255 - b) * fade * 0.85)
-        out.append(f'#{r:02x}{g:02x}{b:02x}')
+        channels = []
+        for c1, c2 in zip(rgb1, rgb2):
+            c = c1 + (c2 - c1) * tone
+            channels.append(round(c + (255 - c) * fade * 0.85))
+        out.append('#' + ''.join(f'{c:02x}' for c in channels))
     return out
 
 

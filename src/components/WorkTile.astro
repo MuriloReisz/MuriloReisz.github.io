@@ -5,7 +5,7 @@
 // same tile tones, same .work / .work__text / .work__findings / .shot markup,
 // same [data-tags] hook that site.ts's tool filter reads.
 // -----------------------------------------------------------------------------
-import type { Project } from '../data/projects';
+import { brandChipStyle, type Project } from '../data/projects';
 
 interface Props {
   project: Project;
@@ -48,7 +48,7 @@ const fullLinkClass = onDark
     <div class={eyebrowClass}>{project.eyebrow}</div>
     <span
       class="work__brandchip"
-      style={`--chip-a:${project.brand.accent}; --chip-a2:${project.brand.accent2}`}
+      style={brandChipStyle(project.brand)}
     >{project.brand.wordmark}</span>
     <h2 class="work__title">{project.title}</h2>
     <div class="work__meta">

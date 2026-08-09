@@ -44,6 +44,13 @@ export interface ProjectBrand {
   accent2: string;
 }
 
+/** The inline-style value every brand chip (.pc-card__badge, .cse-brandchip,
+    .work__brandchip) needs — kept in one place so the two CSS custom
+    property names only have to match here, not at every call site. */
+export function brandChipStyle(brand: ProjectBrand): string {
+  return `--chip-a:${brand.accent}; --chip-a2:${brand.accent2}`;
+}
+
 export interface Project {
   slug: string;
   title: string;

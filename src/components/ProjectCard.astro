@@ -11,7 +11,7 @@
 // card in CSS, so the media, the stats and the "Read the case study" affordance
 // are all deliberately non-interactive.
 // ---------------------------------------------------------------------------
-import type { Project } from '../data/projects';
+import { brandChipStyle, type Project } from '../data/projects';
 
 interface Props {
   project: Project;
@@ -66,7 +66,7 @@ const stats = project.findings.slice(0, 3);
     />
     <span
       class="pc-card__badge"
-      style={`--chip-a:${project.brand.accent}; --chip-a2:${project.brand.accent2}`}
+      style={brandChipStyle(project.brand)}
     >{project.brand.wordmark}</span>
   </div>
 
