@@ -69,16 +69,16 @@
   top: 4px;
   bottom: 4px;
   width: 2px;
-  border-radius: 2px;
+  border-radius: 0;
   background: var(--color-primary-on-dark);
   opacity: 0.4;
 }
 .hm-statband__value {
-  font-family: var(--font-display);
-  font-size: 58px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 54px;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -2px;
+  letter-spacing: -0.02em;
   color: #fff;
   font-variant-numeric: tabular-nums;
 }
@@ -179,7 +179,7 @@
   display: inline-block;
   width: 7px;
   height: 7px;
-  border-radius: 50%;
+  border-radius: 0;
   margin-right: 9px;
   translate: 0 -1px;
   background: var(--c3);
@@ -228,7 +228,7 @@
   height: 13px;
   padding: 0;
   border: 0;
-  border-radius: 3px;
+  border-radius: 0;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.07);
   transition: transform 0.12s ease, outline-color 0.12s ease;
@@ -253,7 +253,7 @@
 .hm-heat__legend { display: inline-flex; align-items: center; gap: 9px; }
 .hm-heat__legend-l { font-size: 12px; letter-spacing: -0.1px; color: var(--color-body-muted); }
 .hm-heat__steps { display: inline-flex; gap: 3px; }
-.hm-heat__sw { width: 13px; height: 13px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); }
+.hm-heat__sw { width: 13px; height: 13px; border-radius: 0; background: rgba(255, 255, 255, 0.07); }
 .hm-heat__sw[data-level="1"] { background: color-mix(in srgb, var(--color-primary-on-dark) 30%, transparent); }
 .hm-heat__sw[data-level="2"] { background: color-mix(in srgb, var(--color-primary-on-dark) 52%, transparent); }
 .hm-heat__sw[data-level="3"] { background: color-mix(in srgb, var(--color-primary-on-dark) 74%, transparent); }
@@ -275,7 +275,7 @@
   letter-spacing: -0.1px;
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+  box-shadow: 3px 3px 0 0 #000;
   opacity: 0;
   transition: opacity 0.14s ease;
 }
@@ -304,15 +304,30 @@
   display: flex;
 }
 .hm-quotes__card {
+  position: relative;
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 30px 28px;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-lg);
+  padding: 32px 28px 28px;
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-hard);
   background: var(--surface-card);
+  box-shadow: var(--hard-shadow-sm);
   width: 100%;
+  transition: box-shadow 0.2s var(--reveal-ease), transform 0.2s var(--reveal-ease);
+}
+.hm-quotes__card:hover { box-shadow: var(--hard-shadow); transform: translate(-3px, -3px); }
+.hm-quotes__index {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-48);
+  font-variant-numeric: tabular-nums;
 }
 .hm-quotes__card .quote__text { flex: 1 1 auto; }
 .hm-quotes__card .quote__who { display: flex; align-items: center; gap: 13px; }
@@ -320,18 +335,35 @@
   width: 42px;
   height: 42px;
   flex-shrink: 0;
-  border-radius: 50%;
+  border-radius: var(--radius-hard);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: color-mix(in srgb, var(--color-primary) 13%, transparent);
   color: var(--color-primary);
-  font-family: var(--font-display);
-  font-size: 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.02em;
 }
 .hm-quotes__ident { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+/* Foot row: dot rail on the left, prev/next on the right */
+.hm-quotes__foot { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-top: 22px; flex-wrap: wrap; }
+.hm-quotes__dots { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: 8px; }
+.hm-quotes__dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-hard);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s var(--reveal-ease);
+}
+.hm-quotes__dot:hover { transform: scale(1.2); }
+.hm-quotes__dot[aria-selected="true"] { background: var(--color-primary); border-color: var(--color-primary); transform: scale(1.2); }
+
 
 /* ============================================================
    PIPELINE PANEL — /ai-services (shares .pg-pipe__* from playground.css)
@@ -457,4 +489,7 @@
   .hm-heat__tip { transition: none; }
   .hm-heat__cell:hover { transform: none; }
   .hm-quotes__track { scroll-behavior: auto; }
+  .hm-quotes__card,
+  .hm-quotes__dot { transition: none; }
+  .hm-quotes__card:hover { transform: none; }
 }

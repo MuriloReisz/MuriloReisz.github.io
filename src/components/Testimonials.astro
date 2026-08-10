@@ -1,7 +1,8 @@
 ---
 // Testimonials — a swipeable rail of client quotes. site.ts drives the
-// prev/next buttons; the track is a scroll-snap list, so it is fully
-// usable by touch, wheel and keyboard even before the script loads.
+// prev/next buttons and the active dot; the track is a scroll-snap list, so
+// it is fully usable by touch, wheel and keyboard even before the script
+// loads.
 import { testimonials } from '../data/extras';
 ---
 
@@ -16,9 +17,10 @@ import { testimonials } from '../data/extras';
 
     <div class="hm-quotes__carousel reveal" data-carousel>
       <ul class="hm-quotes__track carousel__track" role="list" tabindex="0" aria-label="Client testimonials">
-        {testimonials.map((t) => (
+        {testimonials.map((t, i) => (
           <li class="hm-quotes__item">
             <figure class="quote hm-quotes__card">
+              <span class="hm-quotes__index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <span class="quote__mark" aria-hidden="true">&#8220;</span>
               <blockquote class="quote__text">{t.quote}</blockquote>
               <figcaption class="quote__who">
@@ -33,13 +35,30 @@ import { testimonials } from '../data/extras';
         ))}
       </ul>
 
-      <div class="carousel__nav">
-        <button class="carousel__btn carousel__prev" type="button" aria-label="Previous testimonial">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
-        </button>
-        <button class="carousel__btn carousel__next" type="button" aria-label="Next testimonial">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
-        </button>
+      <div class="hm-quotes__foot">
+        <ul class="hm-quotes__dots" role="tablist" aria-label="Choose a testimonial" data-carousel-dots>
+          {testimonials.map((_, i) => (
+            <li role="presentation">
+              <button
+                class="hm-quotes__dot"
+                type="button"
+                role="tab"
+                aria-selected={i === 0 ? 'true' : 'false'}
+                aria-label={`Testimonial ${i + 1} of ${testimonials.length}`}
+                data-carousel-dot={i}
+              ></button>
+            </li>
+          ))}
+        </ul>
+
+        <div class="carousel__nav">
+          <button class="carousel__btn carousel__prev" type="button" aria-label="Previous testimonial">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+          </button>
+          <button class="carousel__btn carousel__next" type="button" aria-label="Next testimonial">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>

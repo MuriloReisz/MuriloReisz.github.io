@@ -214,9 +214,31 @@ $$('.cs-qa__head').forEach((head) => {
 $$('[data-carousel]').forEach((carousel) => {
   const track = $<HTMLElement>('.carousel__track', carousel);
   if (!track) return;
-  const step = () => (track.querySelector<HTMLElement>(':scope > *')?.getBoundingClientRect().width ?? track.clientWidth * 0.8) + 18;
+  const items = $$<HTMLElement>(':scope > *', track);
+  const step = () => (items[0]?.getBoundingClientRect().width ?? track.clientWidth * 0.8) + 18;
   $('.carousel__prev', carousel)?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
   $('.carousel__next', carousel)?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+
+  // Optional dot rail ([data-carousel-dots] > [data-carousel-dot]): click to
+  // jump, and reflect whichever item is nearest the scroll position.
+  const dots = $$<HTMLButtonElement>('[data-carousel-dot]', carousel);
+  if (dots.length) {
+    dots.forEach((dot, i) => dot.addEventListener('click', () => {
+      items[i]?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    }));
+    const setActive = (i: number) => dots.forEach((d, di) => d.setAttribute('aria-selected', String(di === i)));
+    const onScroll = debounce(() => {
+      const trackLeft = track.getBoundingClientRect().left;
+      let closest = 0;
+      let closestDist = Infinity;
+      items.forEach((item, i) => {
+        const dist = Math.abs(item.getBoundingClientRect().left - trackLeft);
+        if (dist < closestDist) { closestDist = dist; closest = i; }
+      });
+      setActive(closest);
+    }, 80);
+    track.addEventListener('scroll', onScroll, { passive: true });
+  }
 });
 
 /* ---------- Compare table: select a plan column ---------- */

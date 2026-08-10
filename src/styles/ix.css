@@ -127,7 +127,7 @@ html.ix-noscroll { overflow: hidden; }
   gap: 9px;
 }
 .ix-chart__legend-row { display: flex; align-items: center; gap: 10px; }
-.ix-chart__legend-sw { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.ix-chart__legend-sw { width: 12px; height: 12px; border-radius: 0; flex-shrink: 0; }
 .ix-chart__legend-l {
   flex: 1 1 0;
   font-size: 13px;
@@ -159,7 +159,7 @@ html.ix-noscroll { overflow: hidden; }
   flex-direction: column;
   gap: 1px;
   text-align: left;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 4px 0 0 #000;
   opacity: 0;
   transition: opacity 0.15s ease;
 }
@@ -227,7 +227,7 @@ html.ix-noscroll { overflow: hidden; }
   width: 20px;
   height: 20px;
   margin-top: -7px;          /* centres a 20px thumb on a 6px track */
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--accent-fill);
   border: 2px solid var(--color-canvas);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
@@ -253,7 +253,7 @@ html.ix-noscroll { overflow: hidden; }
 .ix-range::-moz-range-thumb {
   width: 18px;
   height: 18px;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--accent-fill);
   border: 2px solid var(--color-canvas);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);

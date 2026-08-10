@@ -20,7 +20,7 @@ const tiltEls = $$('[data-tilt]');
 if (tiltEls.length && finePointer.matches && !prefersReduced()) {
   tiltEls.forEach((el) => {
     el.classList.add('mo-tilt');
-    const max = clamp(attrNum(el, 'data-tilt-max', 6), 0, 14);
+    const max = clamp(attrNum(el, 'data-tilt-max', 6) * 1.7, 0, 22);
     let raf = 0;
     let rx = 0;
     let ry = 0;
@@ -77,7 +77,7 @@ const magneticEls = $$('[data-magnetic]');
 if (magneticEls.length && finePointer.matches && !prefersReduced()) {
   magneticEls.forEach((el) => {
     el.classList.add('mo-magnetic');
-    const pull = clamp(attrNum(el, 'data-magnetic-strength', 6), 0, 18);
+    const pull = clamp(attrNum(el, 'data-magnetic-strength', 6) * 1.6, 0, 26);
     let raf = 0;
     let mx = 0;
     let my = 0;
