@@ -1,7 +1,7 @@
 // ============================================================
 //  Client interactions (framework-free). Bundled by Astro.
 // ============================================================
-import { $, $$, debounce, prefersReduced } from './dom';
+import { $, $$, clamp01, debounce, prefersReduced } from './dom';
 
 const root = document.documentElement;
 
@@ -282,6 +282,40 @@ $$('.tl__rail').forEach((rail) => {
   paint();
 });
 
+/* ---------- "Into the machine" cold-open scroll portal ---------- */
+const itmWrap = $('.itm-wrap');
+if (itmWrap && !prefersReduced()) {
+  const stage = $<HTMLElement>('.itm-stage', itmWrap);
+  let raf = 0;
+  const paint = () => {
+    raf = 0;
+    if (!stage) return;
+    const total = itmWrap.getBoundingClientRect().height - innerHeight;
+    const scrolled = -itmWrap.getBoundingClientRect().top;
+    const p = total > 0 ? clamp01(scrolled / total) : 0;
+    stage.style.setProperty('--itm-p', p.toFixed(4));
+  };
+  const schedule = () => { if (!raf) raf = requestAnimationFrame(paint); };
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', schedule, { passive: true });
+  paint();
+}
+
+/* ---------- "Into the machine" HUD clock — ticks regardless of reduced
+   motion; it's a once-a-second text update, not continuous animation. ---------- */
+const itmClock = $('[data-itm-clock]');
+if (itmClock) {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const tick = () => {
+    const d = new Date();
+    const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const time = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    itmClock.textContent = `SYSTEM_TIME ${date} ${time}`;
+  };
+  tick();
+  setInterval(tick, 1000);
+}
+
 /* ---------- Contact form (client validation + status) ---------- */
 $$<HTMLFormElement>('form.cta__form').forEach((form) => {
   form.addEventListener('submit', (e) => {
@@ -499,93 +533,4 @@ addEventListener('keydown', (e) => {
   else return;
   paintCmdkActive(items);
 });
-
-/* ---------- Hero constellation (animated tech background) ---------- */
-const heroNet = document.getElementById('heroNet') as HTMLCanvasElement | null;
-if (heroNet && !prefersReduced() && heroNet.getContext) {
-  const ctx = heroNet.getContext('2d')!;
-  const host = (heroNet.closest('.hero-host') as HTMLElement) || (heroNet.parentElement as HTMLElement);
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  const LINK = 132;
-  type P = { x: number; y: number; vx: number; vy: number };
-  let pts: P[] = [];
-  let W = 0, H = 0, raf = 0, running = false;
-  const mouse = { x: -9999, y: -9999, on: false };
-
-  const themeColor = () =>
-    document.documentElement.getAttribute('data-theme') === 'dark'
-      ? { r: 167, g: 139, b: 250 }   // violet (dark)
-      : { r: 109, g: 94, b: 240 };   // indigo (light)
-
-  function resize() {
-    const r = (heroNet!.parentElement as HTMLElement).getBoundingClientRect();
-    W = r.width; H = r.height;
-    if (W < 2 || H < 2) return;
-    heroNet!.width = Math.round(W * dpr);
-    heroNet!.height = Math.round(H * dpr);
-    heroNet!.style.width = W + 'px';
-    heroNet!.style.height = H + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const target = Math.max(24, Math.min(94, Math.round((W * H) / 15000)));
-    pts = [];
-    for (let i = 0; i < target; i++) {
-      pts.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3 });
-    }
-  }
-
-  function frame() {
-    if (!running) return;
-    ctx.clearRect(0, 0, W, H);
-    const c = themeColor();
-    for (const p of pts) {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x <= 0 || p.x >= W) p.vx *= -1;
-      if (p.y <= 0 || p.y >= H) p.vy *= -1;
-      if (mouse.on) {
-        const dx = mouse.x - p.x, dy = mouse.y - p.y;
-        if (dx * dx + dy * dy < 22500) { p.vx += dx * 0.00002; p.vy += dy * 0.00002; }
-      }
-      p.vx = Math.max(-0.6, Math.min(0.6, p.vx));
-      p.vy = Math.max(-0.6, Math.min(0.6, p.vy));
-    }
-    ctx.lineWidth = 1;
-    for (let i = 0; i < pts.length; i++) {
-      for (let j = i + 1; j < pts.length; j++) {
-        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-        const d = Math.hypot(dx, dy);
-        if (d < LINK) {
-          ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},${(1 - d / LINK) * 0.16})`;
-          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
-        }
-      }
-    }
-    if (mouse.on) {
-      for (const p of pts) {
-        const d = Math.hypot(mouse.x - p.x, mouse.y - p.y);
-        if (d < LINK * 1.5) {
-          ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},${(1 - d / (LINK * 1.5)) * 0.32})`;
-          ctx.beginPath(); ctx.moveTo(mouse.x, mouse.y); ctx.lineTo(p.x, p.y); ctx.stroke();
-        }
-      }
-    }
-    ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.55)`;
-    for (const p of pts) { ctx.beginPath(); ctx.arc(p.x, p.y, 1.7, 0, Math.PI * 2); ctx.fill(); }
-    raf = requestAnimationFrame(frame);
-  }
-
-  const start = () => { if (!running && W > 2) { running = true; raf = requestAnimationFrame(frame); } };
-  const stop = () => { running = false; cancelAnimationFrame(raf); };
-
-  host.addEventListener('mousemove', (e) => {
-    const r = heroNet.getBoundingClientRect();
-    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.on = true;
-  });
-  host.addEventListener('mouseleave', () => { mouse.on = false; mouse.x = mouse.y = -9999; });
-  let rt: number; addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(resize, 150); });
-  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
-  new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? start() : stop())), { threshold: 0 }).observe(host);
-
-  resize();
-  start();
-}
 

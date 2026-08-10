@@ -13,4 +13,14 @@ export default defineConfig({
   build: { format: 'directory' },
 
   // Multi-page static site. No client framework needed — light JS via <script>.
+
+  // Three.js (the "into the machine" point-cloud intro) is the first bare npm
+  // import any client script has used. Listing it here means Vite's dev-mode
+  // dependency crawler doesn't need to discover it by scanning every page —
+  // that scan is what throws the one-time "Failed to scan for dependencies /
+  // Unexpected ','" warning on a cold `astro dev` start. Harmless (the dev
+  // server recovers and serves normally right after), but this removes it.
+  vite: {
+    optimizeDeps: { include: ['three'] },
+  },
 });

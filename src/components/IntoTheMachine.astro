@@ -1,0 +1,52 @@
+---
+// IntoTheMachine — the site's cold open: a procedural point-cloud
+// impression of a person at a desk (no real 3D scan — coded from
+// primitive shapes in src/scripts/pointcloud.ts), rendered with
+// Three.js. It auto-rotates continuously; scrolling through the tall
+// .itm-wrap track dollies the camera toward the monitor while a violet
+// veil fades in, so the visitor appears to fly through the screen and
+// land on the real hero underneath.
+//
+// The canvas is loaded by a component-scoped <script>, so Three.js
+// only ships on pages that render this section. If WebGL is
+// unavailable, or the visitor prefers reduced motion, the empty
+// .itm-fallback panel underneath (sat behind the canvas) is what's
+// left — plain black, same as the canvas's own background.
+import { site } from '../data/site';
+
+const stats = [
+  'Commits Today: 14',
+  'Bugs Fixed: 231',
+  'Projects Shipped: 9',
+  'Pull Requests: 3 open',
+  'Lines Changed: +842 / -213',
+  'Build: passing',
+  'Last Deploy: 2 min ago',
+];
+---
+
+<section class="itm-wrap" data-into-pc aria-hidden="true" role="presentation">
+  <div class="itm-stage">
+    <div class="itm-stats">
+      {stats.map((s) => <p class="itm-stat">{s}</p>)}
+    </div>
+
+    <div class="itm-fallback"></div>
+
+    <canvas class="itm-canvas"></canvas>
+
+    <div class="itm-veil"></div>
+
+    <p class="itm-clock" data-itm-clock aria-hidden="true">&nbsp;</p>
+
+    <p class="itm-caption">
+      {site.name} &nbsp;|&nbsp; {site.role}
+      <br />
+      GitHub &nbsp;|&nbsp; LinkedIn &nbsp;|&nbsp; Email
+    </p>
+
+    <p class="itm-hint">Scroll to enter <span aria-hidden="true">&#8595;</span></p>
+  </div>
+</section>
+
+<script src="../scripts/pointcloud.ts"></script>
