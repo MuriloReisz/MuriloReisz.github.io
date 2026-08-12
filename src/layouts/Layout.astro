@@ -113,7 +113,16 @@ const cmdkProjects = projects.map((p) => ({
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!--
+      Tab icon. The PNG alone was not enough: plenty of browser surfaces ask
+      for /favicon.ico at the site root by convention instead of reading these
+      tags — history entries, bookmark bars, some tab strips — and that URL
+      was a 404 on the live site, which is when you get a fallback letter
+      instead of the mark. The .ico carries 16/32/48/64/128/256 so every
+      surface picks its own size rather than downscaling one bitmap.
+    -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/images/favicon.png" />
     <!-- iOS ignores SVG here, so this one is a raster -->
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(personLd)} />
