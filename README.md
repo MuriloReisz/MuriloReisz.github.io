@@ -81,7 +81,7 @@ and — if you set `featured: true` — a full-bleed tile on the home page.
 ## Integrations
 
 - **Contact forms** post to [FormSubmit](https://formsubmit.co) →
-  `muriloarielreis@gmail.com`. FormSubmit needs a one-time email confirmation on the
+  `muriloarielreisz@gmail.com`. FormSubmit needs a one-time email confirmation on the
   very first submission before it starts forwarding.
 - **Booking** — set `calendlyUrl` in `site.ts` and every "book a call" button uses it.
 - **AI Advisor** — set `advisorUrl` in `site.ts` to point the floating button somewhere.

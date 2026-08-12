@@ -12,7 +12,7 @@ export const site = {
   tagline:
     'Dashboards, machine-learning models, and data pipelines that turn raw data into decisions leaders can act on.',
 
-  email: 'muriloarielreis@gmail.com',
+  email: 'muriloarielreisz@gmail.com',
   phone: '+353 87 384 1528',
 
   socials: {
