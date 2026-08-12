@@ -179,7 +179,9 @@ $$('[data-mock]').forEach((mock) => {
 
 /* ---------- Portfolio tool filter ---------- */
 const filterBtns = $$<HTMLButtonElement>('.toolfilter [data-filter]');
-const workCards = $$<HTMLElement>('section[data-tags]');
+// Any [data-tags] element, not just sections: the home page's featured
+// cards are anchors (WorkCard.astro) while /work still uses sections.
+const workCards = $$<HTMLElement>('[data-tags]');
 filterBtns.forEach((btn) => btn.addEventListener('click', () => {
   const f = btn.getAttribute('data-filter')!;
   filterBtns.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));

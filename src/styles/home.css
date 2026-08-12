@@ -493,3 +493,288 @@
   .hm-quotes__dot { transition: none; }
   .hm-quotes__card:hover { transform: none; }
 }
+
+/* ============================================================
+   FEATURED WORK — .hm-fw*
+   Terminal "record" cards, rendered by WorkCard.astro.
+
+   Always dark, in both themes. The section is the visual handshake with the
+   point-cloud cold open at the top of the page: hard edges, offset shadow,
+   mono type, violet on black. Letting it follow the light theme broke that
+   link and made the cards read as ordinary white boxes.
+   ============================================================ */
+.hm-fw {
+  background: var(--color-black);
+  padding: 84px 0 92px;
+}
+
+.hm-fw__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hm-fw__lead {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.hm-fw__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-primary-on-dark);
+}
+
+.hm-fw__count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #6c6c72;
+}
+
+.hm-fw__h2 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #f5f5f7;
+  margin: 0 0 10px;
+}
+
+.hm-fw__sub {
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 1.6;
+  color: #9a9aa0;
+  max-width: 62ch;
+  margin: 0 0 30px;
+}
+
+/* ---------- the grid ---------- */
+.hm-fw__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+/* ---------- one card ---------- */
+.hm-fw__card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 22px 20px;
+  background: #121214;
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  border-radius: 0; /* hard edges: this section is the brutalist one */
+  box-shadow: 6px 6px 0 rgba(109, 94, 240, 0.5);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.hm-fw__card:hover,
+.hm-fw__card:focus-visible {
+  transform: translate(-3px, -3px);
+  box-shadow: 11px 11px 0 rgba(109, 94, 240, 0.62);
+  border-color: rgba(167, 139, 250, 0.6);
+}
+
+.hm-fw__card:focus-visible {
+  outline: 2px solid var(--color-primary-on-dark);
+  outline-offset: 3px;
+}
+
+/* Scanline wash, revealed on hover. Pointer-events off and z-index under the
+   content so it can never eat the click or wash out the type. */
+.hm-fw__scan {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  background:
+    linear-gradient(rgba(167, 139, 250, 0.05), rgba(167, 139, 250, 0.05)),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(167, 139, 250, 0.11) 0 1px,
+      transparent 1px 4px
+    );
+}
+
+.hm-fw__card:hover .hm-fw__scan,
+.hm-fw__card:focus-visible .hm-fw__scan { opacity: 1; }
+
+/* ---------- card contents ---------- */
+.hm-fw__top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hm-fw__idx { color: var(--color-primary-on-dark); }
+.hm-fw__kicker { color: #7c7c84; }
+
+.hm-fw__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hm-fw__chip {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 7px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--chip-a), var(--chip-a2));
+}
+
+.hm-fw__title {
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 1.24;
+  letter-spacing: -0.01em;
+  color: #f5f5f7;
+}
+
+.hm-fw__meta {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: #6c6c72;
+}
+
+.hm-fw__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 2px;
+}
+
+.hm-fw__stat { display: flex; flex-direction: column; gap: 3px; }
+
+.hm-fw__n {
+  font-family: var(--font-mono);
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-primary-on-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.hm-fw__l {
+  font-family: var(--font-text);
+  font-size: 13px;
+  line-height: 1.4;
+  color: #9a9aa0;
+}
+
+.hm-fw__rule {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-top: auto; /* pins the rule + CTA to the bottom on uneven cards */
+}
+
+.hm-fw__cta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary-on-dark);
+}
+
+.hm-fw__card:hover .hm-fw__cta { color: #fff; }
+
+/* ---------- footer link out ---------- */
+.hm-fw__more {
+  margin: 30px 0 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: #8a8a90;
+}
+
+.hm-fw__morelink {
+  color: var(--color-primary-on-dark);
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+  .hm-fw { padding: 60px 0 66px; }
+  .hm-fw__grid { grid-template-columns: 1fr; gap: 18px; }
+  .hm-fw__card { padding: 18px 18px 16px; box-shadow: 4px 4px 0 rgba(109, 94, 240, 0.5); }
+  .hm-fw__stats { gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-fw__card { transition: none; }
+  .hm-fw__card:hover,
+  .hm-fw__card:focus-visible { transform: none; }
+  .hm-fw__scan { transition: none; }
+}
+
+/* Chip count, appended to the tool filter chips on the home page. */
+.hm-fw__chipn {
+  margin-left: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- tool filter, on the dark featured section ----------
+   .toolfilter and .filter-pill are authored in global.css against a light
+   tile: ink-coloured labels, and a padding-top with no bottom spacing because
+   the old markup put the chips in their own centred section. Dropped onto
+   black above a grid they came out near-illegible and overlapping the first
+   row of cards, so both are corrected here rather than in global.css, where
+   it would change /work too. */
+.hm-fw .toolfilter {
+  justify-content: flex-start;
+  padding-top: 4px;
+  margin-bottom: 30px;
+  gap: 8px;
+}
+
+.hm-fw .toolfilter .toolchip {
+  height: 38px;
+  padding: 0 13px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #b9b9c0;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.hm-fw .toolfilter .toolchip:hover {
+  color: #fff;
+  border-color: rgba(167, 139, 250, 0.55);
+}
+
+.hm-fw .toolfilter .toolchip[aria-pressed="true"] {
+  color: #0b0b0c;
+  background: var(--color-primary-on-dark);
+  border-color: var(--color-primary-on-dark);
+}
+
+.hm-fw .toolfilter .toolchip__logo { width: 15px; height: 15px; }

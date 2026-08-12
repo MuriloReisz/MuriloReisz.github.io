@@ -1,9 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { site } from '../data/site';
-import { featured, projects } from '../data/projects';
+import { featured, projects, toolFilters } from '../data/projects';
 import IntoTheMachine from '../components/IntoTheMachine.astro';
-import WorkTile from '../components/WorkTile.astro';
+import WorkCard from '../components/WorkCard.astro';
 import StatBand from '../components/StatBand.astro';
 import SkillsPanel from '../components/SkillsPanel.astro';
 import TechMarquee from '../components/TechMarquee.astro';
@@ -88,31 +88,51 @@ const rolePhrases = [
     </div>
   </section>
 
-  <!-- ===================== PORTFOLIO — tool filter ===================== -->
-  <section class="tile tile--white center portfolio-intro" id="work">
-    <div class="inner center reveal">
-      <div class="eyebrow">Portfolio</div>
-      <h2 class="metrics__h2" style="color:var(--color-ink)">Featured work.</h2>
-      <p class="toolhint">Select a tool to filter the projects below.</p>
-      <div class="toolfilter" role="group" aria-label="Filter projects by tool">
-        <button class="filter-pill toolchip" data-filter="all" aria-pressed="true">All</button>
-        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="tableau" aria-pressed="false"><span class="toolchip__logo tl-tableau" aria-hidden="true"></span>Tableau</button></span>
-        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="powerbi" aria-pressed="false"><span class="toolchip__logo tl-powerbi" aria-hidden="true"></span>Power BI</button></span>
-        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="python" aria-pressed="false"><span class="toolchip__logo tl-python" aria-hidden="true"></span>Python</button></span>
-        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="sql" aria-pressed="false"><span class="toolchip__logo tl-sql" aria-hidden="true"></span>SQL</button></span>
-        <span class="toolchip-wrap"><button class="filter-pill toolchip" data-filter="excel" aria-pressed="false"><span class="toolchip__logo tl-excel" aria-hidden="true"></span>Excel</button></span>
+  <!-- ===================== FEATURED WORK =====================
+       Cards, not full-bleed tiles: see WorkCard.astro. The chips are rendered
+       from toolFilters (AI & ML / Automation / Cloud first) rather than the
+       hardcoded five-tool list this used to carry, which offered no way to
+       filter for the machine-learning or automation work at all even though
+       every project already tagged it. -->
+  <section class="hm-fw" id="work">
+    <div class="hm-fw__inner">
+      <div class="reveal">
+        <div class="hm-fw__lead">
+          <span class="hm-fw__eyebrow">Featured work</span>
+          <span class="hm-fw__count">{featured.length} of {projects.length}</span>
+        </div>
+        <h2 class="hm-fw__h2">AI, automation and the data underneath it.</h2>
+        <p class="hm-fw__sub">
+          Models and pipelines that ship into someone&rsquo;s working day &mdash; language
+          models triaging real enquiries, churn scored before the renewal, a
+          month-end close that runs itself. Each one written up end to end:
+          the problem, the approach, and what actually moved.
+        </p>
+        <div class="toolfilter" role="group" aria-label="Filter projects by tool">
+          {toolFilters.map((f) => (
+            <button
+              class="filter-pill toolchip"
+              data-filter={f.key}
+              aria-pressed={f.key === 'all' ? 'true' : 'false'}
+            >
+              {f.key !== 'all' && ['tableau', 'powerbi', 'python', 'sql', 'excel'].includes(f.key) && (
+                <span class={`toolchip__logo tl-${f.key}`} aria-hidden="true"></span>
+              )}
+              {f.label}
+              <span class="hm-fw__chipn" aria-hidden="true">{f.count}</span>
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ===================== FEATURED WORK — rendered from src/data/projects.ts ===================== -->
-  {featured.map((project, i) => <WorkTile project={project} feature={i === 0} />)}
+      <div class="hm-fw__grid">
+        {featured.map((project, i) => <WorkCard project={project} index={i + 1} />)}
+      </div>
 
-  <!-- ===================== ALL WORK ===================== -->
-  <section class="tile tile--white center hm-more">
-    <div class="inner center reveal">
-      <p class="hm-more__hint">Three of {projects.length}. The rest — Power BI models, forecasting, cloud pipelines — sit in the full archive, each written up end to end.</p>
-      <a class="pill pill--ghost hm-more__link" href="/work" data-magnetic data-magnetic-strength="6">See all {projects.length} projects <span class="pill__arrow" aria-hidden="true">→</span></a>
+      <p class="hm-fw__more reveal">
+        <a class="hm-fw__morelink" href="/work">See all {projects.length} projects &rsaquo;</a>
+        &nbsp;&mdash;&nbsp;forecasting, anomaly detection, cloud pipelines, Power BI models.
+      </p>
     </div>
   </section>
 

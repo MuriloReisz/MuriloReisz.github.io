@@ -1,0 +1,77 @@
+---
+// -----------------------------------------------------------------------------
+// WorkCard — one featured project as a terminal "record" on the home page.
+//
+// Replaces the deleted WorkTile, which rendered each featured project as a
+// full-bleed alternating section built around a big dashboard screenshot.
+// That layout read as a generic agency page and it buried the AI and
+// automation work under BI imagery. This is a dense mono card in a grid:
+// index, domain, headline figures, nothing else. The screenshots still do
+// their job on /work and in the case studies, where there is room to look
+// at them properly.
+//
+// The whole card is the link — no nested anchors — so the hit area is the
+// whole rectangle and there is one tab stop per project.
+//
+// [data-tags] is the hook site.ts's tool filter reads and .work--hidden
+// (global.css) is what it toggles — the same contract ProjectCard uses on
+// /work, so one filter implementation serves both layouts.
+// -----------------------------------------------------------------------------
+import { brandChipStyle, type Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  /** 1-based position, rendered as the [01] index. */
+  index: number;
+}
+
+const { project, index } = Astro.props;
+
+// "Apple · 2025", but never "FIAP · Final-year project · FIAP".
+const dateline = project.period.includes(project.org)
+  ? project.period
+  : `${project.org} · ${project.period}`;
+
+// Two figures, not three: at card width a third column either wraps or
+// squeezes the labels to two words each.
+const stats = project.findings.slice(0, 2);
+---
+
+<a
+  class="hm-fw__card reveal"
+  href={`/work/${project.slug}`}
+  data-tags={project.tags.join(' ')}
+  aria-label={`Read the ${project.title} case study`}
+>
+  <span class="hm-fw__scan" aria-hidden="true"></span>
+
+  <span class="hm-fw__top">
+    <span class="hm-fw__idx">[{String(index).padStart(2, '0')}]</span>
+    <span class="hm-fw__kicker">{project.eyebrow}</span>
+  </span>
+
+  <span class="hm-fw__head">
+    <span class="hm-fw__chip" style={brandChipStyle(project.brand)}>{project.brand.wordmark}</span>
+    <span class="hm-fw__title">{project.title}</span>
+  </span>
+
+  <span class="hm-fw__meta">{dateline} · {project.readMinutes} min read</span>
+
+  <span class="hm-fw__stats">
+    {stats.map((f) => (
+      <span class="hm-fw__stat">
+        <span
+          class="hm-fw__n"
+          data-counter-to={f.count !== undefined ? String(f.count) : undefined}
+          data-counter-prefix={f.prefix}
+          data-counter-suffix={f.suffix}
+          data-counter-dec={f.count !== undefined && !Number.isInteger(f.count) ? '2' : '0'}
+        >{f.value}</span>
+        <span class="hm-fw__l">{f.label}</span>
+      </span>
+    ))}
+  </span>
+
+  <span class="hm-fw__rule" aria-hidden="true"></span>
+  <span class="hm-fw__cta">Read the case study <span aria-hidden="true">›</span></span>
+</a>

@@ -194,7 +194,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/cemea-sales-dashboard', external: false },
     ],
-    featured: true,
+    featured: false,
     tone: 'dark',
     reverse: false,
   },
@@ -303,7 +303,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/freelance-automation-bi', external: false },
     ],
-    featured: true,
+    featured: false,
     tone: 'parchment',
     reverse: true,
   },
@@ -412,7 +412,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/ocean-drones', external: false },
     ],
-    featured: true,
+    featured: false,
     tone: 'dark-3',
     reverse: false,
   },
@@ -640,7 +640,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/churn-early-warning', external: false },
     ],
-    featured: false,
+    featured: true,
     tone: 'parchment',
     reverse: false,
   },
@@ -748,7 +748,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/finance-close-automation', external: false },
     ],
-    featured: false,
+    featured: true,
     tone: 'dark',
     reverse: true,
   },
@@ -976,7 +976,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/clinic-nlp-triage', external: false },
     ],
-    featured: false,
+    featured: true,
     tone: 'dark-3',
     reverse: true,
   },
@@ -1111,12 +1111,14 @@ const TOOL_LABELS: Record<ToolKey, string> = {
   python: 'Python',
   sql: 'SQL',
   excel: 'Excel',
-  ml: 'Machine learning',
+  ml: 'AI & ML',
   automation: 'Automation',
   cloud: 'Cloud',
 };
 
-const TOOL_ORDER: ToolKey[] = ['tableau', 'powerbi', 'python', 'sql', 'excel', 'ml', 'automation', 'cloud'];
+// AI and automation lead, because that is the positioning: the tool chips
+// are the first thing a visitor reads about what the work IS.
+const TOOL_ORDER: ToolKey[] = ['ml', 'automation', 'cloud', 'python', 'sql', 'powerbi', 'tableau', 'excel'];
 
 export const toolFilters: { key: ToolKey | 'all'; label: string; count: number }[] = [
   { key: 'all', label: 'All', count: projects.length },
