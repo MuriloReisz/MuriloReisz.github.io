@@ -3417,22 +3417,93 @@
   }
 
   /* ============================================================
-     V2 — TESTIMONIALS
+     PROOF — Proof.astro (home + both service pages)
+     Replaced the testimonial rail. Not a carousel: four cards each
+     doing different work, so they all stay on screen.
      ============================================================ */
-  .quotes { display: flex; gap: 20px; padding-top: 48px; flex-wrap: wrap; }
-  .quote {
-    flex: 1 1 0; min-width: 280px;
-    background: var(--surface-card);
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-lg);
-    padding: 30px 28px;
-    display: flex; flex-direction: column; gap: 16px;
+  .pf__grid {
+    list-style: none;
+    margin: 0;
+    padding: 48px 0 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
   }
-  .quote__mark { font-family: var(--font-display); font-size: 44px; line-height: 0.5; color: var(--color-primary); height: 22px; }
-  .quote__text { font-size: 17px; line-height: 1.5; letter-spacing: -0.224px; color: var(--color-ink); flex: 1 1 auto; }
-  .quote__who { display: flex; flex-direction: column; gap: 2px; }
-  .quote__name { font-size: 15px; font-weight: 600; letter-spacing: -0.224px; }
-  .quote__role { font-size: 13px; letter-spacing: -0.224px; color: var(--color-ink-48); }
+  .pf__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 26px 24px 24px;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-ink);
+    box-shadow: var(--hard-shadow-sm);
+  }
+  .pf__num {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-hairline);
+  }
+  .pf__kind {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .pf__headline {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    color: var(--color-ink);
+  }
+  .pf__body {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: -0.224px;
+    color: var(--color-ink-48);
+    flex: 1 1 auto;
+  }
+  .pf__verify {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.224px;
+    color: var(--color-primary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+  .pf__verify svg { width: 14px; height: 14px; }
+  .pf__verify:hover { border-bottom-color: var(--color-primary); }
+  .pf__note {
+    max-width: 760px;
+    padding-top: 30px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: -0.224px;
+    color: var(--color-ink-48);
+  }
+
+  @media (max-width: 1024px) {
+    .pf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .pf__grid { grid-template-columns: minmax(0, 1fr); padding-top: 36px; }
+    .pf__card { padding: 22px 20px; }
+  }
 
   /* ============================================================
      RESPONSIVE

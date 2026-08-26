@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { site, bookingFor } from '../data/site';
+import Proof from '../components/Proof.astro';
 
 const { href: bookHref, attrs: bookAttrs } = bookingFor('#ai-services-book');
 // The CTA inside #ai-services-book cannot fall back to its own section — that
@@ -154,6 +155,8 @@ const { href: bookNowHref, attrs: bookNowAttrs } = bookingFor('#contactFormAI');
   </section>
 
   <!-- ===================== BUILD FRAMEWORKS ===================== -->
+  <Proof compact />
+
   <section class="tile center" id="ai-services-frameworks">
     <div class="inner center sreveal">
       <div class="eyebrow">Frameworks</div>

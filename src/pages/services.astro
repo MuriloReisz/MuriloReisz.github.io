@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { site, bookingFor } from '../data/site';
 import RoiCalculator from '../components/RoiCalculator.astro';
+import Proof from '../components/Proof.astro';
 
 const { href: bookHref, attrs: bookAttrs } = bookingFor('#services-book');
 // The CTA inside #services-book cannot fall back to its own section — that
@@ -80,6 +81,8 @@ const { href: bookNowHref, attrs: bookNowAttrs } = bookingFor('#contactForm');
     </div>
     <p class="offer-note reveal" style="position:relative;z-index:1;transition-delay:2.5s">Not sure which fits? <a href={bookHref} {...bookAttrs}><strong>Book a discovery call</strong></a> and I’ll tell you honestly whether I can help. Engagements start with a paid diagnostic and run into four and five figures for a build.<small>Indicative “from” prices; each build is scoped and quoted from your diagnostic.</small></p>
   </section>
+
+  <Proof compact />
 
   <!-- ===================== PROBLEM / COST OF INACTION (dark) ===================== -->
   <section class="tile tile--dark center">
