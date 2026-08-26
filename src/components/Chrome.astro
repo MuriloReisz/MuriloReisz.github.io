@@ -52,13 +52,17 @@ import { site } from '../data/site';
   </div>
 </div>
 
-<!-- Ask the AI Advisor -->
-<a class="advisor-fab" id="advisorFab" href={site.advisorUrl || '#contact'} target={site.advisorUrl ? '_blank' : undefined} rel={site.advisorUrl ? 'noopener' : undefined} aria-label="Ask the AI Advisor">
-  <span class="advisor-fab__icon" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9a1.5 1.5 0 0 1-1.5 1.5H9l-4 3.5V16H5.5A1.5 1.5 0 0 1 4 14.5v-9Z" fill="currentColor"></path></svg>
-  </span>
-  <span class="advisor-fab__label">Ask the AI Advisor</span>
-</a>
+<!-- Ask the AI Advisor — only rendered once site.advisorUrl points at a real
+     bot. A floating button labelled "Ask the AI Advisor" that merely scrolls to
+     a contact form promises something the site does not have. -->
+{site.advisorUrl && (
+  <a class="advisor-fab" id="advisorFab" href={site.advisorUrl} target="_blank" rel="noopener" aria-label="Ask the AI Advisor">
+    <span class="advisor-fab__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9a1.5 1.5 0 0 1-1.5 1.5H9l-4 3.5V16H5.5A1.5 1.5 0 0 1 4 14.5v-9Z" fill="currentColor"></path></svg>
+    </span>
+    <span class="advisor-fab__label">Ask the AI Advisor</span>
+  </a>
+)}
 
 <!-- Back to top — revealed by motion.ts past the first viewport -->
 <button class="totop" type="button" data-back-to-top aria-label="Back to top">

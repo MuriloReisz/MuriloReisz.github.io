@@ -9,6 +9,8 @@ node_modules/
 *.log
 # python generator scratch
 __pycache__/
+# screenshot output from tools/shoot.py
+tools/shots/
 # reference source (extraction scratch — safe to delete)
 _source/
 # personal working drafts — not site source, and this repo is public

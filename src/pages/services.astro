@@ -1,12 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site } from '../data/site';
+import { site, bookingFor } from '../data/site';
 import RoiCalculator from '../components/RoiCalculator.astro';
 
-const bookHref = site.calendlyUrl || '#services-book';
-const bookAttrs = site.calendlyUrl
-  ? { href: site.calendlyUrl, target: '_blank', rel: 'noopener' }
-  : { href: '#services-book' };
+const { href: bookHref, attrs: bookAttrs } = bookingFor('#services-book');
+// The CTA inside #services-book cannot fall back to its own section — that
+// scrolls nowhere. Send it to the form instead.
+const { href: bookNowHref, attrs: bookNowAttrs } = bookingFor('#contactForm');
 ---
 
 <Layout title="Analytics services">
@@ -28,7 +28,7 @@ const bookAttrs = site.calendlyUrl
         <p class="offer__for"><strong>Best for:</strong> a COO, operations or finance leader who suspects a manual report, a fragile forecast or a hand-run workflow is leaking time, money or trust, but hasn’t quantified it.</p>
         <div class="offer__price"><span class="offer__pre">from</span><span class="offer__cur">€</span>1,500</div>
         <div class="offer__period">credited in full against a build &middot; ~1 week</div>
-        <a class="offer__cta offer__cta--default" href={bookHref} data-magnetic>Request a diagnostic</a>
+        <a class="offer__cta offer__cta--default" href={bookHref} {...bookAttrs} data-magnetic>Request a diagnostic</a>
         <div class="offer__list">
           <div class="offer__list-head">Includes</div>
           <div class="offer__li"><span class="offer__li-dot"></span><span>A written diagnosis of the two or three highest-cost blind spots in your data and process</span></div>
@@ -47,7 +47,7 @@ const bookAttrs = site.calendlyUrl
         <p class="offer__for"><strong>Trusted Executive Dashboard</strong> &middot; <strong>Forecast / Reporting Rebuild</strong> &middot; <strong>One Automated Workflow</strong> (with governance).</p>
         <div class="offer__price"><span class="offer__pre">from</span><span class="offer__cur">€</span>8,000</div>
         <div class="offer__period">fixed scope, value-priced &middot; automation from €12,000</div>
-        <a class="offer__cta offer__cta--featured" href={bookHref} data-magnetic>Book a discovery call</a>
+        <a class="offer__cta offer__cta--featured" href={bookHref} {...bookAttrs} data-magnetic>Book a discovery call</a>
         <div class="offer__list">
           <div class="offer__list-head">Includes</div>
           <div class="offer__li"><span class="offer__li-dot"></span><span>Diagnose &rarr; design &rarr; build on your live data, scoped against the diagnostic’s written acceptance criteria</span></div>
@@ -65,7 +65,7 @@ const bookAttrs = site.calendlyUrl
         <p class="offer__for"><strong>Best for:</strong> an organisation that wants its dashboards, forecasts and automations kept reliable and improving, without hiring a €55k+ salaried analyst.</p>
         <div class="offer__price"><span class="offer__pre">from</span><span class="offer__cur">€</span>2,000</div>
         <div class="offer__period">per month &middot; minimum 3 months</div>
-        <a class="offer__cta offer__cta--default" href={bookHref} data-magnetic>Discuss ongoing support</a>
+        <a class="offer__cta offer__cta--default" href={bookHref} {...bookAttrs} data-magnetic>Discuss ongoing support</a>
         <div class="offer__list">
           <div class="offer__list-head">Includes</div>
           <div class="offer__li"><span class="offer__li-dot"></span><span>Pipelines and dashboards kept live, with monitoring and alerting</span></div>
@@ -78,7 +78,7 @@ const bookAttrs = site.calendlyUrl
       </div>
 
     </div>
-    <p class="offer-note reveal" style="position:relative;z-index:1;transition-delay:2.5s">Not sure which fits? <a href={bookHref}><strong>Book a discovery call</strong></a> and I’ll tell you honestly whether I can help. Engagements start with a paid diagnostic and run into four and five figures for a build.<small>Indicative “from” prices; each build is scoped and quoted from your diagnostic.</small></p>
+    <p class="offer-note reveal" style="position:relative;z-index:1;transition-delay:2.5s">Not sure which fits? <a href={bookHref} {...bookAttrs}><strong>Book a discovery call</strong></a> and I’ll tell you honestly whether I can help. Engagements start with a paid diagnostic and run into four and five figures for a build.<small>Indicative “from” prices; each build is scoped and quoted from your diagnostic.</small></p>
   </section>
 
   <!-- ===================== PROBLEM / COST OF INACTION (dark) ===================== -->
@@ -262,7 +262,7 @@ const bookAttrs = site.calendlyUrl
       <h2 class="metrics__h2" style="color:#fff" data-reveal-words>From manual and fragile to reliable, in three phases.</h2>
       <p class="hero__sub" style="color:#9ca3af;max-width:600px;margin-left:auto;margin-right:auto">Modular by design. Start with whichever phase fits, there’s no obligation to take all three.</p>
       <div class="flow__more sreveal">
-        <a href="#">See the full step-by-step <span aria-hidden="true">↗</span></a>
+        <a href="#services-timeline">See the full step-by-step</a>
       </div>
     </div>
     <div class="phases" data-stagger>
@@ -353,7 +353,6 @@ const bookAttrs = site.calendlyUrl
       <div class="eyebrow">Step by step</div>
       <h2 class="metrics__h2" style="color:var(--color-ink)" data-reveal-words>From first message to a system you own.</h2>
       <p class="hero__sub">Every stage of working together, so you know what to expect before you commit.</p>
-      <div class="flow__more"><a href="#">See the full step-by-step <span aria-hidden="true">↗</span></a></div>
     </div>
 
     <div class="tl">
@@ -369,8 +368,7 @@ const bookAttrs = site.calendlyUrl
           <h3 class="tl__title">The discovery call</h3>
           <p class="tl__body">We start with a call to go through your objectives, where your data actually lives, and the numbers you want to track: revenue, deals, pipeline stages, team performance. Everything lines up before I build anything.</p>
           <div class="tl__links">
-            <a href={bookHref}>Book a discovery call</a>
-            <a href="#">Get the project brief template <span aria-hidden="true">↗</span></a>
+            <a href={bookHref} {...bookAttrs}>Book a discovery call</a>
           </div>
           <div class="tl__visual tl__agenda">
             <div class="tl__vhead">Discovery agenda</div>
@@ -380,9 +378,9 @@ const bookAttrs = site.calendlyUrl
               <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>The KPIs you want to track</li>
             </ul>
           </div>
-          <a class="tl__visual tl__brief" href="#" data-scroll-scale title="Open the Analytics Project Brief template">
+          <div class="tl__visual tl__brief" data-scroll-scale data-lightbox-group="services-brief" data-lightbox-cap="The project brief we fill in together on the discovery call.">
             <img src="/images/proposal-spec.svg" width="1200" height="780" loading="lazy" decoding="async" alt="Analytics Project Brief: a spreadsheet template with sections for company info, goals and data sources to fill in before the build." />
-          </a>
+          </div>
         </div>
       </div>
 
@@ -495,7 +493,7 @@ const bookAttrs = site.calendlyUrl
         </div>
       </div>
 
-      <p class="tl__cta sreveal">The first step is the diagnostic. <a href={bookHref}>Book a discovery call</a></p>
+      <p class="tl__cta sreveal">The first step is the diagnostic. <a href={bookHref} {...bookAttrs}>Book a discovery call</a></p>
     </div>
   </section>
 
@@ -622,9 +620,9 @@ const bookAttrs = site.calendlyUrl
       <h2 class="cta__h2">Let’s see if I can <span class="accent">help</span>.</h2>
       <p class="cta__sub">Tell me what’s breaking, roughly what it’s costing, and what you’ve tried. If it’s a fit, we start with a paid diagnostic; if it isn’t, I’ll say so and point you somewhere better.</p>
       <div class="cta__book">
-        <a class="pill pill--primary cta__submit" {...bookAttrs} data-magnetic>Book a discovery call</a>
+        <a class="pill pill--primary cta__submit" href={bookNowHref} {...bookNowAttrs} data-magnetic>Book a discovery call</a>
         <p class="cta__reassure">Engagements start with a paid diagnostic (from €1,500, credited to your build). If you need a few hours of ad-hoc analysis, I’m probably not the right fit, and I’ll happily point you to someone who is.</p>
-        <p class="cta__resource">Prefer to scope it out first? <a href="#">Grab the project brief</a>, or see <a href="#">how working together works</a>.</p>
+        <p class="cta__resource">Prefer to scope it out first? See <a href="#services-timeline">how working together works</a>, step by step.</p>
       </div>
       <div class="cta__or" aria-hidden="true"><span class="cta__or-line"></span>or send a message<span class="cta__or-line"></span></div>
       <form class="cta__form" id="contactFormServices" action="https://formsubmit.co/muriloarielreisz@gmail.com" method="POST" novalidate>
