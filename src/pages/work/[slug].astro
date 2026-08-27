@@ -5,7 +5,7 @@
 // lives in the .cse-* namespace and is styled in src/styles/work.css.
 // -------------------------------------------------------------------------
 import Layout from '../../layouts/Layout.astro';
-import { brandChipStyle, projects, type Project } from '../../data/projects';
+import { brandChipStyle, coverWebp, projects, type Project } from '../../data/projects';
 
 export function getStaticPaths() {
   const total = projects.length;
@@ -30,6 +30,8 @@ interface Props {
 }
 
 const { project, prev, next, index, total } = Astro.props as Props;
+
+const coverWebpSrc = coverWebp(project.cover);
 
 const path = `/work/${project.slug}/`;
 const shareUrl = Astro.site ? new URL(path, Astro.site).href : Astro.url.href;
@@ -159,16 +161,22 @@ const pageDesc = project.summary;
           </ul>
 
           <figure class="cs-figure cs-figure--full cse-cover reveal" data-parallax="0.05" data-parallax-max="24">
-            <img
-              class="cs-figure__img"
-              src={project.cover}
-              alt={project.coverAlt}
-              width={project.coverWidth}
-              height={project.coverHeight}
-              loading="lazy"
-              decoding="async"
-              data-lightbox-group={lbGroup}
-            />
+            <picture>
+              {coverWebpSrc && <source srcset={coverWebpSrc} type="image/webp" />}
+              <img
+                class="cs-figure__img"
+                src={project.cover}
+                alt={project.coverAlt}
+                width={project.coverWidth}
+                height={project.coverHeight}
+                loading="lazy"
+                decoding="async"
+                data-lightbox-group={lbGroup}
+                {/* Point the lightbox at the WebP too, or opening it would pull
+                    the ~3x larger PNG that the <picture> above never fetched. */}
+                data-lightbox-src={coverWebpSrc ?? project.cover}
+              />
+            </picture>
             <figcaption>{project.summary}</figcaption>
           </figure>
         </header>

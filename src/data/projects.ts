@@ -1122,6 +1122,21 @@ export function projectBySlug(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }
 
+/**
+ * The lossless WebP twin of a project cover, for a <picture> source.
+ *
+ * tools/gen_dashboards.py writes `<slug>.png` and `<slug>.webp` side by side,
+ * so this is a pure path swap rather than a second field to keep in sync.
+ * Returns null for anything that is not one of those PNGs, so a cover set to an
+ * SVG or an external URL degrades to a plain <img> instead of pointing at a
+ * .webp that was never generated.
+ */
+export function coverWebp(cover: string): string | null {
+  return cover.startsWith('/images/dash/') && cover.endsWith('.png')
+    ? cover.replace(/\.png$/, '.webp')
+    : null;
+}
+
 const TOOL_LABELS: Record<ToolKey, string> = {
   tableau: 'Tableau',
   powerbi: 'Power BI',
