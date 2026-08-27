@@ -13,15 +13,23 @@
 // .itm-fallback panel underneath (sat behind the canvas) is what's
 // left — plain black, same as the canvas's own background.
 import { site } from '../data/site';
+import { projects } from '../data/projects';
+import { techStack } from '../data/extras';
 
+// The HUD readout. Every line is derived from real site data or is a plain
+// statement of fact about how this page is built — it used to read
+// "Commits Today: 14 / Bugs Fixed: 231 / Last Deploy: 2 min ago", which looks
+// like a live telemetry feed and was invented. A decorative HUD is fine; one
+// that fabricates activity metrics is not, on a site whose whole pitch is
+// numbers you can trust.
 const stats = [
-  'Commits Today: 14',
-  'Bugs Fixed: 231',
-  'Projects Shipped: 9',
-  'Pull Requests: 3 open',
-  'Lines Changed: +842 / -213',
-  'Build: passing',
-  'Last Deploy: 2 min ago',
+  `Case Studies: ${projects.length}`,
+  `Tools In Use: ${techStack.length}`,
+  'Framework: none',
+  'Renderer: WebGL point cloud',
+  'Geometry: procedural, no 3D scan',
+  'Analytics: none',
+  `Location: ${site.location}`,
 ];
 ---
 
