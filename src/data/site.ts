@@ -40,7 +40,6 @@ export const site = {
   // The utm_source is what lets Cal.com's reporting tell a booking that came
   // from this site from one that came out of an email.
   bookingUrl: 'https://cal.com/murilo-reis-bzl0er/discoverycall?utm_source=website&utm_medium=cta&utm_campaign=muriloreisz-com',
-  bookingUrl: 'https://cal.com/murilo-reis-bzl0er/discoverycall?utm_source=website&utm_medium=cta&utm_campaign=muriloreisz-com',
   advisorUrl: '',  // e.g. a custom GPT / chatbot link for the "Ask the AI Advisor" button
 
   /** Last review date for the privacy copy — used by /privacy and the
