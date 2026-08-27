@@ -31,6 +31,15 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      # Type-check the 46 .astro/.ts files before building. The checker is
+      # installed here with --no-save rather than being a devDependency on
+      # purpose: the machine this repo is developed on has npm pointed at an
+      # internal registry, so any `npm install` that writes package-lock.json
+      # bakes internal URLs into it and `npm ci` above then fails. That has
+      # already broken this deploy once. Keeping it off the lockfile keeps the
+      # lockfile reproducible from the public registry.
+      - name: Type-check
+        run: npm run typecheck
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

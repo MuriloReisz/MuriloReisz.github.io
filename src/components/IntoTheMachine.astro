@@ -90,7 +90,7 @@ const stats = [
   const wrap = document.querySelector('.itm-wrap');
 
   /** Take the intro off the page and remember not to show it again. */
-  function skipIntro(scroll) {
+  function skipIntro(scroll: boolean) {
     root.setAttribute('data-itm', 'skip');
     try { localStorage.setItem('itm:seen', '1'); } catch {}
     if (scroll) {

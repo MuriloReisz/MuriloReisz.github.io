@@ -161,6 +161,8 @@ const pageDesc = project.summary;
           </ul>
 
           <figure class="cs-figure cs-figure--full cse-cover reveal" data-parallax="0.05" data-parallax-max="24">
+            <!-- data-lightbox-src points the viewer at the WebP too, or opening
+                 it would pull the ~3x larger PNG the <picture> just avoided. -->
             <picture>
               {coverWebpSrc && <source srcset={coverWebpSrc} type="image/webp" />}
               <img
@@ -172,8 +174,6 @@ const pageDesc = project.summary;
                 loading="lazy"
                 decoding="async"
                 data-lightbox-group={lbGroup}
-                {/* Point the lightbox at the WebP too, or opening it would pull
-                    the ~3x larger PNG that the <picture> above never fetched. */}
                 data-lightbox-src={coverWebpSrc ?? project.cover}
               />
             </picture>
