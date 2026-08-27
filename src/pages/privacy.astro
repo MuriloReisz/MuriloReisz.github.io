@@ -10,7 +10,7 @@
 import Layout from '../layouts/Layout.astro';
 import { site } from '../data/site';
 
-const updated = '3 August 2026';
+
 ---
 
 <Layout
@@ -30,7 +30,7 @@ const updated = '3 August 2026';
         browser.
       </p>
       <p class="cse-meta reveal" style="padding-top:18px">
-        <span class="cse-meta__item">Last updated {updated}</span>
+        <span class="cse-meta__item">Last updated {site.privacyUpdated}</span>
         <span class="cse-meta__sep" aria-hidden="true">·</span>
         <span class="cse-meta__item">Controller: {site.name}, {site.location}</span>
       </p>
@@ -89,10 +89,18 @@ const updated = '3 August 2026';
             <svg class="cse-result__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
             <span class="cse-result__t"><strong>ix:view</strong> — whether you prefer the portfolio as a grid or a list.</span>
           </li>
+          <li class="cse-result">
+            <svg class="cse-result__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+            <span class="cse-result__t"><strong>egg:wireframe</strong> — set only if you switch on the blueprint view hidden behind the ⌘K palette, so it survives a reload.</span>
+          </li>
+          <li class="cse-result">
+            <svg class="cse-result__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+            <span class="cse-result__t"><strong>itm:seen</strong> — that you have already watched the animated intro on the home page, so you are not made to sit through it again.</span>
+          </li>
         </ul>
         <p class="cs-p">
           None of these leaves your device, none identifies you, and none is readable by another
-          site. Clearing your browser storage removes all three.
+          site. Clearing your browser storage removes all of them.
         </p>
       </div>
 

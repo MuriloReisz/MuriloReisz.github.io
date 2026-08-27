@@ -1,12 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site } from '../data/site';
+import { site, bookingFor } from '../data/site';
 
-const rsvpHref = site.calendlyUrl || '/#contact';
-const rsvpExternal = Boolean(site.calendlyUrl);
+const { href: rsvpHref, attrs: rsvpAttrs } = bookingFor('/#contact');
 ---
 
-<Layout title="Meetup">
+<!--
+  Kept out of the nav, the ⌘K palette and the sitemap, and served noindex,
+  because the page advertises an event whose date, time and venue are all still
+  "announced soon". It builds and stays reachable by URL so any link already
+  shared keeps working. When there is a real date: fill in the three mt-row
+  values below, drop the `noindex`, and add the page back in src/data/site.ts
+  (nav.servicesMenu + nav.mobile), src/scripts/site.ts (the ⌘K INDEX) and
+  src/pages/sitemap.xml.ts.
+-->
+<Layout title="Meetup" noindex>
 
   <!-- HERO -->
   <section class="tile tile--white center mt-hero" id="meetup-hero">
@@ -15,7 +23,7 @@ const rsvpExternal = Boolean(site.calendlyUrl);
       <h1 class="mt-hero__title" data-reveal-words>Give your team back <span class="accent">5+ hours a week</span> with AI.</h1>
       <p class="mt-hero__lead reveal">A free monthly meetup for owner-run businesses across {site.location}. No jargon, no sales pitch. Just the practical AI tools that cut the admin eating your week, shown working on real business tasks.</p>
       <div class="mt-cta reveal">
-        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...(rsvpExternal ? { target: '_blank', rel: 'noopener' } : {})}>Reserve your seat</a>
+        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...rsvpAttrs}>Reserve your seat</a>
         <a class="pill pill--ghost" href="#meetup-format">See how a night runs</a>
       </div>
       <p class="mt-note reveal" data-rsvp-note>The next date and venue are being confirmed. Reserve your seat now and we&rsquo;ll email you the details first.</p>
@@ -119,7 +127,7 @@ const rsvpExternal = Boolean(site.calendlyUrl);
         </div>
       </div>
       <div class="mt-cta sreveal">
-        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...(rsvpExternal ? { target: '_blank', rel: 'noopener' } : {})}>Reserve your seat</a>
+        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...rsvpAttrs}>Reserve your seat</a>
       </div>
     </div>
   </section>
@@ -228,7 +236,7 @@ const rsvpExternal = Boolean(site.calendlyUrl);
       <h2 class="cta__h2" data-reveal-words>Save your seat at the next <span class="accent">local AI</span> meetup.</h2>
       <p class="cta__sub">Free to attend, limited seats, and no sales pitch. Reserve now and we&rsquo;ll send you the date and venue the moment they&rsquo;re set.</p>
       <div class="mt-cta">
-        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...(rsvpExternal ? { target: '_blank', rel: 'noopener' } : {})}>Reserve your seat</a>
+        <a class="pill pill--primary" data-rsvp data-magnetic href={rsvpHref} {...rsvpAttrs}>Reserve your seat</a>
       </div>
       <p class="cta__reassure">Free &middot; Limited seats &middot; Monthly in {site.location}</p>
       <p class="mt-close">Would rather a one-to-one look at your business first? See the <a class="textlink textlink--dark" href="/ai-services">AI Tools Assessment</a>, read up on <a class="textlink textlink--dark" href="/work">the work behind these nights</a>, or take the same tools for a spin in the <a class="textlink textlink--dark" href="/playground">playground</a>.</p>

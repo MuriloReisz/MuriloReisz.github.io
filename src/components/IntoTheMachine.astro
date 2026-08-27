@@ -7,23 +7,53 @@
 // veil fades in, so the visitor appears to fly through the screen and
 // land on the real hero underneath.
 //
-// The canvas is loaded by a component-scoped <script>, so Three.js
-// only ships on pages that render this section. If WebGL is
-// unavailable, or the visitor prefers reduced motion, the empty
-// .itm-fallback panel underneath (sat behind the canvas) is what's
-// left — plain black, same as the canvas's own background.
+// Three.js is ~528 KB, so it is loaded by a *dynamic* import from a
+// component-scoped <script> rather than a static one. That means it is only
+// fetched when the intro is actually going to play: not on other pages, not
+// under prefers-reduced-motion, and not for a visitor who has already seen it
+// or skipped it. A static <script src> would have downloaded it every time
+// regardless, which is what used to happen on every single homepage visit.
+//
+// If WebGL is unavailable the empty .itm-fallback panel underneath (sat behind
+// the canvas) is what's left — plain black, same as the canvas's own
+// background.
+import '../styles/intro.css';
 import { site } from '../data/site';
+import { projects } from '../data/projects';
+import { techStack } from '../data/extras';
 
+// The HUD readout. Every line is derived from real site data or is a plain
+// statement of fact about how this page is built — it used to read
+// "Commits Today: 14 / Bugs Fixed: 231 / Last Deploy: 2 min ago", which looks
+// like a live telemetry feed and was invented. A decorative HUD is fine; one
+// that fabricates activity metrics is not, on a site whose whole pitch is
+// numbers you can trust.
 const stats = [
-  'Commits Today: 14',
-  'Bugs Fixed: 231',
-  'Projects Shipped: 9',
-  'Pull Requests: 3 open',
-  'Lines Changed: +842 / -213',
-  'Build: passing',
-  'Last Deploy: 2 min ago',
+  `Case Studies: ${projects.length}`,
+  `Tools In Use: ${techStack.length}`,
+  'Framework: none',
+  'Renderer: WebGL point cloud',
+  'Geometry: procedural, no 3D scan',
+  'Analytics: none',
+  `Location: ${site.location}`,
 ];
 ---
+
+<!-- Pre-paint skip decision. Inline and synchronous, ahead of the section, for
+     the same reason the theme script in Layout.astro is: deciding after paint
+     would show 240vh of black cold open and then yank it away. -->
+<script is:inline>
+  (function () {
+    try {
+      var seen = localStorage.getItem('itm:seen');
+      var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (seen || reduced) document.documentElement.setAttribute('data-itm', 'skip');
+    } catch (e) {
+      /* Private browsing can throw on localStorage. Play the intro; it is the
+         graceful direction to fail in. */
+    }
+  })();
+</script>
 
 <section class="itm-wrap" data-into-pc aria-hidden="true" role="presentation">
   <div class="itm-stage">
@@ -46,7 +76,45 @@ const stats = [
     </p>
 
     <p class="itm-hint">Scroll to enter <span aria-hidden="true">&#8595;</span></p>
+
+    <!-- Not aria-hidden like the rest of the stage: this is the one thing in
+         here a visitor may genuinely need to operate. -->
+    <button class="itm-skip" type="button" data-itm-skip aria-hidden="false">Skip intro</button>
   </div>
 </section>
 
-<script src="../scripts/pointcloud.ts"></script>
+<script>
+  /* Load Three.js only if the intro is going to run. The skip attribute is set
+     by the inline script above, before this module is evaluated. */
+  const root = document.documentElement;
+  const wrap = document.querySelector('.itm-wrap');
+
+  /** Take the intro off the page and remember not to show it again. */
+  function skipIntro(scroll: boolean) {
+    root.setAttribute('data-itm', 'skip');
+    try { localStorage.setItem('itm:seen', '1'); } catch {}
+    if (scroll) {
+      /* The tall track has just collapsed, so the hero is already at the top of
+         the document — jump there rather than animating through nothing. */
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }
+
+  if (wrap && root.getAttribute('data-itm') !== 'skip') {
+    import('../scripts/pointcloud.ts');
+
+    document.querySelector('[data-itm-skip]')?.addEventListener('click', () => skipIntro(true));
+
+    /* Mark it seen once the visitor has scrolled through the portal, so a
+       returning visitor lands straight on the hero. Scrolling past it counts as
+       having watched it; leaving early does not. */
+    const seenAt = () => {
+      const r = wrap.getBoundingClientRect();
+      if (r.bottom <= window.innerHeight * 1.05) {
+        try { localStorage.setItem('itm:seen', '1'); } catch {}
+        removeEventListener('scroll', seenAt);
+      }
+    };
+    addEventListener('scroll', seenAt, { passive: true });
+  }
+</script>

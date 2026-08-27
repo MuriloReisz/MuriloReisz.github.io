@@ -9,7 +9,6 @@
      .hm-skills    SkillsPanel.astro
      .hm-marquee   TechMarquee.astro
      .hm-heat      ActivityHeatmap.astro
-     .hm-quotes    Testimonials.astro
      .hm-pipe      the ETL pipeline panel on /ai-services
    ============================================================ */
 
@@ -282,90 +281,6 @@
 .hm-heat__tip.is-on { opacity: 1; }
 
 /* ============================================================
-   TESTIMONIALS — scroll-snap rail of quote cards
-   ============================================================ */
-.hm-quotes__carousel { position: relative; padding-top: 44px; }
-.hm-quotes__track {
-  list-style: none;
-  margin: 0;
-  padding: 4px;
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-}
-.hm-quotes__track::-webkit-scrollbar { display: none; }
-.hm-quotes__item {
-  flex: 0 0 auto;
-  width: 420px;
-  max-width: 100%;
-  scroll-snap-align: start;
-  display: flex;
-}
-.hm-quotes__card {
-  position: relative;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 32px 28px 28px;
-  border: 2px solid var(--color-ink);
-  border-radius: var(--radius-hard);
-  background: var(--surface-card);
-  box-shadow: var(--hard-shadow-sm);
-  width: 100%;
-  transition: box-shadow 0.2s var(--reveal-ease), transform 0.2s var(--reveal-ease);
-}
-.hm-quotes__card:hover { box-shadow: var(--hard-shadow); transform: translate(-3px, -3px); }
-.hm-quotes__index {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--color-ink-48);
-  font-variant-numeric: tabular-nums;
-}
-.hm-quotes__card .quote__text { flex: 1 1 auto; }
-.hm-quotes__card .quote__who { display: flex; align-items: center; gap: 13px; }
-.hm-quotes__avatar {
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-  border-radius: var(--radius-hard);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in srgb, var(--color-primary) 13%, transparent);
-  color: var(--color-primary);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.hm-quotes__ident { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-
-/* Foot row: dot rail on the left, prev/next on the right */
-.hm-quotes__foot { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-top: 22px; flex-wrap: wrap; }
-.hm-quotes__dots { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: 8px; }
-.hm-quotes__dot {
-  width: 9px;
-  height: 9px;
-  padding: 0;
-  border: 1px solid var(--color-ink);
-  border-radius: var(--radius-hard);
-  background: transparent;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s var(--reveal-ease);
-}
-.hm-quotes__dot:hover { transform: scale(1.2); }
-.hm-quotes__dot[aria-selected="true"] { background: var(--color-primary); border-color: var(--color-primary); transform: scale(1.2); }
-
-
-/* ============================================================
    PIPELINE PANEL — /ai-services (shares .pg-pipe__* from playground.css)
    ============================================================ */
 .hm-pipe {
@@ -464,7 +379,6 @@
   .hm-statband__grid { flex-wrap: wrap; gap: 30px 24px; }
   .hm-statband__item { flex: 1 1 42%; }
   .hm-skills__list { grid-template-columns: minmax(0, 1fr); gap: 34px; }
-  .hm-quotes__item { width: 360px; }
   .hm-pipe { padding: 26px 22px; }
   .hm-pipe__stage { grid-template-columns: 28px minmax(0, 1fr); }
   .hm-pipe__stage-d { grid-column: 2; }
@@ -474,8 +388,6 @@
   .hm-statband__item { flex: 1 1 100%; }
   .hm-statband__value { font-size: 44px; }
   .hm-skills__row { grid-template-columns: minmax(0, 1fr) 84px 30px; gap: 10px; }
-  .hm-quotes__item { width: 84vw; }
-  .hm-quotes__card { padding: 24px 22px; }
   .hm-marquee__chip { font-size: 13.5px; padding: 8px 14px; }
   .hm-heat__cell, .hm-heat__sw { width: 11px; height: 11px; }
   .hm-more__hint { font-size: 16px; }
@@ -488,10 +400,6 @@
   .hm-heat__cell,
   .hm-heat__tip { transition: none; }
   .hm-heat__cell:hover { transform: none; }
-  .hm-quotes__track { scroll-behavior: auto; }
-  .hm-quotes__card,
-  .hm-quotes__dot { transition: none; }
-  .hm-quotes__card:hover { transform: none; }
 }
 
 /* ============================================================

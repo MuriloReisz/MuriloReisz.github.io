@@ -194,7 +194,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/cemea-sales-dashboard', external: false },
     ],
-    featured: false,
+    featured: true,
     tone: 'dark',
     reverse: false,
   },
@@ -303,7 +303,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/freelance-automation-bi', external: false },
     ],
-    featured: false,
+    featured: true,
     tone: 'parchment',
     reverse: true,
   },
@@ -412,7 +412,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/ocean-drones', external: false },
     ],
-    featured: false,
+    featured: true,
     tone: 'dark-3',
     reverse: false,
   },
@@ -640,7 +640,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/churn-early-warning', external: false },
     ],
-    featured: true,
+    featured: false,
     tone: 'parchment',
     reverse: false,
   },
@@ -748,7 +748,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/finance-close-automation', external: false },
     ],
-    featured: true,
+    featured: false,
     tone: 'dark',
     reverse: true,
   },
@@ -976,7 +976,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/clinic-nlp-triage', external: false },
     ],
-    featured: true,
+    featured: false,
     tone: 'dark-3',
     reverse: true,
   },
@@ -1101,8 +1101,40 @@ export const projects: Project[] = [
 
 export const featured: Project[] = projects.filter((p) => p.featured);
 
+/**
+ * What to offer someone who has landed on a 404.
+ *
+ * Deliberately its own list rather than reusing `featured`. The 404 used to map
+ * `featured`, which silently coupled "what we show on the home page" to "where
+ * we send a lost visitor" — so changing the featured flag quietly changed the
+ * 404, and for a while that meant the 404 recommended invented case studies.
+ */
+const POPULAR_SLUGS = ['cemea-sales-dashboard', 'freelance-automation-bi', 'ocean-drones'] as const;
+
+export const popular: Project[] = POPULAR_SLUGS.map((slug) => {
+  const found = projects.find((p) => p.slug === slug);
+  // Fail loudly at build time rather than rendering a 404 page with holes in it.
+  if (!found) throw new Error(`popular: no project with slug "${slug}"`);
+  return found;
+});
+
 export function projectBySlug(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
+}
+
+/**
+ * The lossless WebP twin of a project cover, for a <picture> source.
+ *
+ * tools/gen_dashboards.py writes `<slug>.png` and `<slug>.webp` side by side,
+ * so this is a pure path swap rather than a second field to keep in sync.
+ * Returns null for anything that is not one of those PNGs, so a cover set to an
+ * SVG or an external URL degrades to a plain <img> instead of pointing at a
+ * .webp that was never generated.
+ */
+export function coverWebp(cover: string): string | null {
+  return cover.startsWith('/images/dash/') && cover.endsWith('.png')
+    ? cover.replace(/\.png$/, '.webp')
+    : null;
 }
 
 const TOOL_LABELS: Record<ToolKey, string> = {

@@ -1,0 +1,55 @@
+---
+// Proof — verifiable credibility, in the slot a rail of invented client
+// testimonials used to occupy.
+//
+// Deliberately not a carousel. Quotes were put in a rail because there were
+// five interchangeable ones; these four are each doing different work, so they
+// all stay on screen. Same section shell as the component it replaced
+// (tile--parchment > .inner[data-stagger] > .reveal children), which keeps the
+// home page's white/parchment alternation intact and reuses motion.ts's
+// reveal/stagger layer without a line of new JS.
+import { proof, referenceNote } from '../data/extras';
+
+interface Props {
+  /** Trimmed heading for the service pages, where space is tighter. */
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<section class="tile tile--parchment pf" id="proof">
+  <div class="inner" data-stagger>
+    <div class="eyebrow reveal">Why trust me with this</div>
+    {compact ? (
+      <h2 class="metrics__h2 reveal">Before you spend anything, here's what you can check.</h2>
+    ) : (
+      <>
+        <h2 class="metrics__h2 reveal">No testimonials. Things you can verify instead.</h2>
+        <p class="hero__sub reveal">
+          Most consulting sites open with glowing quotes you have no way to check. Here is
+          the version you can actually stand up: where I work, what is live right now, and
+          what I am on the hook for.
+        </p>
+      </>
+    )}
+
+    <ul class="pf__grid reveal" role="list">
+      {proof.map((item, i) => (
+        <li class="pf__card">
+          <span class="pf__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="pf__kind">{item.kind}</span>
+          <h3 class="pf__headline">{item.headline}</h3>
+          <p class="pf__body">{item.body}</p>
+          {item.verify && (
+            <a class="pf__verify" href={item.verify.href} target="_blank" rel="noopener">
+              {item.verify.label}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"></path><path d="M9 7h8v8"></path></svg>
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+
+    <p class="pf__note reveal">{referenceNote}</p>
+  </div>
+</section>

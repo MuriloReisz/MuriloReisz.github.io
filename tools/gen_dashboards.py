@@ -8,8 +8,9 @@ evidence, so each cover is now drawn from the project's real `chart.series`,
 `findings` and title — the picture and the case study can no longer disagree.
 
 Run:  python3 tools/gen_dashboards.py
-Only the .png lands in public/images/dash/ — the SVG is an intermediate, written
-to a temp dir and rasterised with `sips` (built into macOS), so the build does
+Both a .png and a lossless .webp land in public/images/dash/ — the SVG is an
+intermediate, written to a temp dir and rasterised with `sips` (built into
+macOS), so the build does
 not ship both copies of every dashboard.
 
 Palette and type mirror src/styles/global.css so the renders look like the site.
@@ -19,6 +20,8 @@ import re
 import subprocess
 import tempfile
 from pathlib import Path
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / 'src/data/projects.ts'
@@ -264,7 +267,7 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     projects = parse()
     print(f'{len(projects)} projects\n')
-    total = 0.0
+    tot_png = tot_webp = 0.0
     with tempfile.TemporaryDirectory() as tmp:
         for p in projects:
             svg = Path(tmp) / f'{p["slug"]}.svg'
@@ -272,10 +275,23 @@ def main() -> None:
             svg.write_text(build(p), encoding='utf-8')
             subprocess.run(['sips', '-s', 'format', 'png', str(svg), '--out', str(png)],
                            check=True, capture_output=True)
-            kb = png.stat().st_size / 1024
-            total += kb
-            print(f'  {p["slug"]:<28} {len(p["series"]):>2} pts  {kb:6.0f} KB')
-    print(f'\n  {total/1024:.1f} MB total, {W}x{H} each')
+
+            # Lossless WebP alongside it. `sips` on this machine accepts
+            # `-s format webp` and then silently writes nothing, so Pillow does
+            # it instead. Lossless rather than quality-based: this is flat UI art
+            # full of 11px labels and hairline rules, which is exactly what lossy
+            # WebP smears, and lossless still lands around a third of the PNG.
+            # The PNG stays as the <picture> fallback.
+            webp = OUT / f'{p["slug"]}.webp'
+            Image.open(png).save(webp, 'WEBP', lossless=True, method=6)
+
+            kb, wkb = png.stat().st_size / 1024, webp.stat().st_size / 1024
+            tot_png += kb
+            tot_webp += wkb
+            print(f'  {p["slug"]:<28} {len(p["series"]):>2} pts  {kb:6.0f} KB png  {wkb:6.0f} KB webp')
+    saved = 100 * (1 - tot_webp / tot_png) if tot_png else 0
+    print(f'\n  {tot_png/1024:.1f} MB png / {tot_webp/1024:.1f} MB webp '
+          f'({saved:.0f}% smaller), {W}x{H} each')
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@
 // card in CSS, so the media, the stats and the "Read the case study" affordance
 // are all deliberately non-interactive.
 // ---------------------------------------------------------------------------
-import { brandChipStyle, type Project } from '../data/projects';
+import { brandChipStyle, coverWebp, type Project } from '../data/projects';
 
 interface Props {
   project: Project;
@@ -19,6 +19,8 @@ interface Props {
 }
 
 const { project, index } = Astro.props;
+
+const webp = coverWebp(project.cover);
 
 const href = `/work/${project.slug}`;
 const titleId = `pc-t-${project.slug}`;
@@ -55,15 +57,18 @@ const stats = project.findings.slice(0, 3);
   style={`--pc-i:${index}`}
 >
   <div class="pc-card__media" data-spotlight>
-    <img
-      class="pc-card__img"
-      src={project.cover}
-      alt={project.coverAlt}
-      width={project.coverWidth}
-      height={project.coverHeight}
-      loading="lazy"
-      decoding="async"
-    />
+    <picture>
+      {webp && <source srcset={webp} type="image/webp" />}
+      <img
+        class="pc-card__img"
+        src={project.cover}
+        alt={project.coverAlt}
+        width={project.coverWidth}
+        height={project.coverHeight}
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
     <span
       class="pc-card__badge"
       style={brandChipStyle(project.brand)}

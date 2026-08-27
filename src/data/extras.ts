@@ -1,19 +1,27 @@
 // ============================================================
 //  EXTRAS — supporting portfolio data
-//  Testimonials, skill levels, credentials, headline stats,
+//  Verifiable proof, skill levels, credentials, headline stats,
 //  the tech stack marquee, and the contribution heat-map.
 //
-//  Everything here is static and deterministic: the activity
-//  grid is generated from an integer hash, never Math.random(),
-//  so every build produces byte-identical output.
+//  The activity grid's *values* are static and deterministic —
+//  generated from an integer hash, never Math.random(). Its week
+//  labels are the one exception: they are computed from the build
+//  date so the window always ends on the current week. See the
+//  note above mostRecentMonday().
 // ============================================================
 
-export interface Testimonial {
-  quote: string;
-  name: string;
-  role: string;
-  org: string;
-  initials: string;
+import { site } from './site';
+
+/** One verifiable credibility claim. Everything here must be checkable by the
+    reader or defensible on a call — this section exists precisely because the
+    invented client testimonials it replaced were not. */
+export interface ProofItem {
+  /** Short kicker, e.g. "Day job" or "Live now". */
+  kind: string;
+  headline: string;
+  body: string;
+  /** Optional outbound link that lets the reader confirm the claim. */
+  verify?: { label: string; href: string };
 }
 
 export interface Skill {
@@ -54,51 +62,45 @@ export interface TechItem {
 }
 
 // ------------------------------------------------------------
-//  TESTIMONIALS — the people who signed off the work
+//  PROOF — verifiable credibility, in place of client quotes
+//
+//  This replaced a rail of five invented, fully-named testimonials.
+//  The rule for anything added here: a reader can verify it themselves,
+//  or Murilo can substantiate it on a call. No attributed quote goes in
+//  until a real client has approved the exact wording in writing.
 // ------------------------------------------------------------
 
-export const testimonials: Testimonial[] = [
+export const proof: ProofItem[] = [
   {
-    quote:
-      'We had four years of till data and no way to read it. Murilo rebuilt the weekly trading pack in Tableau and the Monday review went from a two-hour argument about numbers to a twenty-minute conversation about decisions.',
-    name: 'Aoife Ní Bhraonáin',
-    role: 'Head of Retail Operations',
-    org: 'Kilbrannon Group',
-    initials: 'AB',
+    kind: 'Day job',
+    headline: 'Data Analyst at Apple',
+    body:
+      'CEMEA Sales BPR & Systems. I build and run the reporting and internal systems a large sales organisation depends on, which is the same problem most of my clients have at a smaller scale.',
+    verify: { label: 'Confirm on LinkedIn', href: site.socials.linkedin },
   },
   {
-    quote:
-      'The month-end reconciliation used to take my team three full days of copy-and-paste. It now runs overnight and lands in my inbox with the variances already flagged. He also documented it properly, which matters more than people think.',
-    name: 'Declan Moriarty',
-    role: 'Financial Controller',
-    org: 'Ardmore Timber & Panel',
-    initials: 'DM',
+    kind: 'Live now',
+    headline: 'Two client engagements in progress',
+    body:
+      'An architectural practice and a professional-services firm, both under confidentiality agreements. Sector and outcome are all I publish; I can go into specifics on a call.',
   },
   {
-    quote:
-      'He spent a full day sitting at reception before writing any code, which is why the no-show model actually fits how the clinic runs. Our empty-chair rate is down and the front desk trusts the list it gets each morning.',
-    name: 'Sinéad Gallagher',
-    role: 'Practice Manager',
-    org: 'Loughrea Dental & Implant Clinic',
-    initials: 'SG',
+    kind: 'Credential',
+    headline: 'Microsoft PL-300 certified',
+    body:
+      'Power BI Data Analyst Associate — the exam covers modelling, DAX and governance rather than just chart-building.',
   },
   {
-    quote:
-      'Clear scoping, no jargon, and he pushed back when we asked for a metric that would have flattered us. Our churn reporting is now something I can put in front of investors without a caveat slide.',
-    name: 'Joost Meijer',
-    role: 'Co-founder',
-    org: 'Cadence HR, Utrecht',
-    initials: 'JM',
-  },
-  {
-    quote:
-      'Depot managers were each keeping their own spreadsheet. One model, one definition of on-time, and the arguments stopped. The handover pack meant my own analyst could take it over after six weeks.',
-    name: 'Marek Nowakowski',
-    role: 'Transport & Logistics Lead',
-    org: 'Baltrade Distribution',
-    initials: 'MN',
+    kind: 'Commitment',
+    headline: 'Five hours a week, or you pay nothing',
+    body:
+      'The AI assessment carries a written guarantee, and the fee is credited in full against a build. A promise you can hold me to is worth more than a quote you cannot check.',
   },
 ];
+
+/** Shown under the proof grid — the honest answer to "who can vouch for you?". */
+export const referenceNote =
+  'Want to hear it from a client rather than from me? Ask on the call and I will introduce you to a current client’s operations lead before you commit to anything.';
 
 // ------------------------------------------------------------
 //  SKILLS — honest self-assessment, 0-100
@@ -135,10 +137,10 @@ export const skills: Skill[] = [
 // ------------------------------------------------------------
 //  CREDENTIALS
 //
-//  Empty until real certifications are confirmed — add entries
-//  here (name, issuer, year, blurb) and they render automatically
-//  in the Education & Languages section on the homepage. Nothing
-//  goes on the CV that hasn't actually been earned.
+//  One entry so far. Add more here (name, issuer, year, blurb) and
+//  they render automatically in the Education & Languages section
+//  on the homepage. Nothing goes on the CV that hasn't actually
+//  been earned — anything still in progress belongs in `learning`.
 // ------------------------------------------------------------
 
 export const certs: Cert[] = [
@@ -222,9 +224,9 @@ export const techStack: TechItem[] = [
 //  ACTIVITY HEAT-MAP — 52 weeks × 7 days, values 0-4
 //
 //  Deterministic by construction: a 32-bit integer hash of the
-//  cell index drives the noise, so there is no Math.random() and
-//  no Date.now() anywhere. The same source always builds the
-//  same grid.
+//  cell index drives the noise, so there is no Math.random()
+//  anywhere and the same source always builds the same *values*.
+//  Only the week labels below depend on the build date.
 // ------------------------------------------------------------
 
 const WEEKS = 52;
@@ -258,14 +260,33 @@ export const activity: number[][] = Array.from({ length: WEEKS }, (_, week) =>
 );
 
 /**
- * Week labels: 52 consecutive Mondays, the last of them 2026-07-27.
- * Built from a hard-coded date so the output never depends on when
- * the site is built.
+ * Week labels: 52 consecutive Mondays ending with the current week's.
+ *
+ * This was pinned to a hard-coded '2026-07-27' so that builds stayed
+ * byte-identical. The cost was that the grid silently aged — a month after that
+ * date the "last 52 weeks" already ended a month in the past, and it would have
+ * kept drifting for as long as nobody edited this line. A heat-map whose final
+ * column is not the current week is worse than no heat-map.
+ *
+ * So the window is now computed from the build date, and the trade-off is
+ * explicit: `activity` itself is still fully deterministic (a fixed hash, no
+ * Math.random()), but these labels move, so two builds on different days
+ * produce different HTML. That is harmless on GitHub Pages and only mildly
+ * annoying when diffing dist/.
  */
-const LAST_WEEK_START = '2026-07-27'; // a Monday
+function mostRecentMonday(): Date {
+  const now = new Date();
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  // getUTCDay(): 0 = Sunday. Map to a Monday-first offset so Monday itself
+  // stays put and Sunday walks back six days rather than forward one.
+  d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
+  return d;
+}
+
+const LAST_WEEK_START = mostRecentMonday();
 
 export const activityWeeks: string[] = Array.from({ length: WEEKS }, (_, i) => {
-  const d = new Date(`${LAST_WEEK_START}T00:00:00Z`);
+  const d = new Date(LAST_WEEK_START);
   d.setUTCDate(d.getUTCDate() - (WEEKS - 1 - i) * 7);
   return d.toISOString().slice(0, 10);
 });

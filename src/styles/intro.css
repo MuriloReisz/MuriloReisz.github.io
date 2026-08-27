@@ -136,6 +136,40 @@
   50% { transform: translate(-50%, 6px); }
 }
 
+/* ---------- skip button ----------
+   The one interactive control in the stage. The rest of .itm-wrap is
+   aria-hidden decoration, so this is deliberately a real <button>. */
+.itm-skip {
+  position: absolute;
+  right: 22px;
+  bottom: 20px;
+  z-index: 5;
+  padding: 9px 15px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d8d8e0;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid #3a3a44;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+.itm-skip:hover,
+.itm-skip:focus-visible {
+  color: #fff;
+  border-color: var(--color-primary);
+  background: rgba(0, 0, 0, 0.72);
+}
+
+/* ---------- skipped: already seen, or reduced motion ----------
+   Set pre-paint by the inline script in IntoTheMachine.astro, so a returning
+   visitor never sees the cold open flash before it is removed. The intro is
+   display:none rather than removed from the DOM so site.ts's portal and clock
+   hooks keep their harmless no-op guards. */
+[data-itm="skip"] .itm-wrap { display: none; }
+
 /* ---------- reduced motion: static, no scroll-jack, no WebGL ---------- */
 @media (prefers-reduced-motion: reduce) {
   .itm-wrap { height: auto; }

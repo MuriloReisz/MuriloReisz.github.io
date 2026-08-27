@@ -5,9 +5,14 @@ import '../styles/global.css';
 import '../styles/motion.css';
 import '../styles/ix.css';
 import '../styles/work.css';
-import '../styles/playground.css';
 import '../styles/home.css';
-import '../styles/intro.css';
+// playground.css and intro.css are imported by the pages/components that use
+// them, not here: every stylesheet imported in this layout ships on all 18
+// pages. Both are cleanly namespaced (.pg-* / .itm-*) with no selector used
+// outside their own consumers, which is what makes them safe to scope.
+// work.css, home.css and ix.css stay global — their namespaces are spread
+// across three to five routes each, so scoping them is a bigger, riskier
+// change than it looks.
 
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -22,6 +27,9 @@ interface Props {
   ogImage?: string;
   /** Opt into the wider content measure (portfolio grid, case-study reader) */
   wide?: boolean;
+  /** Keep the page out of search results while its content is provisional.
+      Still crawlable for links (follow), still reachable by URL. */
+  noindex?: boolean;
 }
 
 const {
@@ -29,6 +37,7 @@ const {
   description = site.tagline,
   ogImage = '/images/og-card.jpg',
   wide = false,
+  noindex = false,
 } = Astro.props;
 
 // Astro.site comes from astro.config.mjs. Fall back gracefully so a missing/placeholder
@@ -85,6 +94,7 @@ const cmdkProjects = projects.map((p) => ({
     <meta name="description" content={description} />
     <meta name="author" content={site.name} />
     {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex,follow" />}
 
     <!-- Open Graph / Twitter -->
     <meta property="og:type" content="website" />
@@ -142,7 +152,8 @@ const cmdkProjects = projects.map((p) => ({
     <script src="../scripts/motion.ts"></script>
     <script src="../scripts/motion2.ts"></script>
     <script src="../scripts/widgets.ts"></script>
-    <script src="../scripts/demos.ts"></script>
-    <script src="../scripts/home.ts"></script>
+    <!-- demos.ts (1272 lines, playground demos) and home.ts (skills switcher +
+         heat-map tooltip) are loaded by the pages that own their hooks instead
+         of on all 18. -->
   </body>
 </html>

@@ -514,6 +514,17 @@
     color: var(--color-ink-48);
     padding-top: 18px;
   }
+  .ph-note {
+    max-width: 46ch;
+    padding-top: 22px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: -0.224px;
+    color: var(--color-ink-48);
+  }
+  .ph-note a { color: var(--color-primary); font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s ease; }
+  .ph-note a:hover { border-bottom-color: var(--color-primary); }
   .ph-bio { font-size: 18px; line-height: 1.55; letter-spacing: -0.224px; color: var(--color-ink-48); max-width: 600px; }
 
   /* Labeled social pills — hard blocks, invert on hover */
@@ -559,6 +570,15 @@
   .profile-hero--split .ph-aside { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
   .profile-hero--split .ph-portrait { width: 100%; max-width: 280px; aspect-ratio: 1; }
   .profile-hero--split .ph-name { font-size: clamp(58px, 9vw, 128px); }
+  /* The hero H1 is an offer, not a name: forty-odd characters instead of
+     eleven, so it needs its own scale. .ph-name's clamp is tuned for
+     "MURILO REIS" at display size and would run to five shouting lines here. */
+  .profile-hero--split .ph-name--offer {
+    font-size: clamp(32px, 4.6vw, 62px);
+    line-height: 1.02;
+    max-width: 15ch;
+    text-wrap: balance;
+  }
   .profile-hero--split .ph-role { font-size: clamp(16px, 1.8vw, 22px); }
   .profile-hero--split .ph-links { padding-top: 26px; }
   .profile-hero--split .ph-bio { padding-top: 24px; }
@@ -3417,22 +3437,205 @@
   }
 
   /* ============================================================
-     V2 — TESTIMONIALS
+     PROOF — Proof.astro (home + both service pages)
+     Replaced the testimonial rail. Not a carousel: four cards each
+     doing different work, so they all stay on screen.
      ============================================================ */
-  .quotes { display: flex; gap: 20px; padding-top: 48px; flex-wrap: wrap; }
-  .quote {
-    flex: 1 1 0; min-width: 280px;
-    background: var(--surface-card);
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-lg);
-    padding: 30px 28px;
-    display: flex; flex-direction: column; gap: 16px;
+  .pf__grid {
+    list-style: none;
+    margin: 0;
+    padding: 48px 0 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
   }
-  .quote__mark { font-family: var(--font-display); font-size: 44px; line-height: 0.5; color: var(--color-primary); height: 22px; }
-  .quote__text { font-size: 17px; line-height: 1.5; letter-spacing: -0.224px; color: var(--color-ink); flex: 1 1 auto; }
-  .quote__who { display: flex; flex-direction: column; gap: 2px; }
-  .quote__name { font-size: 15px; font-weight: 600; letter-spacing: -0.224px; }
-  .quote__role { font-size: 13px; letter-spacing: -0.224px; color: var(--color-ink-48); }
+  .pf__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 26px 24px 24px;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-ink);
+    box-shadow: var(--hard-shadow-sm);
+  }
+  .pf__num {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-hairline);
+  }
+  .pf__kind {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .pf__headline {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    color: var(--color-ink);
+  }
+  .pf__body {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: -0.224px;
+    color: var(--color-ink-48);
+    flex: 1 1 auto;
+  }
+  .pf__verify {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.224px;
+    color: var(--color-primary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+  .pf__verify svg { width: 14px; height: 14px; }
+  .pf__verify:hover { border-bottom-color: var(--color-primary); }
+  .pf__note {
+    max-width: 760px;
+    padding-top: 30px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: -0.224px;
+    color: var(--color-ink-48);
+  }
+
+  @media (max-width: 1024px) {
+    .pf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .pf__grid { grid-template-columns: minmax(0, 1fr); padding-top: 36px; }
+    .pf__card { padding: 22px 20px; }
+  }
+
+  /* ============================================================
+     EGG TOAST — transient message from an easter egg (site.ts)
+     ============================================================ */
+  .egg-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translate(-50%, 12px);
+    z-index: 120;
+    max-width: min(90vw, 460px);
+    padding: 13px 18px;
+    background: var(--color-ink);
+    color: var(--color-canvas);
+    border: 1px solid var(--color-ink);
+    box-shadow: 5px 5px 0 0 var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s var(--reveal-ease);
+  }
+  .egg-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ============================================================
+     404 — the "requests that found this page" chart
+     ============================================================ */
+  .nf-fig {
+    margin: 34px auto 0;
+    max-width: 620px;
+    padding: 22px 20px 16px;
+    border: 1px solid var(--color-ink);
+    box-shadow: var(--hard-shadow-sm);
+    background: var(--color-canvas);
+  }
+  .nf-chart { width: 100%; }
+  .nf-cap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-48);
+  }
+  .nf-again {
+    font: inherit;
+    color: var(--color-primary);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+  .nf-again:hover { border-bottom-color: var(--color-primary); }
+
+  /* ============================================================
+     BLUEPRINT MODE — easter egg, [data-egg="wireframe"] on <html>
+     Toggled from the ⌘K palette or the konami code (site.ts). All the
+     behaviour is here so the egg costs no JS beyond setting an attribute.
+     ============================================================ */
+  [data-egg="wireframe"] body,
+  [data-egg="wireframe"] .tile {
+    /* Also on .tile, not just body: every tile paints its own opaque
+       background, which would otherwise hide the grid completely. */
+    background-image:
+      repeating-linear-gradient(to right, color-mix(in srgb, var(--color-primary) 14%, transparent) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 14%, transparent) 0 1px, transparent 1px 64px);
+  }
+  [data-egg="wireframe"] .tile,
+  [data-egg="wireframe"] section,
+  [data-egg="wireframe"] header,
+  [data-egg="wireframe"] footer {
+    outline: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+    outline-offset: -1px;
+  }
+  [data-egg="wireframe"] .inner,
+  [data-egg="wireframe"] .inner--grid,
+  [data-egg="wireframe"] article,
+  [data-egg="wireframe"] figure,
+  [data-egg="wireframe"] h1,
+  [data-egg="wireframe"] h2,
+  [data-egg="wireframe"] h3,
+  [data-egg="wireframe"] p,
+  [data-egg="wireframe"] img,
+  [data-egg="wireframe"] svg,
+  [data-egg="wireframe"] a,
+  [data-egg="wireframe"] button {
+    outline: 1px dashed color-mix(in srgb, var(--color-ink) 22%, transparent);
+    outline-offset: 1px;
+  }
+  /* A corner tick on every tile, so it reads as a drawing rather than a bug. */
+  [data-egg="wireframe"] .tile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    border-top: 2px solid var(--color-primary);
+    border-left: 2px solid var(--color-primary);
+    pointer-events: none;
+    z-index: 40;
+  }
+  [data-egg="wireframe"] .tile { position: relative; }
 
   /* ============================================================
      RESPONSIVE

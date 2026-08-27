@@ -1,9 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site } from '../data/site';
+import '../styles/playground.css';
+import { site, bookingFor } from '../data/site';
+import Proof from '../components/Proof.astro';
 
-const bookHref = site.calendlyUrl || '#ai-services-book';
-const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
+const { href: bookHref, attrs: bookAttrs } = bookingFor('#ai-services-book');
+// The CTA inside #ai-services-book cannot fall back to its own section — that
+// scrolls nowhere. Send it to the form instead.
+const { href: bookNowHref, attrs: bookNowAttrs } = bookingFor('#contactFormAI');
 ---
 
 <Layout title="AI services">
@@ -152,6 +156,8 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
   </section>
 
   <!-- ===================== BUILD FRAMEWORKS ===================== -->
+  <Proof compact />
+
   <section class="tile center" id="ai-services-frameworks">
     <div class="inner center sreveal">
       <div class="eyebrow">Frameworks</div>
@@ -556,7 +562,7 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
       <h2 class="cta__h2" data-reveal-words>Find your first <span class="accent">5 hours</span> a week.</h2>
       <p class="cta__sub">Book the €500 assessment, or tell me a bit about your business first and I’ll let you know honestly whether it’s a fit.</p>
       <div class="cta__book">
-        <a class="pill pill--primary cta__submit" data-magnetic data-magnetic-strength="8" href={site.calendlyUrl || '#contactFormAI'} {...bookAttrs}>Book the assessment</a>
+        <a class="pill pill--primary cta__submit" data-magnetic data-magnetic-strength="8" href={bookNowHref} {...bookNowAttrs}>Book the assessment</a>
         <p class="cta__reassure">€500, credited in full if you go on to a build. If I can’t find you at least five hours a week, you pay nothing.</p>
       </div>
       <div class="cta__or" aria-hidden="true"><span class="cta__or-line"></span>or send a message<span class="cta__or-line"></span></div>
@@ -590,3 +596,5 @@ const bookAttrs = site.calendlyUrl ? { target: '_blank', rel: 'noopener' } : {};
     </div>
   </section>
 </Layout>
+
+<script src="../scripts/demos.ts"></script>
