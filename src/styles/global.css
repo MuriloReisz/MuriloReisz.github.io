@@ -514,6 +514,17 @@
     color: var(--color-ink-48);
     padding-top: 18px;
   }
+  .ph-note {
+    max-width: 46ch;
+    padding-top: 22px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: -0.224px;
+    color: var(--color-ink-48);
+  }
+  .ph-note a { color: var(--color-primary); font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s ease; }
+  .ph-note a:hover { border-bottom-color: var(--color-primary); }
   .ph-bio { font-size: 18px; line-height: 1.55; letter-spacing: -0.224px; color: var(--color-ink-48); max-width: 600px; }
 
   /* Labeled social pills — hard blocks, invert on hover */
@@ -559,6 +570,15 @@
   .profile-hero--split .ph-aside { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
   .profile-hero--split .ph-portrait { width: 100%; max-width: 280px; aspect-ratio: 1; }
   .profile-hero--split .ph-name { font-size: clamp(58px, 9vw, 128px); }
+  /* The hero H1 is an offer, not a name: forty-odd characters instead of
+     eleven, so it needs its own scale. .ph-name's clamp is tuned for
+     "MURILO REIS" at display size and would run to five shouting lines here. */
+  .profile-hero--split .ph-name--offer {
+    font-size: clamp(32px, 4.6vw, 62px);
+    line-height: 1.02;
+    max-width: 15ch;
+    text-wrap: balance;
+  }
   .profile-hero--split .ph-role { font-size: clamp(16px, 1.8vw, 22px); }
   .profile-hero--split .ph-links { padding-top: 26px; }
   .profile-hero--split .ph-bio { padding-top: 24px; }
