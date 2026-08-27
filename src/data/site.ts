@@ -32,7 +32,16 @@ export const site = {
   //   'mailto:you@example.com'             (stopgap; gets a subject line added)
   // Leave it '' and every CTA falls back to that page's own contact anchor, so
   // nothing breaks — the buttons just scroll instead of booking.
-  bookingUrl: '',
+  // Murilo's own Cal.com discovery-call event, created for this site so portfolio
+  // enquiries stay separate from the Cork AI Consulting outreach funnel
+  // (calendly.com/corkaiconsulting/30min, which is wired into the cold-email
+  // signature instead). Deliberately not cal.com/douglas-woollam/* — those are
+  // Douglas's, and offer.md records that only he can change them.
+  //
+  // The utm_source is what lets Cal.com's reporting separate a booking that came
+  // from this site from one that came out of an email; without it they are
+  // indistinguishable.
+  bookingUrl: 'https://cal.com/murilo-reis-bzl0er/discoverycall?utm_source=website&utm_medium=cta&utm_campaign=muriloreisz-com',
   advisorUrl: '',  // e.g. a custom GPT / chatbot link for the "Ask the AI Advisor" button
 
   /** Last review date for the privacy copy — used by /privacy and the
