@@ -3526,6 +3526,118 @@
   }
 
   /* ============================================================
+     EGG TOAST — transient message from an easter egg (site.ts)
+     ============================================================ */
+  .egg-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translate(-50%, 12px);
+    z-index: 120;
+    max-width: min(90vw, 460px);
+    padding: 13px 18px;
+    background: var(--color-ink);
+    color: var(--color-canvas);
+    border: 1px solid var(--color-ink);
+    box-shadow: 5px 5px 0 0 var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s var(--reveal-ease);
+  }
+  .egg-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ============================================================
+     404 — the "requests that found this page" chart
+     ============================================================ */
+  .nf-fig {
+    margin: 34px auto 0;
+    max-width: 620px;
+    padding: 22px 20px 16px;
+    border: 1px solid var(--color-ink);
+    box-shadow: var(--hard-shadow-sm);
+    background: var(--color-canvas);
+  }
+  .nf-chart { width: 100%; }
+  .nf-cap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-48);
+  }
+  .nf-again {
+    font: inherit;
+    color: var(--color-primary);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+  .nf-again:hover { border-bottom-color: var(--color-primary); }
+
+  /* ============================================================
+     BLUEPRINT MODE — easter egg, [data-egg="wireframe"] on <html>
+     Toggled from the ⌘K palette or the konami code (site.ts). All the
+     behaviour is here so the egg costs no JS beyond setting an attribute.
+     ============================================================ */
+  [data-egg="wireframe"] body,
+  [data-egg="wireframe"] .tile {
+    /* Also on .tile, not just body: every tile paints its own opaque
+       background, which would otherwise hide the grid completely. */
+    background-image:
+      repeating-linear-gradient(to right, color-mix(in srgb, var(--color-primary) 14%, transparent) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 14%, transparent) 0 1px, transparent 1px 64px);
+  }
+  [data-egg="wireframe"] .tile,
+  [data-egg="wireframe"] section,
+  [data-egg="wireframe"] header,
+  [data-egg="wireframe"] footer {
+    outline: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+    outline-offset: -1px;
+  }
+  [data-egg="wireframe"] .inner,
+  [data-egg="wireframe"] .inner--grid,
+  [data-egg="wireframe"] article,
+  [data-egg="wireframe"] figure,
+  [data-egg="wireframe"] h1,
+  [data-egg="wireframe"] h2,
+  [data-egg="wireframe"] h3,
+  [data-egg="wireframe"] p,
+  [data-egg="wireframe"] img,
+  [data-egg="wireframe"] svg,
+  [data-egg="wireframe"] a,
+  [data-egg="wireframe"] button {
+    outline: 1px dashed color-mix(in srgb, var(--color-ink) 22%, transparent);
+    outline-offset: 1px;
+  }
+  /* A corner tick on every tile, so it reads as a drawing rather than a bug. */
+  [data-egg="wireframe"] .tile::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    border-top: 2px solid var(--color-primary);
+    border-left: 2px solid var(--color-primary);
+    pointer-events: none;
+    z-index: 40;
+  }
+  [data-egg="wireframe"] .tile { position: relative; }
+
+  /* ============================================================
      RESPONSIVE
      ============================================================ */
   @media (max-width: 1068px) {

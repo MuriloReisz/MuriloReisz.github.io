@@ -436,7 +436,15 @@ const cmdkList = $('#cmdkList');
    Layout.astro. Importing src/data/projects.ts here instead would ship all
    nine full project objects — case-study prose, galleries, FAQs, ~46 KB — to
    every page, to build an index that needs five short fields. */
-type CmdkEntry = { label: string; href: string; kw: string };
+type CmdkEntry = {
+  label: string;
+  href: string;
+  kw: string;
+  /** Names an easter egg to run instead of navigating (see runEgg). */
+  egg?: string;
+  /** Hidden from the default listing; only surfaces on a deliberate query. */
+  secret?: boolean;
+};
 function projectEntries(): CmdkEntry[] {
   const tag = $('#cmdkProjects');
   if (!tag?.textContent) return [];
@@ -459,6 +467,14 @@ const INDEX: CmdkEntry[] = [
   { label: 'Analytics services', href: '/services', kw: 'dashboards forecasts' },
   { label: 'Privacy & cookies', href: '/privacy', kw: 'gdpr data cookies storage analytics legal' },
   ...projectEntries(),
+  /* Easter eggs. `secret` keeps them out of the default listing, so they only
+     appear once someone types most of the word — findable on purpose, never in
+     the way. Activation runs runEgg() instead of navigating. */
+  { label: 'Blueprint mode — see the grid under the page', href: '#', kw: 'wireframe blueprint grid outline debug', egg: 'wireframe', secret: true },
+  { label: 'Recount every number on this page', href: '#', kw: 'recount count again numbers stats', egg: 'recount', secret: true },
+  { label: 'sudo make me a dashboard', href: '#', kw: 'sudo root admin', egg: 'sudo', secret: true },
+  { label: 'xyzzy', href: '#', kw: 'xyzzy magic colossal cave adventure', egg: 'xyzzy', secret: true },
+  { label: 'Hiring me — the short version', href: '/#contact', kw: 'hire hiring job recruit available freelance', secret: true },
 ];
 let cmdkActive = 0;
 const cmdkEmpty = $('#cmdkEmpty');
@@ -481,12 +497,20 @@ function paintCmdkActive(items: HTMLElement[]) {
 function renderCmdk(q: string) {
   if (!cmdkList) return;
   const ql = q.trim().toLowerCase();
-  const items = INDEX.filter((i) => !ql || (i.label + ' ' + i.kw).toLowerCase().includes(ql));
+  const items = INDEX.filter((i) => {
+    const hay = (i.label + ' ' + i.kw).toLowerCase();
+    /* Secrets stay hidden until the query is deliberate — an empty or
+       one-character query would spill all of them into the default list. */
+    if (i.secret) return ql.length >= 3 && hay.includes(ql);
+    return !ql || hay.includes(ql);
+  });
   cmdkActive = 0;
   cmdkList.innerHTML = items
     .map(
       (i, idx) =>
-        `<li class="cmdk-item" id="cmdk-opt-${idx}" role="option" aria-selected="false" data-href="${i.href}"><span>${i.label}</span></li>`
+        `<li class="cmdk-item" id="cmdk-opt-${idx}" role="option" aria-selected="false" data-href="${i.href}"${
+          i.egg ? ` data-egg-run="${i.egg}"` : ''
+        }><span>${i.label}</span></li>`
     )
     .join('');
   /* The empty state lives outside the listbox — a non-option child of
@@ -513,12 +537,25 @@ function closeCmdk() {
   (cmdkOpener ?? $<HTMLElement>('#navSearch'))?.focus();
   cmdkOpener = null;
 }
+/** Activate a palette option: run its egg, or navigate. Shared by click and
+    Enter so the two can never drift apart. */
+function activateCmdk(li: HTMLElement | undefined | null) {
+  if (!li) return;
+  const egg = li.dataset.eggRun;
+  if (egg) {
+    closeCmdk();
+    runEgg(egg);
+    return;
+  }
+  const h = li.dataset.href;
+  if (h && h !== '#') location.href = h;
+}
+
 $('#navSearch')?.addEventListener('click', openCmdk);
 cmdkInput?.addEventListener('input', () => renderCmdk(cmdkInput.value));
 cmdk?.addEventListener('click', (e) => {
   if (e.target === cmdk) return closeCmdk();
-  const li = (e.target as HTMLElement).closest<HTMLElement>('.cmdk-item');
-  if (li?.dataset.href) location.href = li.dataset.href;
+  activateCmdk((e.target as HTMLElement).closest<HTMLElement>('.cmdk-item'));
 });
 addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); cmdk?.classList.contains('is-open') ? closeCmdk() : openCmdk(); }
@@ -530,8 +567,118 @@ addEventListener('keydown', (e) => {
   else if (e.key === 'ArrowUp') { e.preventDefault(); cmdkActive = Math.max(0, cmdkActive - 1); }
   else if (e.key === 'Home') { e.preventDefault(); cmdkActive = 0; }
   else if (e.key === 'End') { e.preventDefault(); cmdkActive = items.length - 1; }
-  else if (e.key === 'Enter') { const h = items[cmdkActive]?.dataset.href; if (h) location.href = h; return; }
+  else if (e.key === 'Enter') { activateCmdk(items[cmdkActive]); return; }
   else return;
   paintCmdkActive(items);
 });
 
+
+/* ============================================================
+   Easter eggs
+
+   Findable, not in the way. Everything here is either behind ⌘K (where
+   `secret: true` keeps it out of the default listing) or behind a key
+   sequence nobody types by accident. No new dependency, no new bundle: the
+   wireframe skin is one CSS block reacting to a data attribute, and the
+   recount gag lives in motion.ts, which owns [data-counter-to].
+
+   The one persisted key is `egg:wireframe`, which is why it is listed in the
+   "what is stored" panel in Chrome.astro. Anything added here that persists
+   has to go in that list too, or the privacy copy stops being true.
+   ============================================================ */
+
+const EGG_KEY = 'egg:wireframe';
+
+/** Transient toast, bottom-centre.
+    Not the palette's #cmdkEmpty live region: that sits inside the palette,
+    which these eggs close first, so anything written there would be announced
+    and then never seen. role=status keeps it announced anyway. */
+let eggToast: HTMLElement | null = null;
+let eggToastTimer = 0;
+function eggSay(message: string) {
+  if (!eggToast) {
+    eggToast = document.createElement('div');
+    eggToast.className = 'egg-toast';
+    eggToast.setAttribute('role', 'status');
+    eggToast.setAttribute('aria-live', 'polite');
+    document.body.appendChild(eggToast);
+  }
+  eggToast.textContent = message;
+  eggToast.classList.add('is-on');
+  clearTimeout(eggToastTimer);
+  eggToastTimer = window.setTimeout(() => eggToast?.classList.remove('is-on'), 3400);
+}
+
+function setWireframe(on: boolean) {
+  if (on) root.setAttribute('data-egg', 'wireframe');
+  else root.removeAttribute('data-egg');
+  try {
+    if (on) localStorage.setItem(EGG_KEY, '1');
+    else localStorage.removeItem(EGG_KEY);
+  } catch {}
+}
+
+function runEgg(name: string) {
+  switch (name) {
+    case 'wireframe': {
+      const on = root.getAttribute('data-egg') !== 'wireframe';
+      setWireframe(on);
+      eggSay(on ? 'Blueprint mode on — ⌘K and run it again to turn it off.' : 'Blueprint mode off.');
+      break;
+    }
+    case 'recount':
+      /* motion.ts owns [data-counter-to]; it listens for this. Cross-bundle,
+         because the six scripts are separate entry points and cannot share
+         an import. */
+      dispatchEvent(new CustomEvent('mr:recount'));
+      break;
+    case 'sudo':
+      eggSay('Permission denied. Dashboards are earned, not sudo-ed. Try booking a call.');
+      break;
+    case 'xyzzy':
+      eggSay('Nothing happens. (But you clearly know your way around a command prompt.)');
+      break;
+  }
+}
+
+/* Restore a persisted blueprint mode. Deliberately not in the pre-paint inline
+   script the way `theme` is: a flash of un-outlined page costs nothing, and
+   this does not belong in the critical path. */
+try { if (localStorage.getItem(EGG_KEY)) root.setAttribute('data-egg', 'wireframe'); } catch {}
+
+/* Konami code — the other way into blueprint mode. */
+const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+let konamiAt = 0;
+addEventListener('keydown', (e) => {
+  /* Never while typing, and never while the palette owns the arrow keys. */
+  const el = e.target as HTMLElement | null;
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return;
+  if (cmdk?.classList.contains('is-open')) return;
+
+  const want = KONAMI[konamiAt];
+  const got = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  if (got === want) {
+    konamiAt += 1;
+    if (konamiAt === KONAMI.length) {
+      konamiAt = 0;
+      runEgg('wireframe');
+    }
+  } else {
+    /* Restart rather than reset to 0, so ↑↑↑↓↓ still matches from the second ↑. */
+    konamiAt = got === KONAMI[0] ? 1 : 0;
+  }
+});
+
+/* ---------- Console signature ----------
+   On a site with no analytics, the console is the one place a developer
+   visitor expects to be spoken to — and the only honest place to point out
+   that the network tab really is empty. */
+console.log(
+  '%cMURILO REIS%c  Data & AI Specialist · Cork City, Ireland\n' +
+    '%cThis page ships no analytics. Check the network tab — that claim is falsifiable.\n' +
+    'Built with Astro and no UI framework. Charts, palette and demos are all hand-rolled.\n' +
+    'Curious? Press ⌘K and type "blueprint". Hiring? muriloarielreisz@gmail.com',
+  'font: 700 16px/1.4 ui-sans-serif, system-ui; color: #6d5ef0',
+  'font: 500 12px/1.4 ui-monospace, monospace; color: #6b6b6b',
+  'font: 400 11px/1.6 ui-monospace, monospace; color: #98989d'
+);

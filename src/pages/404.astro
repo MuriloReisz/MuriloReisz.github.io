@@ -2,8 +2,26 @@
 // 404 — GitHub Pages serves /404.html automatically for unmatched paths.
 // Written as a real page so it keeps the nav, footer, theme and ⌘K palette:
 // a dead end that still lets someone find what they came for.
+//
+// Two deliberate choices here. It links the routes that actually matter
+// commercially — a 404 visitor is already lost and unusually receptive to a
+// suggestion, and this page used to offer no route to either service page. And
+// it curates from `popular` rather than `featured`, so what a lost visitor is
+// shown is an explicit decision instead of a side effect of a home-page flag.
 import Layout from '../layouts/Layout.astro';
-import { featured } from '../data/projects';
+import { popular } from '../data/projects';
+
+// The joke: a real chart, drawn by the site's own widget, of the one metric this
+// page can legitimately report. Flatlines to zero, because you are here.
+const series = [
+  { label: 'Mon', value: 41 },
+  { label: 'Tue', value: 38 },
+  { label: 'Wed', value: 44 },
+  { label: 'Thu', value: 39 },
+  { label: 'Fri', value: 46 },
+  { label: 'Sat', value: 22 },
+  { label: 'This page', value: 0 },
+];
 ---
 
 <Layout
@@ -18,6 +36,20 @@ import { featured } from '../data/projects';
         The link is broken or the page has been renamed. Nothing here is lost — the portfolio,
         the case studies and the demos are all one click away.
       </p>
+
+      <figure class="nf-fig reveal">
+        <div
+          class="nf-chart"
+          data-chart="line"
+          data-series={JSON.stringify(series)}
+          data-chart-title="Requests that found this page"
+          data-chart-dec="0"
+        ></div>
+        <figcaption class="nf-cap">
+          Requests that found this page.
+          <button class="nf-again" type="button" data-nf-again>Run the numbers again</button>
+        </figcaption>
+      </figure>
 
       <div class="hm-more__link-row reveal" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;padding-top:32px">
         <a class="pill pill--primary" href="/" data-magnetic>Back to the home page</a>
@@ -36,14 +68,34 @@ import { featured } from '../data/projects';
       <h2 class="metrics__h2 reveal">Start with one of these.</h2>
       <ul class="cse-toc__list reveal" style="padding-top:26px">
         {
-          featured.map((p) => (
+          popular.map((p) => (
             <li class="cse-toc__item">
               <a class="cse-toc__link" href={`/work/${p.slug}/`}>{p.title}</a>
             </li>
           ))
         }
         <li class="cse-toc__item"><a class="cse-toc__link" href="/playground">Interactive demos</a></li>
+        <li class="cse-toc__item"><a class="cse-toc__link" href="/ai-services">AI services — assessment, build, retainer</a></li>
+        <li class="cse-toc__item"><a class="cse-toc__link" href="/services">Analytics services — dashboards, forecasts, automation</a></li>
       </ul>
     </div>
   </section>
 </Layout>
+
+<script>
+  /* Reshuffle the chart on demand. widgets.ts already watches data-series with a
+     MutationObserver, so rewriting the attribute is the whole implementation —
+     it redraws with its own animation, and this page ships no chart code of its
+     own. The last point stays at zero: that is the joke. */
+  const host = document.querySelector<HTMLElement>('[data-chart="line"]');
+  const again = document.querySelector<HTMLButtonElement>('[data-nf-again]');
+
+  if (host && again) {
+    const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    again.addEventListener('click', () => {
+      const next = DAYS.map((label) => ({ label, value: 18 + Math.round(Math.random() * 34) }));
+      next.push({ label: 'This page', value: 0 });
+      host.setAttribute('data-series', JSON.stringify(next));
+    });
+  }
+</script>

@@ -1101,6 +1101,23 @@ export const projects: Project[] = [
 
 export const featured: Project[] = projects.filter((p) => p.featured);
 
+/**
+ * What to offer someone who has landed on a 404.
+ *
+ * Deliberately its own list rather than reusing `featured`. The 404 used to map
+ * `featured`, which silently coupled "what we show on the home page" to "where
+ * we send a lost visitor" — so changing the featured flag quietly changed the
+ * 404, and for a while that meant the 404 recommended invented case studies.
+ */
+const POPULAR_SLUGS = ['cemea-sales-dashboard', 'freelance-automation-bi', 'ocean-drones'] as const;
+
+export const popular: Project[] = POPULAR_SLUGS.map((slug) => {
+  const found = projects.find((p) => p.slug === slug);
+  // Fail loudly at build time rather than rendering a 404 page with holes in it.
+  if (!found) throw new Error(`popular: no project with slug "${slug}"`);
+  return found;
+});
+
 export function projectBySlug(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }

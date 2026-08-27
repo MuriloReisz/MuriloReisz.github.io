@@ -292,6 +292,11 @@ $$('[data-reveal-chars]').forEach((host) => {
 });
 
 /* ---------- Count-up — [data-counter-to] ---------- */
+/** Re-runnable so the "recount" easter egg can replay every number on the page
+    (see runEgg in site.ts). Collected here rather than re-querying, because the
+    guard below is what stops a counter animating twice on first scroll. */
+const recounts: (() => void)[] = [];
+
 $$('[data-counter-to]').forEach((el) => {
   if (el.dataset.moCounted) return;
   const raw = el.getAttribute('data-counter-to') ?? '0';
@@ -324,6 +329,18 @@ $$('[data-counter-to]').forEach((el) => {
     },
     settle
   );
+
+  /* Replay from zero. Only ever called from the recount egg, so it ignores the
+     moCounted guard on purpose — that guard exists for the scroll path. */
+  recounts.push(() => tween(1200, (e) => paint(target * e), () => paint(target)));
+});
+
+/* The egg lives in site.ts, which is a separate bundle and cannot import from
+   here, so the two talk over a DOM event. No-op under reduced motion: replaying
+   a dozen animations is exactly what that preference is asking us not to do. */
+addEventListener('mr:recount', () => {
+  if (reduced) return;
+  recounts.forEach((run) => run());
 });
 
 /* ---------- Bar grow — [data-bar-to="80"] wrapping .mo-bar__fill ---------- */
