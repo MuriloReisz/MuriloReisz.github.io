@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import '../styles/playground.css';
 import { site, bookingFor } from '../data/site';
 import Proof from '../components/Proof.astro';
 
@@ -595,3 +596,5 @@ const { href: bookNowHref, attrs: bookNowAttrs } = bookingFor('#contactFormAI');
     </div>
   </section>
 </Layout>
+
+<script src="../scripts/demos.ts"></script>

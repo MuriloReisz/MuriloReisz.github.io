@@ -35,6 +35,10 @@ export const site = {
   bookingUrl: '',
   advisorUrl: '',  // e.g. a custom GPT / chatbot link for the "Ask the AI Advisor" button
 
+  /** Last review date for the privacy copy — used by /privacy and the
+      short version in the legal modal, so the two cannot drift apart. */
+  privacyUpdated: '27 August 2026',
+
   year: 2026,
 } as const;
 

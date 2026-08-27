@@ -474,6 +474,7 @@ const INDEX: CmdkEntry[] = [
   { label: 'Recount every number on this page', href: '#', kw: 'recount count again numbers stats', egg: 'recount', secret: true },
   { label: 'sudo make me a dashboard', href: '#', kw: 'sudo root admin', egg: 'sudo', secret: true },
   { label: 'xyzzy', href: '#', kw: 'xyzzy magic colossal cave adventure', egg: 'xyzzy', secret: true },
+  { label: 'Replay the cold-open intro', href: '#', kw: 'intro replay again cold open animation webgl', egg: 'replay-intro', secret: true },
   { label: 'Hiring me — the short version', href: '/#contact', kw: 'hire hiring job recruit available freelance', secret: true },
 ];
 let cmdkActive = 0;
@@ -637,6 +638,13 @@ function runEgg(name: string) {
       break;
     case 'xyzzy':
       eggSay('Nothing happens. (But you clearly know your way around a command prompt.)');
+      break;
+    case 'replay-intro':
+      /* The intro is shown once and then remembered, so this is the way back
+         in. Handled here rather than in IntoTheMachine.astro's script, which
+         only runs on the home page. */
+      try { localStorage.removeItem('itm:seen'); } catch {}
+      location.href = '/';
       break;
   }
 }
