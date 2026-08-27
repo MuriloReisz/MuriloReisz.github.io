@@ -3,9 +3,11 @@
 //  Verifiable proof, skill levels, credentials, headline stats,
 //  the tech stack marquee, and the contribution heat-map.
 //
-//  Everything here is static and deterministic: the activity
-//  grid is generated from an integer hash, never Math.random(),
-//  so every build produces byte-identical output.
+//  The activity grid's *values* are static and deterministic —
+//  generated from an integer hash, never Math.random(). Its week
+//  labels are the one exception: they are computed from the build
+//  date so the window always ends on the current week. See the
+//  note above mostRecentMonday().
 // ============================================================
 
 import { site } from './site';
@@ -135,10 +137,10 @@ export const skills: Skill[] = [
 // ------------------------------------------------------------
 //  CREDENTIALS
 //
-//  Empty until real certifications are confirmed — add entries
-//  here (name, issuer, year, blurb) and they render automatically
-//  in the Education & Languages section on the homepage. Nothing
-//  goes on the CV that hasn't actually been earned.
+//  One entry so far. Add more here (name, issuer, year, blurb) and
+//  they render automatically in the Education & Languages section
+//  on the homepage. Nothing goes on the CV that hasn't actually
+//  been earned — anything still in progress belongs in `learning`.
 // ------------------------------------------------------------
 
 export const certs: Cert[] = [
@@ -222,9 +224,9 @@ export const techStack: TechItem[] = [
 //  ACTIVITY HEAT-MAP — 52 weeks × 7 days, values 0-4
 //
 //  Deterministic by construction: a 32-bit integer hash of the
-//  cell index drives the noise, so there is no Math.random() and
-//  no Date.now() anywhere. The same source always builds the
-//  same grid.
+//  cell index drives the noise, so there is no Math.random()
+//  anywhere and the same source always builds the same *values*.
+//  Only the week labels below depend on the build date.
 // ------------------------------------------------------------
 
 const WEEKS = 52;
@@ -258,14 +260,33 @@ export const activity: number[][] = Array.from({ length: WEEKS }, (_, week) =>
 );
 
 /**
- * Week labels: 52 consecutive Mondays, the last of them 2026-07-27.
- * Built from a hard-coded date so the output never depends on when
- * the site is built.
+ * Week labels: 52 consecutive Mondays ending with the current week's.
+ *
+ * This was pinned to a hard-coded '2026-07-27' so that builds stayed
+ * byte-identical. The cost was that the grid silently aged — a month after that
+ * date the "last 52 weeks" already ended a month in the past, and it would have
+ * kept drifting for as long as nobody edited this line. A heat-map whose final
+ * column is not the current week is worse than no heat-map.
+ *
+ * So the window is now computed from the build date, and the trade-off is
+ * explicit: `activity` itself is still fully deterministic (a fixed hash, no
+ * Math.random()), but these labels move, so two builds on different days
+ * produce different HTML. That is harmless on GitHub Pages and only mildly
+ * annoying when diffing dist/.
  */
-const LAST_WEEK_START = '2026-07-27'; // a Monday
+function mostRecentMonday(): Date {
+  const now = new Date();
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  // getUTCDay(): 0 = Sunday. Map to a Monday-first offset so Monday itself
+  // stays put and Sunday walks back six days rather than forward one.
+  d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
+  return d;
+}
+
+const LAST_WEEK_START = mostRecentMonday();
 
 export const activityWeeks: string[] = Array.from({ length: WEEKS }, (_, i) => {
-  const d = new Date(`${LAST_WEEK_START}T00:00:00Z`);
+  const d = new Date(LAST_WEEK_START);
   d.setUTCDate(d.getUTCDate() - (WEEKS - 1 - i) * 7);
   return d.toISOString().slice(0, 10);
 });

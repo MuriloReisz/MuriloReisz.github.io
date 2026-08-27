@@ -457,7 +457,6 @@ const INDEX: CmdkEntry[] = [
   { label: 'Contact', href: '/#contact', kw: 'email get in touch enquiry' },
   { label: 'AI services', href: '/ai-services', kw: 'automation assessment' },
   { label: 'Analytics services', href: '/services', kw: 'dashboards forecasts' },
-  { label: 'Meetup', href: '/meetup', kw: 'community event' },
   { label: 'Privacy & cookies', href: '/privacy', kw: 'gdpr data cookies storage analytics legal' },
   ...projectEntries(),
 ];

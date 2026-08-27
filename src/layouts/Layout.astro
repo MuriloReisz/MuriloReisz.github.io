@@ -22,6 +22,9 @@ interface Props {
   ogImage?: string;
   /** Opt into the wider content measure (portfolio grid, case-study reader) */
   wide?: boolean;
+  /** Keep the page out of search results while its content is provisional.
+      Still crawlable for links (follow), still reachable by URL. */
+  noindex?: boolean;
 }
 
 const {
@@ -29,6 +32,7 @@ const {
   description = site.tagline,
   ogImage = '/images/og-card.jpg',
   wide = false,
+  noindex = false,
 } = Astro.props;
 
 // Astro.site comes from astro.config.mjs. Fall back gracefully so a missing/placeholder
@@ -85,6 +89,7 @@ const cmdkProjects = projects.map((p) => ({
     <meta name="description" content={description} />
     <meta name="author" content={site.name} />
     {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex,follow" />}
 
     <!-- Open Graph / Twitter -->
     <meta property="og:type" content="website" />

@@ -5,7 +5,16 @@ import { site, bookingFor } from '../data/site';
 const { href: rsvpHref, attrs: rsvpAttrs } = bookingFor('/#contact');
 ---
 
-<Layout title="Meetup">
+<!--
+  Kept out of the nav, the ⌘K palette and the sitemap, and served noindex,
+  because the page advertises an event whose date, time and venue are all still
+  "announced soon". It builds and stays reachable by URL so any link already
+  shared keeps working. When there is a real date: fill in the three mt-row
+  values below, drop the `noindex`, and add the page back in src/data/site.ts
+  (nav.servicesMenu + nav.mobile), src/scripts/site.ts (the ⌘K INDEX) and
+  src/pages/sitemap.xml.ts.
+-->
+<Layout title="Meetup" noindex>
 
   <!-- HERO -->
   <section class="tile tile--white center mt-hero" id="meetup-hero">

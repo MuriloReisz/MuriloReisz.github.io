@@ -8,6 +8,9 @@ import { projects } from '../data/projects';
  * and fully known here, and the site ships with zero dependencies beyond astro.
  * Static routes carry a priority; case studies are derived from the data, so
  * adding a project adds its sitemap entry automatically.
+ *
+ * /meetup is deliberately absent: it advertises an event with no date, time or
+ * venue yet, so it is noindex until there is one. Add it back with the date.
  */
 const STATIC_ROUTES: { path: string; priority: string; changefreq: string }[] = [
   { path: '/', priority: '1.0', changefreq: 'monthly' },
@@ -15,7 +18,6 @@ const STATIC_ROUTES: { path: string; priority: string; changefreq: string }[] = 
   { path: '/playground/', priority: '0.8', changefreq: 'monthly' },
   { path: '/services/', priority: '0.8', changefreq: 'monthly' },
   { path: '/ai-services/', priority: '0.8', changefreq: 'monthly' },
-  { path: '/meetup/', priority: '0.6', changefreq: 'monthly' },
   { path: '/cv/', priority: '0.4', changefreq: 'monthly' },
   { path: '/privacy/', priority: '0.3', changefreq: 'yearly' },
 ];

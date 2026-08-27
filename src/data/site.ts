@@ -61,6 +61,8 @@ export function bookingFor(fallbackAnchor: string): BookingLink {
 }
 
 // Primary navigation ("Services" mega-menu targets each real route).
+// /meetup is intentionally not listed: the page still builds and is reachable
+// by URL, but it announces an event with no date yet. Re-add it with the date.
 export const nav = {
   aboutMenu: [
     { label: 'Portfolio', href: '/work' },
@@ -71,7 +73,6 @@ export const nav = {
   servicesMenu: [
     { label: 'AI services', href: '/ai-services', desc: 'Find 5+ hours a week or your money back, fee credited to a build' },
     { label: 'Analytics services', href: '/services', desc: 'Dashboards, forecasts and automation you can trust' },
-    { label: 'Meetup', href: '/meetup', desc: 'A free monthly AI meetup for local businesses' },
   ],
   mobile: [
     { label: 'About me', href: '/#about' },
@@ -80,6 +81,5 @@ export const nav = {
     { label: 'Experience', href: '/#experience' },
     { label: 'AI services', href: '/ai-services' },
     { label: 'Analytics services', href: '/services' },
-    { label: 'Meetup', href: '/meetup' },
   ],
 };
