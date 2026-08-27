@@ -23,24 +23,23 @@ export const site = {
   // CV / résumé download (served from /public)
   resume: '/Murilo-Reis-CV.docx',
 
-  // Optional booking + chat integrations (leave blank to hide)
+  // Booking + chat integrations.
   //
-  // bookingUrl lights up every "Book a call" CTA on the site at once — the two
-  // service pages, the meetup RSVP and the hero. Any of these work:
-  //   'https://cal.com/murilo/discovery'   (Cal.com — free tier is plenty)
-  //   'https://calendly.com/you/intro'     (Calendly — identical behaviour)
-  //   'mailto:you@example.com'             (stopgap; gets a subject line added)
-  // Leave it '' and every CTA falls back to that page's own contact anchor, so
-  // nothing breaks — the buttons just scroll instead of booking.
-  // Murilo's own Cal.com discovery-call event, created for this site so portfolio
-  // enquiries stay separate from the Cork AI Consulting outreach funnel
+  // bookingUrl drives every "Book a call" CTA on the site at once — 22 of them,
+  // across both service pages, the meetup RSVP and the hero. Set it to '' and
+  // they all fall back to that page's own contact anchor, so nothing breaks;
+  // the buttons just scroll instead of booking. A 'mailto:' also works and
+  // correctly gets no target="_blank".
+  //
+  // This is Murilo's own Cal.com discovery-call event, created for this site so
+  // portfolio enquiries stay out of the Cork AI Consulting outreach funnel
   // (calendly.com/corkaiconsulting/30min, which is wired into the cold-email
-  // signature instead). Deliberately not cal.com/douglas-woollam/* — those are
+  // signature instead). Deliberately NOT cal.com/douglas-woollam/* — those are
   // Douglas's, and offer.md records that only he can change them.
   //
-  // The utm_source is what lets Cal.com's reporting separate a booking that came
-  // from this site from one that came out of an email; without it they are
-  // indistinguishable.
+  // The utm_source is what lets Cal.com's reporting tell a booking that came
+  // from this site from one that came out of an email.
+  bookingUrl: 'https://cal.com/murilo-reis-bzl0er/discoverycall?utm_source=website&utm_medium=cta&utm_campaign=muriloreisz-com',
   bookingUrl: 'https://cal.com/murilo-reis-bzl0er/discoverycall?utm_source=website&utm_medium=cta&utm_campaign=muriloreisz-com',
   advisorUrl: '',  // e.g. a custom GPT / chatbot link for the "Ask the AI Advisor" button
 
@@ -78,21 +77,21 @@ export function bookingFor(fallbackAnchor: string): BookingLink {
 // by URL, but it announces an event with no date yet. Re-add it with the date.
 export const nav = {
   aboutMenu: [
-    { label: 'Portfolio', href: '/work' },
+    { label: 'Portfolio', href: '/work/' },
     { label: 'Experience', href: '/#experience' },
     { label: 'Certifications & Achievements', href: '/#achievements' },
-    { label: 'Playground', href: '/playground' },
+    { label: 'Playground', href: '/playground/' },
   ],
   servicesMenu: [
-    { label: 'AI services', href: '/ai-services', desc: 'Find 5+ hours a week or your money back, fee credited to a build' },
-    { label: 'Analytics services', href: '/services', desc: 'Dashboards, forecasts and automation you can trust' },
+    { label: 'AI services', href: '/ai-services/', desc: 'Find 5+ hours a week or your money back, fee credited to a build' },
+    { label: 'Analytics services', href: '/services/', desc: 'Dashboards, forecasts and automation you can trust' },
   ],
   mobile: [
     { label: 'About me', href: '/#about' },
-    { label: 'Portfolio', href: '/work' },
-    { label: 'Playground', href: '/playground' },
+    { label: 'Portfolio', href: '/work/' },
+    { label: 'Playground', href: '/playground/' },
     { label: 'Experience', href: '/#experience' },
-    { label: 'AI services', href: '/ai-services' },
-    { label: 'Analytics services', href: '/services' },
+    { label: 'AI services', href: '/ai-services/' },
+    { label: 'Analytics services', href: '/services/' },
   ],
 };

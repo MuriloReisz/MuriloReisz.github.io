@@ -458,14 +458,14 @@ function projectEntries(): CmdkEntry[] {
 const INDEX: CmdkEntry[] = [
   { label: 'Home', href: '/', kw: 'top hero start' },
   { label: 'About', href: '/#about', kw: 'bio who' },
-  { label: 'Portfolio — all projects', href: '/work', kw: 'projects work case study grid' },
-  { label: 'Playground — interactive demos', href: '/playground', kw: 'demo calculator sql forecast churn roi try' },
+  { label: 'Portfolio — all projects', href: '/work/', kw: 'projects work case study grid' },
+  { label: 'Playground — interactive demos', href: '/playground/', kw: 'demo calculator sql forecast churn roi try' },
   { label: 'Experience', href: '/#experience', kw: 'jobs roles cv' },
   { label: 'Certifications & Achievements', href: '/#achievements', kw: 'certs awards education languages' },
   { label: 'Contact', href: '/#contact', kw: 'email get in touch enquiry' },
-  { label: 'AI services', href: '/ai-services', kw: 'automation assessment' },
-  { label: 'Analytics services', href: '/services', kw: 'dashboards forecasts' },
-  { label: 'Privacy & cookies', href: '/privacy', kw: 'gdpr data cookies storage analytics legal' },
+  { label: 'AI services', href: '/ai-services/', kw: 'automation assessment' },
+  { label: 'Analytics services', href: '/services/', kw: 'dashboards forecasts' },
+  { label: 'Privacy & cookies', href: '/privacy/', kw: 'gdpr data cookies storage analytics legal' },
   ...projectEntries(),
   /* Easter eggs. `secret` keeps them out of the default listing, so they only
      appear once someone types most of the word — findable on purpose, never in

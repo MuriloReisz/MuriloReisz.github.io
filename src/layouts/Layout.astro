@@ -69,7 +69,7 @@ const personLd = {
 // bundle of every page just to power a search index.
 const cmdkProjects = projects.map((p) => ({
   label: p.title,
-  href: `/work/${p.slug}`,
+  href: `/work/${p.slug}/`,
   kw: `case study project ${p.org} ${p.tags.join(' ')} ${p.eyebrow}`.toLowerCase(),
 }));
 ---
