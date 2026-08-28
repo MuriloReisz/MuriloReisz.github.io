@@ -360,6 +360,42 @@ SPECS = {
             ], [340, 220, 320, 220]), 'Pipeline specification', accent)),
         ('wireframe', lambda accent, ramp: frame(wireframe(['Revenue', 'Retention', 'Fulfilment'], 'fct_orders · fct_subscriptions · fct_shipments', ramp), 'Reporting wireframe', accent)),
     ],
+    'drawing-to-cad-automation': [
+        ('dimension checks', lambda accent, ramp: frame(table(
+            ['Element', 'Source', 'Extracted', 'Status'],
+            [
+                ['Wall A · external', '4,250 mm', '4,251 mm', 'Within ±2mm'],
+                ['Wall B · party', '3,600 mm', '3,600 mm', 'Within ±2mm'],
+                ['Opening W1', '1,200 mm', '1,201 mm', 'Within ±2mm'],
+                ['Opening D2', '900 mm', '907 mm', 'Held — review'],
+                ['Ceiling height', '2,400 mm', '2,399 mm', 'Within ±2mm'],
+            ], [340, 220, 240, 300]), 'Dimension validation against source', accent)),
+        ('conversion queue', lambda accent, ramp: frame(queue_list([
+            ('Survey set 214', 'Topology closed · exported', 98),
+            ('Legacy plan 088', 'Topology closed · exported', 95),
+            ('Survey set 215', 'Openings inferred · exported', 91),
+            ('Legacy plan 091', 'Scale reference unreadable · held', 44),
+            ('Legacy plan 092', 'Line detection incomplete · held', 31),
+        ], ramp, unit='%'), 'Conversion queue · stage confidence', accent)),
+    ],
+    'document-intake-triage': [
+        ('extraction review', lambda accent, ramp: frame(queue_list([
+            ('Client reference', 'Matched to existing record', 99),
+            ('Document date', 'Parsed · unambiguous format', 97),
+            ('Counterparty name', 'Matched to directory', 93),
+            ('Instructed amount', 'Two candidates on page · review', 58),
+            ('Signature block', 'Scan quality low · review', 37),
+        ], ramp, unit='%'), 'Field extraction confidence', accent)),
+        ('intake queue', lambda accent, ramp: frame(table(
+            ['Document', 'Channel', 'Age', 'Status'],
+            [
+                ['Instruction letter', 'Email', '11 min', 'Routed'],
+                ['Signed engagement', 'Web form', '34 min', 'Routed'],
+                ['Scanned schedule', 'Post (scan)', '1 h 20', 'Held — review'],
+                ['Amended instruction', 'Email', '2 h 05', 'Routed'],
+                ['Identity documents', 'Hand delivered', '2 h 48', 'Held — review'],
+            ], [360, 240, 180, 320]), 'Unified intake queue · all channels', accent)),
+    ],
     'ocean-drones': [
         ('telemetry', lambda accent, ramp: frame(line_band(
             [('D1', 8.1), ('D2', 8.05), ('D3', 8.08), ('D4', 8.02), ('D5', 7.98), ('D6', 7.95),

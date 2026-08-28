@@ -5,6 +5,8 @@
 // lives in the .cse-* namespace and is styled in src/styles/work.css.
 // -------------------------------------------------------------------------
 import Layout from '../../layouts/Layout.astro';
+import BeforeAfter from '../../components/BeforeAfter.astro';
+import ImpactBand from '../../components/ImpactBand.astro';
 import { brandChipStyle, coverWebp, projects, type Project } from '../../data/projects';
 
 export function getStaticPaths() {
@@ -76,6 +78,7 @@ const sections = [
   { id: 'cs-problem', label: 'The problem' },
   { id: 'cs-approach', label: 'The approach' },
   { id: 'cs-results', label: 'What changed' },
+  ...(project.beforeAfter.length ? [{ id: 'cs-delta', label: 'Before & after' }] : []),
   { id: 'cs-chart', label: 'The numbers' },
   ...(project.gallery.length ? [{ id: 'cs-gallery', label: 'Screens' }] : []),
   { id: 'cs-stack', label: 'Stack & role' },
@@ -131,6 +134,9 @@ const pageDesc = project.summary;
               class="cse-brandchip"
               style={brandChipStyle(project.brand)}
             >{project.brand.wordmark}</span>
+            {project.illustrative && (
+              <span class="cse-illus">Illustrative</span>
+            )}
           </div>
           <h1 class="cs-title reveal">{project.title}</h1>
           <p class="cse-meta reveal">
@@ -141,6 +147,14 @@ const pageDesc = project.summary;
             <span class="cse-meta__item">{project.readMinutes} min read</span>
           </p>
           <p class="cs-lead reveal">{project.lead}</p>
+
+          {project.illustrative && (
+            <p class="cse-illus__note reveal">
+              This is an anonymised, illustrative scenario — representative of the shape of
+              engagement and the way I work, not a named client or a delivered set of results.
+              The real, named work on this site is labelled as such.
+            </p>
+          )}
 
           <ul class="cse-findings reveal" data-stagger>
             {project.findings.map((f) => (
@@ -159,6 +173,8 @@ const pageDesc = project.summary;
               </li>
             ))}
           </ul>
+
+          <ImpactBand project={project} />
 
           <figure class="cs-figure cs-figure--full cse-cover reveal" data-parallax="0.05" data-parallax-max="24">
             <!-- data-lightbox-src points the viewer at the WebP too, or opening
@@ -227,6 +243,15 @@ const pageDesc = project.summary;
             ))}
           </ul>
         </section>
+
+        {project.beforeAfter.length > 0 && (
+          <section class="cs-section cse-section" id="cs-delta" data-toc-target>
+            <p class="cs-kicker">{step('cs-delta')} — Before &amp; after</p>
+            <h2 class="cs-h">The same measures, either side of the work.</h2>
+            <p class="cs-p">Each pair is scaled against its own larger value, so the comparison is honest rather than flattering.</p>
+            <BeforeAfter rows={project.beforeAfter} brand={project.brand} />
+          </section>
+        )}
 
         <section class="cs-section cse-section" id="cs-chart" data-toc-target>
           <p class="cs-kicker">{step('cs-chart')} — The numbers</p>

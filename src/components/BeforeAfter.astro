@@ -1,0 +1,95 @@
+---
+// ---------------------------------------------------------------------------
+// BeforeAfter — the animated before → after → delta comparison on a case study.
+//
+// Both bars in a row are scaled against the larger of the two values, so the
+// pair is read against a shared baseline rather than each filling its track.
+// The delta is derived here from `before`/`after` rather than stored in the
+// data, so it cannot drift out of step with the numbers it describes.
+//
+// Growth animation is the existing [data-bar-to] handler in
+// src/scripts/motion.ts — it expects a .mo-bar__fill child and a 0–100 value.
+// ---------------------------------------------------------------------------
+import { brandChipStyle, type BeforeAfterRow, type ProjectBrand } from '../data/projects';
+
+interface Props {
+  rows: BeforeAfterRow[];
+  brand: ProjectBrand;
+}
+
+const { rows, brand } = Astro.props;
+
+/** 12.0 → "12", 4.20 → "4.2". Keeps the labels tight without losing precision
+    on the values that actually carry a decimal. */
+const fmt = (n: number) => (Number.isInteger(n) ? String(n) : String(Number(n.toFixed(2))));
+
+/** Percentage of the row's own maximum, floored so a small-but-nonzero value
+    still renders as a visible sliver rather than nothing at all. A true zero
+    stays at zero — "none" should look like none. */
+function width(value: number, max: number): number {
+  if (max <= 0) return 0;
+  if (value <= 0) return 0;
+  return Math.max(1.5, (value / max) * 100);
+}
+
+interface Delta {
+  text: string;
+  improved: boolean;
+  /** No baseline to compare against — the "after" is new capability, not a
+      change in an existing number. */
+  isNew: boolean;
+}
+
+function delta(row: BeforeAfterRow): Delta {
+  const improved = row.better === 'lower' ? row.after < row.before : row.after > row.before;
+  if (row.before === 0) return { text: 'new', improved: true, isNew: true };
+  const relative = ((row.after - row.before) / row.before) * 100;
+  const sign = relative > 0 ? '+' : relative < 0 ? '−' : '';
+  return { text: `${sign}${fmt(Math.abs(Math.round(relative * 10) / 10))}%`, improved, isNew: false };
+}
+---
+
+<div class="cse-ba" style={brandChipStyle(brand)} data-stagger>
+  {
+    rows.map((row) => {
+      const max = Math.max(row.before, row.after);
+      const d = delta(row);
+      return (
+        <section class="cse-ba__row reveal">
+          <div class="cse-ba__head">
+            <h3 class="cse-ba__metric">{row.metric}</h3>
+            <span
+              class:list={['cse-ba__delta', d.improved ? 'is-better' : 'is-worse', d.isNew && 'is-new']}
+            >{d.text}</span>
+          </div>
+
+          {/* dl, not a table: two labelled values per metric, and the visual
+              comparison is carried by the bars rather than by row alignment. */}
+          <dl class="cse-ba__pair">
+            <div class="cse-ba__side cse-ba__side--before">
+              <dt class="cse-ba__k">Before</dt>
+              <dd class="cse-ba__v">
+                <span class="cse-ba__n">{fmt(row.before)}</span>
+                <span class="cse-ba__u">{row.unit}</span>
+              </dd>
+              <div class="cse-ba__track mo-bar" data-bar-to={String(width(row.before, max))} aria-hidden="true">
+                <span class="mo-bar__fill cse-ba__fill cse-ba__fill--before"></span>
+              </div>
+            </div>
+
+            <div class="cse-ba__side cse-ba__side--after">
+              <dt class="cse-ba__k">After</dt>
+              <dd class="cse-ba__v">
+                <span class="cse-ba__n">{fmt(row.after)}</span>
+                <span class="cse-ba__u">{row.unit}</span>
+              </dd>
+              <div class="cse-ba__track mo-bar" data-bar-to={String(width(row.after, max))} aria-hidden="true">
+                <span class="mo-bar__fill cse-ba__fill cse-ba__fill--after"></span>
+              </div>
+            </div>
+          </dl>
+        </section>
+      );
+    })
+  }
+</div>

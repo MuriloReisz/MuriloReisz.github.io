@@ -4011,3 +4011,32 @@
     #page-meetup .mt-hero { padding-top: 96px; }
     .mt-host { flex-direction: column; align-items: flex-start; gap: 16px; }
   }
+
+/* ============================================================
+   ILLUSTRATIVE MARK
+   Marks an anonymised, representative scenario rather than a
+   named client engagement. A site-wide primitive rather than a
+   page class, because it appears on the home strip, the /work
+   grid and the case-study hero.
+
+   Deliberately plain: it is a disclosure, not a decoration, so
+   unlike .cse-brandchip it never borrows the project's brand
+   colourway — a badge that looks designed reads as a feature.
+   ============================================================ */
+.cse-illus,
+.pc-card__illus,
+.hm-fw__illus {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border: 1px solid var(--color-hairline);
+  background: var(--color-parchment);
+  color: var(--color-ink-48);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}

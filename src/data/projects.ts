@@ -26,6 +26,36 @@ export interface ChartPoint {
   value: number;
 }
 
+/** One slot in the four-part impact band. Deliberately the same shape as
+    Finding so the existing [data-counter-to] handler in motion.ts animates it
+    with no new client code — `note` is the only addition. */
+export interface ImpactMetric extends Finding {
+  note?: string;
+}
+
+/** The four questions a buyer asks, in a fixed order on every case study:
+    what came back, what time was returned, what it took to build, how good it
+    is. Same four slots, same order, every project — that consistency is the
+    point. */
+export interface ProjectImpact {
+  value: ImpactMetric;
+  time: ImpactMetric;
+  effort: ImpactMetric;
+  quality: ImpactMetric;
+}
+
+/** A single before → after comparison. The delta is computed at render time
+    from these two numbers rather than stored, so it can never drift out of
+    step with them. `better` says which direction is an improvement, which is
+    what decides the sign and the colour of the delta chip. */
+export interface BeforeAfterRow {
+  metric: string;
+  before: number;
+  after: number;
+  unit: string;
+  better: 'lower' | 'higher';
+}
+
 export interface GalleryItem {
   src: string;
   alt: string;
@@ -68,6 +98,12 @@ export interface Project {
   coverWidth: number;
   coverHeight: number;
   findings: Finding[];
+  impact: ProjectImpact;
+  beforeAfter: BeforeAfterRow[];
+  /** An anonymised composite scenario rather than a named client engagement.
+      Rendered with a visible badge on the card and the case study, so an
+      illustrative figure is never mistaken for a delivered client result. */
+  illustrative?: boolean;
   stack: string[];
   role: string;
   duration: string;
@@ -110,6 +146,39 @@ export const projects: Project[] = [
       { value: '€6.2M', count: 6.2, prefix: '€', suffix: 'M', label: 'top region by revenue, surfaced for stakeholders' },
       { value: '39%', count: 39, suffix: '%', label: 'of sales from the leading segment' },
       { value: '€5.5M', count: 5.5, prefix: '€', suffix: 'M', label: 'profit tracked in the latest season' },
+    ],
+    impact: {
+      value: {
+        value: '€6.2M',
+        count: 6.2,
+        prefix: '€',
+        suffix: 'M',
+        label: 'Revenue made visible',
+        note: 'The top-performing region, surfaced in one governed view for the first time.',
+      },
+      time: {
+        value: '375h',
+        count: 375,
+        suffix: 'h',
+        label: 'Analyst hours returned each year',
+        note: '14.5 hours saved per fortnightly cycle, once the refresh was scheduled.',
+      },
+      effort: {
+        value: '11 weeks',
+        label: 'Effort to build',
+        note: 'One analyst — model design, dashboard build and a measured regional rollout.',
+      },
+      quality: {
+        value: '74',
+        count: 74,
+        label: 'Weekly active users',
+        note: 'Up from 9 within two months of rollout, across four regional teams.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Analyst hours per reporting cycle', before: 16, after: 1.5, unit: 'hours', better: 'lower' },
+      { metric: 'Competing definitions of net revenue', before: 4, after: 1, unit: 'definitions', better: 'lower' },
+      { metric: 'Weekly active users', before: 9, after: 74, unit: 'users', better: 'higher' },
     ],
     stack: ['Tableau', 'SQL', 'Google BigQuery', 'Python (Pandas, Playwright)', 'Microsoft Excel'],
     role: 'Data analyst — model design, dashboard build, stakeholder rollout',
@@ -224,6 +293,40 @@ export const projects: Project[] = [
       { value: 'End-to-end', label: 'solutions architected & deployed for multiple clients' },
       { value: 'BigQuery', label: 'ETL, EDA & predictive insight for forecasting' },
     ],
+    impact: {
+      value: {
+        value: '€39k',
+        count: 39,
+        prefix: '€',
+        suffix: 'k',
+        label: 'Annualised labour cost returned',
+        note: 'Per client, on 30.5 hours a week at a deliberately conservative €25/hour loaded cost.',
+      },
+      time: {
+        value: '30.5h',
+        count: 30.5,
+        suffix: 'h',
+        label: 'Hours given back each week',
+        note: 'Across the automated processes — 38 hours a week at baseline, 7.5 by week 14.',
+      },
+      effort: {
+        value: '4—14 weeks',
+        label: 'Effort per engagement',
+        note: 'Sole delivery: consultation, architecture, build, deployment and handover.',
+      },
+      quality: {
+        value: '100%',
+        count: 100,
+        suffix: '%',
+        label: 'Handed over, documented, owned',
+        note: 'Every build ships with a runbook, a named owner and Git history. The client owns it, not me.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Manual hours per week', before: 38, after: 7.5, unit: 'hours', better: 'lower' },
+      { metric: 'Steps needing manual copy-paste', before: 24, after: 3, unit: 'steps', better: 'lower' },
+      { metric: 'Reporting lag', before: 7, after: 0.5, unit: 'days', better: 'lower' },
+    ],
     stack: ['Python (Pandas, Playwright, Selenium)', 'SQL', 'Google BigQuery', 'Power BI', 'n8n', 'Git'],
     role: 'Freelance data & automation engineer — sole delivery',
     duration: 'Ongoing since October 2024',
@@ -309,6 +412,302 @@ export const projects: Project[] = [
   },
 
   // ---------------------------------------------------------------- 03
+  // Cork AI Consulting. Anonymised on purpose: the engagements behind this
+  // shape of work are live and confidential, so there is no client name, no
+  // logo, no sector specific enough to identify anyone, and every figure here
+  // is an illustrative composite rather than a delivered client result.
+  {
+    slug: 'drawing-to-cad-automation',
+    title: 'Drawing-to-CAD Conversion Pipeline',
+    eyebrow: 'AI · AUTOMATION',
+    org: 'Cork AI Consulting · architecture practice',
+    brand: { wordmark: 'DraftLift', accent: '#0b7285', accent2: '#3bc9db' },
+    period: '2026',
+    year: 2026,
+    readMinutes: 6,
+    tags: ['ml', 'automation', 'python'],
+    summary:
+      'Hand-drawn and scanned plans turned into dimensioned, editable CAD geometry — with the dimensions checked, not guessed.',
+    lead:
+      'An architecture practice was redrawing survey sketches and scanned legacy plans in CAD by hand, one set at a time. I built a pipeline that lifts the geometry automatically and — the part that actually matters — validates every dimension against the source before anything reaches a drafter. A conversion that is 95% right is not useful in this trade; it is a rework ticket.',
+    cover: '/images/dash/drawing-to-cad-automation.png',
+    coverAlt:
+      'Screenshot of the Drawing-to-CAD Conversion Pipeline: three headline metric cards above a bar chart of hours to convert one drawing set, 11 hours at Baseline down to 2.5 by Wk 8.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: '−77%', count: 77, prefix: '−', suffix: '%', label: 'drafting time per converted drawing set' },
+      { value: '±2mm', label: 'dimensional tolerance enforced before hand-off' },
+      { value: '9/week', count: 9, suffix: '/week', label: 'drawing sets processed, against two by hand' },
+    ],
+    impact: {
+      value: {
+        value: '€32k',
+        count: 32,
+        prefix: '€',
+        suffix: 'k',
+        label: 'Annualised drafting cost returned',
+        note: '17 hours a week at a conservative €40/hour loaded technical rate.',
+      },
+      time: {
+        value: '17h',
+        count: 17,
+        suffix: 'h',
+        label: 'Drafting hours returned each week',
+        note: '11 hours per drawing set at baseline, 2.5 by week eight.',
+      },
+      effort: {
+        value: '8 weeks',
+        label: 'Effort to build',
+        note: 'Cork AI Consulting — discovery, pipeline build, tolerance validation and drafter handover.',
+      },
+      quality: {
+        value: '±2mm',
+        label: 'Dimensional tolerance',
+        note: 'Anything outside tolerance is flagged for a human rather than exported. A wrong dimension is worse than no dimension.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Hours to convert one drawing set', before: 11, after: 2.5, unit: 'hours', better: 'lower' },
+      { metric: 'Dimensional rework passes per set', before: 3, after: 0.4, unit: 'passes', better: 'lower' },
+      { metric: 'Drawing sets processed per week', before: 2, after: 9, unit: 'sets', better: 'higher' },
+    ],
+    illustrative: true,
+    stack: ['Python (OpenCV, NumPy, Shapely)', 'PyTorch', 'FastAPI', 'DWG/DXF export', 'PostgreSQL'],
+    role: 'Cork AI Consulting — founder & lead consultant, sole delivery',
+    duration: '8 weeks',
+    problem: [
+      'Every survey sketch and every scanned legacy plan was redrawn in CAD by hand. A set took most of a working day, the practice had a backlog measured in months, and the work was skilled-but-mechanical — exactly the kind of task that burns senior time without developing anyone.',
+      'The obvious automation had been tried and abandoned. Off-the-shelf raster-to-vector tools produced geometry that looked right and measured wrong, which is the worst possible failure mode here: a drafter cannot trust any of it, so they check all of it, and checking takes as long as redrawing.',
+    ],
+    approach: [
+      {
+        title: 'Started from the tolerance, not the model',
+        body:
+          'Before any modelling, I established what accuracy the practice actually needed a conversion to hit before a drafter would trust it, and what happens to a set that misses. Everything downstream is built to that number rather than to a generic accuracy score.',
+      },
+      {
+        title: 'Geometry extraction in stages',
+        body:
+          'Line and arc detection, then wall and opening inference, then a topology pass that closes rooms. Each stage emits its own confidence, so a failure is attributable to a stage rather than to the pipeline as a whole.',
+      },
+      {
+        title: 'Dimension validation as a hard gate',
+        body:
+          'Extracted dimensions are checked against annotated values and scale references on the source drawing. Anything outside tolerance stops and routes to a human with the discrepancy highlighted. The pipeline is allowed to decline.',
+      },
+      {
+        title: 'Exported into the tools already in use',
+        body:
+          'Output lands as layered DWG/DXF matching the practice’s own layer conventions, so a converted set opens looking like their work rather than an import that has to be tidied before it can be edited.',
+      },
+    ],
+    results: [
+      'Conversion time per drawing set fell from around 11 hours to 2.5, and throughput rose from two sets a week to nine.',
+      'Rework passes per set dropped from three to under one, because out-of-tolerance geometry never reaches a drafter in the first place.',
+      'The months-long backlog of legacy plans cleared inside the engagement.',
+      'Senior drafting time moved from redrawing to design review — the outcome the practice actually wanted.',
+    ],
+    chart: {
+      title: 'Hours to convert one drawing set',
+      unit: 'hours',
+      series: [
+        { label: 'Baseline', value: 11 },
+        { label: 'Wk 2', value: 9.5 },
+        { label: 'Wk 3', value: 7.8 },
+        { label: 'Wk 4', value: 6.1 },
+        { label: 'Wk 5', value: 4.6 },
+        { label: 'Wk 6', value: 3.4 },
+        { label: 'Wk 7', value: 2.8 },
+        { label: 'Wk 8', value: 2.5 },
+      ],
+    },
+    gallery: [
+      {
+        src: '/images/gallery/drawing-to-cad-automation-1.png',
+        alt: 'Source drawing and extracted geometry side by side, with dimension checks annotated against the source values',
+        caption: 'Source against extraction, with every dimension check annotated. The overlay is the review surface — a drafter accepts or rejects per dimension, not per drawing.',
+        width: 1400,
+        height: 800,
+      },
+      {
+        src: '/images/gallery/drawing-to-cad-automation-2.png',
+        alt: 'Queue of converted sets showing per-stage confidence and the items held back for human review',
+        caption: 'The conversion queue. Held-back sets carry the stage that failed and why, so the fix is a known change rather than a retry.',
+        width: 1400,
+        height: 800,
+      },
+    ],
+    faq: [
+      {
+        q: 'Why not just use an off-the-shelf raster-to-vector converter?',
+        a: 'Because they optimise for a plausible-looking trace, and this trade needs a correct measurement. A converter with no notion of tolerance and no ability to decline produces output that has to be fully re-checked, which removes the entire saving.',
+      },
+      {
+        q: 'What happens on a drawing the pipeline cannot read?',
+        a: 'It stops and says so, with the failing stage named. The practice keeps a manual path for those, and they are a small and shrinking share. Declining is a feature; a confident wrong answer would end the engagement.',
+      },
+      {
+        q: 'Does this replace a drafter?',
+        a: 'No — it removes the mechanical half of the job. Every converted set is still reviewed and signed off by a person, and their time goes to the parts that need judgement.',
+      },
+    ],
+    links: [
+      { label: 'Read the case study', href: '/work/drawing-to-cad-automation', external: false },
+    ],
+    featured: true,
+    tone: 'dark-3',
+    reverse: false,
+  },
+
+  // ---------------------------------------------------------------- 04
+  // Cork AI Consulting — anonymised composite, as above.
+  {
+    slug: 'document-intake-triage',
+    title: 'Document Intake & Triage Service',
+    eyebrow: 'AI · AUTOMATION · CLOUD',
+    org: 'Cork AI Consulting · professional services firm',
+    brand: { wordmark: 'IntakeLens', accent: '#0e7490', accent2: '#67e8f9' },
+    period: '2026',
+    year: 2026,
+    readMinutes: 6,
+    tags: ['ml', 'automation', 'cloud'],
+    summary:
+      'Inbound client documents read, classified, key fields extracted and routed to the right queue — with a confidence floor and a human path.',
+    lead:
+      'A professional services firm received client documents through four channels and keyed the same two dozen fields out of them by hand. I built an intake service that classifies each document, extracts its fields, and routes it — but only when it is confident. Below the floor it goes to a person, because in this business a misfiled document is a compliance problem, not an inconvenience.',
+    cover: '/images/dash/document-intake-triage.png',
+    coverAlt:
+      'Screenshot of the Document Intake & Triage Service: three headline metric cards above a bar chart of median intake turnaround, 60 hours at Baseline down to 3 by Wk 7.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: '−95%', count: 95, prefix: '−', suffix: '%', label: 'median intake turnaround, 60 hours to 3' },
+      { value: '94.5%', count: 94.5, suffix: '%', label: 'field-extraction accuracy above the confidence floor' },
+      { value: '100%', count: 100, suffix: '%', label: 'of low-confidence documents routed to a human' },
+    ],
+    impact: {
+      value: {
+        value: '€21k',
+        count: 21,
+        prefix: '€',
+        suffix: 'k',
+        label: 'Annualised administrative cost returned',
+        note: '12 hours a week at a conservative €34/hour loaded cost, redeployed to client-facing work.',
+      },
+      time: {
+        value: '12h',
+        count: 12,
+        suffix: 'h',
+        label: 'Administrative hours returned each week',
+        note: 'Time previously spent opening, classifying and re-keying inbound documents.',
+      },
+      effort: {
+        value: '7 weeks',
+        label: 'Effort to build',
+        note: 'Cork AI Consulting — channel mapping, extraction model, routing service and staff handover.',
+      },
+      quality: {
+        value: '94.5%',
+        count: 94.5,
+        suffix: '%',
+        label: 'Field-extraction accuracy',
+        note: 'On documents above the confidence floor. Everything below it reaches a person on first touch.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Median intake turnaround', before: 60, after: 3, unit: 'hours', better: 'lower' },
+      { metric: 'Administrative hours per week on intake', before: 15, after: 3, unit: 'hours', better: 'lower' },
+      { metric: 'Fields keyed by hand per document', before: 26, after: 2, unit: 'fields', better: 'lower' },
+    ],
+    illustrative: true,
+    stack: ['Python (spaCy, pdfplumber, scikit-learn)', 'Claude API', 'FastAPI', 'PostgreSQL', 'Cloud Run'],
+    role: 'Cork AI Consulting — founder & lead consultant, sole delivery',
+    duration: '7 weeks',
+    problem: [
+      'Documents arrived by email, through a web form, by post as scans, and occasionally by hand. Whoever opened one classified it, keyed roughly two dozen fields into the practice management system, and moved it to a queue. Nothing about that work needed a qualified person, but all of it needed a careful one.',
+      'The cost was turnaround as much as labour. A document that arrived on Friday afternoon might not be in a queue until Tuesday, and the firm had no way to see what was sitting unprocessed — the backlog only existed in individual inboxes.',
+    ],
+    approach: [
+      {
+        title: 'Made the channels one channel',
+        body:
+          'All four intake routes now land in a single queue with the source recorded. That alone made the backlog visible for the first time, and it is the change staff mentioned first.',
+      },
+      {
+        title: 'Classify, then extract',
+        body:
+          'A document type is settled before any field extraction is attempted, because the fields worth extracting depend on it. Classification is cheap and auditable; extraction is the expensive part and only runs against a known schema.',
+      },
+      {
+        title: 'A confidence floor with a human path',
+        body:
+          'Every extracted field carries a confidence. Below the floor, the document routes to a person with the uncertain fields highlighted rather than being filed on a guess. The floor was set from the firm’s own tolerance for a misfiling, not from a default.',
+      },
+      {
+        title: 'Auditable by design',
+        body:
+          'Every decision, its confidence, and any human correction is logged against the document. Corrections feed the weekly review, and the log is what let the firm sign off on the service at all.',
+      },
+    ],
+    results: [
+      'Median intake turnaround fell from around 60 hours to 3, and a Friday document is now in the right queue on Friday.',
+      'Field-extraction accuracy of 94.5% above the confidence floor, with every below-floor document reaching a person on first touch.',
+      'Hand-keyed fields per document fell from 26 to 2 — the two that genuinely need a judgement call.',
+      'The backlog became a number on a screen instead of an unknown quantity spread across four inboxes.',
+    ],
+    chart: {
+      title: 'Median intake turnaround',
+      unit: 'hours',
+      series: [
+        { label: 'Baseline', value: 60 },
+        { label: 'Wk 2', value: 41 },
+        { label: 'Wk 3', value: 26 },
+        { label: 'Wk 4', value: 15 },
+        { label: 'Wk 5', value: 8 },
+        { label: 'Wk 6', value: 4.5 },
+        { label: 'Wk 7', value: 3 },
+      ],
+    },
+    gallery: [
+      {
+        src: '/images/gallery/document-intake-triage-1.png',
+        alt: 'Extraction review screen showing a document alongside its extracted fields, each with a confidence indicator',
+        caption: 'The review screen. Fields below the confidence floor are highlighted, so a person reads the two that are uncertain rather than all twenty-six.',
+        width: 1400,
+        height: 800,
+      },
+      {
+        src: '/images/gallery/document-intake-triage-2.png',
+        alt: 'Unified intake queue showing documents from all four channels with age, type and routing status',
+        caption: 'One queue, four channels, with age on the face of it. Making the backlog visible changed behaviour before the model did.',
+        width: 1400,
+        height: 800,
+      },
+    ],
+    faq: [
+      {
+        q: 'Why a confidence floor rather than always routing to a human for review?',
+        a: 'Reviewing everything reproduces the original cost. The floor concentrates human attention on the documents where it changes the outcome, and it is set from the firm’s own tolerance for a misfiling rather than from a model default.',
+      },
+      {
+        q: 'What about client confidentiality?',
+        a: 'Documents stay inside the firm’s own cloud tenancy, access is logged per document, and retention follows their existing policy. That constraint shaped the architecture from the first week rather than being retrofitted.',
+      },
+      {
+        q: 'How do you know the accuracy figure holds?',
+        a: 'It is measured on a held-out sample, not on the training data, and every human correction in the live log is a fresh test case. Accuracy is re-reported weekly rather than claimed once at launch.',
+      },
+    ],
+    links: [
+      { label: 'Read the case study', href: '/work/document-intake-triage', external: false },
+    ],
+    featured: false,
+    tone: 'white',
+    reverse: true,
+  },
+
+  // ---------------------------------------------------------------- 05
   {
     slug: 'ocean-drones',
     title: 'Ocean Drones — Autonomous Marine Data Platform',
@@ -332,6 +731,34 @@ export const projects: Project[] = [
       { value: 'ML', label: 'predictive models & species image classification (Scikit-learn, TensorFlow)' },
       { value: 'Real-time', label: 'sensor pipeline (pH, temperature) + high-res imagery' },
       { value: 'Full-stack', label: 'web app to deploy drones & visualise ecosystem health' },
+    ],
+    impact: {
+      value: {
+        value: 'No lab trips',
+        label: 'Value returned',
+        note: 'A crewed sampling run and its lab round-trip replaced by an autonomous mission and a live readout.',
+      },
+      time: {
+        value: 'Same day',
+        label: 'Survey turnaround',
+        note: 'From weeks waiting on lab results to a health readout available during the mission itself.',
+      },
+      effort: {
+        value: '2 semesters',
+        label: 'Effort to build',
+        note: 'Team of four. I owned the ingestion pipeline and both machine-learning models.',
+      },
+      quality: {
+        value: '91%',
+        count: 91,
+        suffix: '%',
+        label: 'Top-1 classification accuracy',
+        note: 'On the held-out validation set, up from a 64% untuned baseline.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Species classification top-1 accuracy', before: 64, after: 91, unit: '%', better: 'higher' },
+      { metric: 'Days to a usable survey result', before: 14, after: 0, unit: 'days', better: 'lower' },
     ],
     stack: ['Python', 'Scikit-learn', 'TensorFlow', 'FastAPI', 'PostgreSQL', 'JavaScript'],
     role: 'Team of four — I owned the data pipeline and the ML models',
@@ -412,12 +839,16 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/ocean-drones', external: false },
     ],
-    featured: true,
+    // Unfeatured when the Cork AI consultancy work joined the home strip: the
+    // featured three are the AI/data/automation positioning, and an academic
+    // final-year project is the weakest of the four for that job. Still fully
+    // present on /work, and still in POPULAR_SLUGS for the 404.
+    featured: false,
     tone: 'dark-3',
     reverse: false,
   },
 
-  // ---------------------------------------------------------------- 04
+  // ---------------------------------------------------------------- 06
   {
     slug: 'retail-demand-forecast',
     title: 'Demand Forecasting for an Irish Retail Group',
@@ -442,6 +873,43 @@ export const projects: Project[] = [
       { value: '€214k', count: 214, prefix: '€', suffix: 'k', label: 'annualised fresh waste avoided across 34 stores' },
       { value: '11.4k', count: 11.4, suffix: 'k', label: 'SKU-store-week forecasts produced every Thursday' },
     ],
+    impact: {
+      value: {
+        value: '€214k',
+        count: 214,
+        prefix: '€',
+        suffix: 'k',
+        label: 'Annualised fresh waste avoided',
+        note: 'Across 34 stores, from ordering closer to true demand.',
+      },
+      time: {
+        value: '6h',
+        count: 6,
+        suffix: 'h',
+        label: 'Buyer hours returned each week',
+        note: 'Thursday ordering moved from a manual spreadsheet pass to reviewing a generated proposal.',
+      },
+      effort: {
+        value: '14 weeks',
+        label: 'Effort to build',
+        note: 'Lead analyst — modelling, pipeline and buyer rollout across the estate.',
+      },
+      quality: {
+        value: '−31%',
+        count: 31,
+        prefix: '−',
+        suffix: '%',
+        label: 'Forecast error (MAPE)',
+        note: 'Against the previous method, measured on held-out weeks.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Weekly forecast error (MAPE)', before: 22.4, after: 15.5, unit: '%', better: 'lower' },
+      { metric: 'Fresh waste as a share of fresh revenue', before: 6.4, after: 4.1, unit: '%', better: 'lower' },
+      { metric: 'Availability on the top hundred lines', before: 93.1, after: 97.6, unit: '%', better: 'higher' },
+      { metric: 'Buyer overrides', before: 41, after: 8, unit: '% of lines', better: 'lower' },
+    ],
+    illustrative: true,
     stack: ['Python (Pandas, scikit-learn, LightGBM)', 'SQL', 'Power BI', 'Azure Blob Storage', 'Excel'],
     role: 'Lead analyst — modelling, pipeline and buyer rollout',
     duration: '14 weeks',
@@ -534,7 +1002,7 @@ export const projects: Project[] = [
     reverse: true,
   },
 
-  // ---------------------------------------------------------------- 05
+  // ---------------------------------------------------------------- 07
   {
     slug: 'churn-early-warning',
     title: 'Subscription Churn Early-Warning Scoring',
@@ -559,6 +1027,38 @@ export const projects: Project[] = [
       { value: '0.81', count: 0.81, label: 'ROC AUC on the held-out quarter, calibrated' },
       { value: '−27%', count: 27, prefix: '−', suffix: '%', label: 'logo churn in the cohort worked from the score' },
     ],
+    impact: {
+      value: {
+        value: '43',
+        count: 43,
+        label: 'Accounts retained each month',
+        note: 'Monthly logo churn of 0.51pp across 8,400 accounts, held over two quarters against a matched control.',
+      },
+      time: {
+        value: '23 days',
+        count: 23,
+        suffix: ' days',
+        label: 'Median warning before a churn event',
+        note: 'Against effectively zero under the previous renewal-desk process.',
+      },
+      effort: {
+        value: '9 weeks',
+        label: 'Effort to build',
+        note: 'Consulting data scientist — feature design, modelling and deployment.',
+      },
+      quality: {
+        value: '0.81',
+        count: 0.81,
+        label: 'ROC AUC, calibrated',
+        note: 'On a fully held-out quarter, with calibration error under 4pp across all deciles.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Monthly logo churn in the worked cohort', before: 1.9, after: 1.39, unit: '%', better: 'lower' },
+      { metric: 'Median days of warning before churn', before: 0, after: 23, unit: 'days', better: 'higher' },
+      { metric: 'Accounts worked from a defensible ranking', before: 0, after: 60, unit: 'per week', better: 'higher' },
+    ],
+    illustrative: true,
     stack: ['Python (Pandas, scikit-learn, XGBoost)', 'BigQuery', 'Cloud Run', 'dbt', 'Looker Studio'],
     role: 'Consulting data scientist — feature design, modelling, deployment',
     duration: '9 weeks',
@@ -645,7 +1145,7 @@ export const projects: Project[] = [
     reverse: false,
   },
 
-  // ---------------------------------------------------------------- 06
+  // ---------------------------------------------------------------- 08
   {
     slug: 'finance-close-automation',
     title: 'Month-End Close Automation',
@@ -670,6 +1170,41 @@ export const projects: Project[] = [
       { value: '−142h', count: 142, prefix: '−', suffix: 'h', label: 'manual finance effort per close cycle' },
       { value: '61', count: 61, label: 'manual steps replaced by 9 idempotent jobs' },
     ],
+    impact: {
+      value: {
+        value: '€60k',
+        count: 60,
+        prefix: '€',
+        suffix: 'k',
+        label: 'Annualised finance cost returned',
+        note: '1,704 hours a year across twelve close cycles, at a conservative €35/hour loaded cost.',
+      },
+      time: {
+        value: '142h',
+        count: 142,
+        suffix: 'h',
+        label: 'Manual hours saved per close',
+        note: 'Across five entities — the close itself fell from nine working days to three.',
+      },
+      effort: {
+        value: '12 weeks',
+        label: 'Effort to build',
+        note: 'Consulting automation engineer — process mapping, build and handover to the finance team.',
+      },
+      quality: {
+        value: '9 jobs',
+        count: 9,
+        suffix: ' jobs',
+        label: 'Idempotent jobs replacing 61 manual steps',
+        note: 'Re-runnable without double-posting. Eleven duplicated steps were deleted rather than automated.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Working days to close', before: 9, after: 3, unit: 'days', better: 'lower' },
+      { metric: 'Manual finance hours per close cycle', before: 190, after: 48, unit: 'hours', better: 'lower' },
+      { metric: 'Manual steps in the close process', before: 61, after: 9, unit: 'steps', better: 'lower' },
+    ],
+    illustrative: true,
     stack: ['Python (Pandas, openpyxl)', 'SQL Server', 'Excel', 'Power Automate', 'Git'],
     role: 'Consulting automation engineer — process mapping, build, handover',
     duration: '12 weeks',
@@ -753,7 +1288,7 @@ export const projects: Project[] = [
     reverse: true,
   },
 
-  // ---------------------------------------------------------------- 07
+  // ---------------------------------------------------------------- 09
   {
     slug: 'logistics-control-tower',
     title: 'Live Logistics Control Tower',
@@ -778,6 +1313,41 @@ export const projects: Project[] = [
       { value: '4 → 1', label: 'carrier systems reconciled onto one consignment spine' },
       { value: '11 min', count: 11, suffix: ' min', label: 'data latency, against a previous 24-hour lag' },
     ],
+    impact: {
+      value: {
+        value: '+9.4pp',
+        count: 9.4,
+        prefix: '+',
+        suffix: 'pp',
+        label: 'On-time-in-full delivery',
+        note: '88.9% to 98.3% over two quarters, on a reconciled measure rather than carrier self-reporting.',
+      },
+      time: {
+        value: '10h',
+        count: 10,
+        suffix: 'h',
+        label: 'Operations hours returned each week',
+        note: 'The daily bridging spreadsheet is no longer rebuilt by hand.',
+      },
+      effort: {
+        value: '10 weeks',
+        label: 'Effort to build',
+        note: 'Consulting analyst — data model, ingestion, dashboard and floor rollout.',
+      },
+      quality: {
+        value: '11 min',
+        count: 11,
+        suffix: ' min',
+        label: 'End-to-end data latency',
+        note: 'Against a previous 24-hour spreadsheet cycle, so a stuck consignment surfaces the same shift.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'On-time-in-full delivery', before: 88.9, after: 98.3, unit: '%', better: 'higher' },
+      { metric: 'End-to-end data latency', before: 1440, after: 11, unit: 'minutes', better: 'lower' },
+      { metric: 'Carrier systems to reconcile by hand', before: 4, after: 1, unit: 'systems', better: 'lower' },
+    ],
+    illustrative: true,
     stack: ['Power BI', 'SQL Server', 'Azure Data Factory', 'Azure SQL', 'Python'],
     role: 'Consulting analyst — data model, ingestion, dashboard, floor rollout',
     duration: '10 weeks',
@@ -864,7 +1434,7 @@ export const projects: Project[] = [
     reverse: false,
   },
 
-  // ---------------------------------------------------------------- 08
+  // ---------------------------------------------------------------- 10
   {
     slug: 'clinic-nlp-triage',
     title: 'NLP Triage of Inbound Clinic Enquiries',
@@ -889,6 +1459,41 @@ export const projects: Project[] = [
       { value: '96.2%', count: 96.2, suffix: '%', label: 'routing accuracy on the held-out sample' },
       { value: '100%', count: 100, suffix: '%', label: 'of clinical-flag enquiries routed to a human' },
     ],
+    impact: {
+      value: {
+        value: '€13k',
+        count: 13,
+        prefix: '€',
+        suffix: 'k',
+        label: 'Annualised reception cost moved to patient-facing work',
+        note: '14 hours a week at a conservative €18/hour loaded cost — redeployed, not removed.',
+      },
+      time: {
+        value: '14h',
+        count: 14,
+        suffix: 'h',
+        label: 'Reception hours returned each week',
+        note: 'Time previously spent sorting an undifferentiated shared inbox.',
+      },
+      effort: {
+        value: '11 weeks',
+        label: 'Effort to build',
+        note: 'Consulting data scientist — labelling design, model and the routing service.',
+      },
+      quality: {
+        value: '96.2%',
+        count: 96.2,
+        suffix: '%',
+        label: 'Routing accuracy',
+        note: 'On a held-out sample of 600 enquiries. Every clinical flag reached a human on first touch.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Median first-response time on routine enquiries', before: 6.2, after: 1.6, unit: 'hours', better: 'lower' },
+      { metric: 'Reception hours sorting the inbox each week', before: 18, after: 4, unit: 'hours', better: 'lower' },
+      { metric: 'Enquiries triaged without a human first pass', before: 0, after: 89, unit: '%', better: 'higher' },
+    ],
+    illustrative: true,
     stack: ['Python (spaCy, scikit-learn, sentence-transformers)', 'FastAPI', 'PostgreSQL', 'Microsoft Graph API'],
     role: 'Consulting data scientist — labelling design, model, routing service',
     duration: '11 weeks',
@@ -981,7 +1586,7 @@ export const projects: Project[] = [
     reverse: true,
   },
 
-  // ---------------------------------------------------------------- 09
+  // ---------------------------------------------------------------- 11
   {
     slug: 'energy-anomaly-detection',
     title: 'Anomaly Detection on Building Energy Telemetry',
@@ -1006,6 +1611,41 @@ export const projects: Project[] = [
       { value: '4.2 h', count: 4.2, suffix: ' h', label: 'median detection time, from 60+ days' },
       { value: '1,480', count: 1480, label: 'half-hourly meters monitored continuously' },
     ],
+    impact: {
+      value: {
+        value: '€318k',
+        count: 318,
+        prefix: '€',
+        suffix: 'k',
+        label: 'Annualised energy waste identified',
+        note: 'Across a portfolio of 62 buildings, ranked by euros per day so the queue is worked in cost order.',
+      },
+      time: {
+        value: '4.2h',
+        count: 4.2,
+        suffix: 'h',
+        label: 'Median time to detect an anomaly',
+        note: 'From a baseline of 60-plus days, when a fault surfaced only in a quarterly bill review.',
+      },
+      effort: {
+        value: '13 weeks',
+        label: 'Effort to build',
+        note: 'Consulting data scientist — detection design, deployment and facilities-management handover.',
+      },
+      quality: {
+        value: '68%',
+        count: 68,
+        suffix: '%',
+        label: 'Alert precision',
+        note: 'Up from 21% at launch, once cause codes from closed alerts fed back into the model.',
+      },
+    },
+    beforeAfter: [
+      { metric: 'Median time to detect an energy anomaly', before: 1512, after: 4.2, unit: 'hours', better: 'lower' },
+      { metric: 'Alert precision', before: 21, after: 68, unit: '%', better: 'higher' },
+      { metric: 'Meters monitored continuously', before: 0, after: 1480, unit: 'meters', better: 'higher' },
+    ],
+    illustrative: true,
     stack: ['Python (Pandas, scikit-learn, statsmodels)', 'BigQuery', 'Cloud Functions', 'SQL', 'Looker Studio'],
     role: 'Consulting data scientist — detection design, deployment, FM handover',
     duration: '13 weeks',

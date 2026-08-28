@@ -772,3 +772,221 @@
   .pc-card:hover .pc-card__arrow { transform: none; }
   .cse-pager__link:hover { transform: none; }
 }
+
+/* ============================================================
+   ILLUSTRATIVE MARK — page-specific placement
+   The mark itself is a site-wide primitive in global.css, because
+   it also appears on the home page (.hm-fw__illus). Only the
+   positioning and the surrounding prose live here.
+   ============================================================ */
+.pc-card__illus {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--color-canvas);
+}
+.cse-illus__note {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-left: 2px solid var(--color-hairline);
+  background: color-mix(in srgb, var(--color-ink) 3%, transparent);
+  font-size: 14px;
+  line-height: 1.55;
+  letter-spacing: -0.1px;
+  color: var(--color-ink-48);
+  max-width: 62ch;
+}
+[data-theme="dark"] .cse-illus__note { background: rgba(255, 255, 255, 0.04); }
+.pc-hero__legend {
+  margin: 18px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: -0.1px;
+  color: var(--color-ink-48);
+  max-width: 68ch;
+}
+.pc-hero__legend-chip { position: static; margin-right: 4px; vertical-align: 2px; }
+
+/* ============================================================
+   CASE STUDY — IMPACT BAND
+   Value / Time / Effort / Quality, same four slots on every
+   project. Figures count up via [data-counter-to] (motion.ts).
+   ============================================================ */
+.cse-imp {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--color-hairline);
+  background: var(--surface-card);
+  box-shadow: var(--hard-shadow-sm);
+}
+.cse-imp__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 20px 24px;
+  border-left: 1px solid var(--color-divider-soft);
+}
+.cse-imp__cell:first-child { border-left: 0; }
+/* The top edge carries the project's own colourway, so the band is branded
+   without tinting the type. --chip-a/--chip-a2 come from brandChipStyle(). */
+.cse-imp__cell::before {
+  content: "";
+  display: block;
+  height: 3px;
+  margin: -22px -20px 6px;
+  background: linear-gradient(90deg, var(--chip-a, var(--color-primary)), var(--chip-a2, var(--color-primary)));
+}
+.cse-imp__kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--color-ink-48);
+}
+.cse-imp__figure { margin: 0; }
+.cse-imp__n {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.2vw, 34px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.cse-imp__label {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.4;
+  letter-spacing: -0.15px;
+  font-weight: 500;
+  color: var(--color-ink-80);
+}
+.cse-imp__note {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  letter-spacing: -0.1px;
+  color: var(--color-ink-48);
+}
+
+/* ============================================================
+   CASE STUDY — BEFORE / AFTER
+   Both bars in a row scale against that row's larger value, so
+   the pair shares one baseline. Growth is [data-bar-to].
+   ============================================================ */
+.cse-ba {
+  margin-top: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.cse-ba__row {
+  padding-top: 20px;
+  border-top: 1px solid var(--color-divider-soft);
+}
+.cse-ba__row:first-child { padding-top: 0; border-top: 0; }
+.cse-ba__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.cse-ba__metric {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+  color: var(--color-ink);
+}
+.cse-ba__delta {
+  flex: none;
+  padding: 3px 9px;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* Colour is not the only channel — the sign and the before/after values
+   already carry the direction, so this only reinforces it. */
+.cse-ba__delta.is-better { color: #1f7a54; }
+.cse-ba__delta.is-worse { color: #c2410c; }
+.cse-ba__delta.is-new { color: var(--color-ink-48); text-transform: uppercase; }
+[data-theme="dark"] .cse-ba__delta.is-better { color: #4caf82; }
+[data-theme="dark"] .cse-ba__delta.is-worse { color: #f0834a; }
+.cse-ba__pair {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 28px;
+}
+.cse-ba__side {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cse-ba__k {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--color-ink-48);
+}
+.cse-ba__v {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.cse-ba__n {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.7px;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.cse-ba__u {
+  font-size: 12.5px;
+  letter-spacing: -0.1px;
+  color: var(--color-ink-48);
+}
+.cse-ba__track { --mo-bar-h: 10px; }
+/* The "before" bar reads as the muted baseline; "after" carries the brand. */
+.cse-ba__fill--before {
+  background: color-mix(in srgb, var(--color-ink) 26%, transparent);
+}
+[data-theme="dark"] .cse-ba__fill--before { background: rgba(255, 255, 255, 0.3); }
+.cse-ba__fill--after {
+  background: linear-gradient(90deg, var(--chip-a, var(--color-primary)), var(--chip-a2, var(--color-primary)));
+}
+
+@media (max-width: 900px) {
+  .cse-imp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cse-imp__cell:nth-child(odd) { border-left: 0; }
+  .cse-imp__cell:nth-child(n + 3) { border-top: 1px solid var(--color-divider-soft); }
+}
+@media (max-width: 560px) {
+  .cse-imp { grid-template-columns: minmax(0, 1fr); }
+  .cse-imp__cell { border-left: 0; }
+  .cse-imp__cell + .cse-imp__cell { border-top: 1px solid var(--color-divider-soft); }
+  .cse-ba__pair { grid-template-columns: minmax(0, 1fr); }
+  .cse-ba__head { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+
+/* No transition to suppress here — the count-up and the bar growth are both
+   settled to their final value by motion.ts under reduced motion — but the
+   .mo-bar__fill width transition is shared, so pin it off for these bars. */
+@media (prefers-reduced-motion: reduce) {
+  .cse-ba__fill { transition: none; }
+}

@@ -33,8 +33,12 @@ const dateline = project.period.includes(project.org)
   : `${project.org} · ${project.period}`;
 
 // Two figures, not three: at card width a third column either wraps or
-// squeezes the labels to two words each.
-const stats = project.findings.slice(0, 2);
+// squeezes the labels to two words each. Value and time — what came back and
+// how much time it freed — are the two the home page should lead on.
+const stats = [project.impact.value, project.impact.time];
+
+/** Decimals from the source number, so 30.5 does not animate up to "30". */
+const dec = (n: number) => String(n).split('.')[1]?.length ?? 0;
 ---
 
 <a
@@ -52,6 +56,7 @@ const stats = project.findings.slice(0, 2);
 
   <span class="hm-fw__head">
     <span class="hm-fw__chip" style={brandChipStyle(project.brand)}>{project.brand.wordmark}</span>
+    {project.illustrative && <span class="hm-fw__illus">Illustrative</span>}
     <span class="hm-fw__title">{project.title}</span>
   </span>
 
@@ -65,7 +70,7 @@ const stats = project.findings.slice(0, 2);
           data-counter-to={f.count !== undefined ? String(f.count) : undefined}
           data-counter-prefix={f.prefix}
           data-counter-suffix={f.suffix}
-          data-counter-dec={f.count !== undefined && !Number.isInteger(f.count) ? '2' : '0'}
+          data-counter-dec={f.count !== undefined ? String(dec(f.count)) : undefined}
         >{f.value}</span>
         <span class="hm-fw__l">{f.label}</span>
       </span>

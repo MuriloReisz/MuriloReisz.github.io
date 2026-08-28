@@ -1,0 +1,65 @@
+---
+// ---------------------------------------------------------------------------
+// ImpactBand — the four-slot commercial summary that opens every case study.
+//
+// Value / Time / Effort / Quality, in that order, on every project. The order
+// is fixed on purpose: it is the sequence a buyer asks the questions in, and
+// keeping it identical across projects is what makes the portfolio read as one
+// body of work rather than eleven separate write-ups.
+//
+// No new client-side code. Each figure opts into the existing count-up by
+// carrying [data-counter-to] (see the handler in src/scripts/motion.ts), and
+// the whole band uses the site-wide .reveal + [data-stagger] entrance.
+// ---------------------------------------------------------------------------
+import { brandChipStyle, type ImpactMetric, type Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { impact } = project;
+
+/* The band's own labels, not the data's — impact.*.label describes the figure,
+   these name the slot, and both are shown. */
+const slots: { key: string; kicker: string; metric: ImpactMetric }[] = [
+  { key: 'value', kicker: 'Value returned', metric: impact.value },
+  { key: 'time', kicker: 'Time returned', metric: impact.time },
+  { key: 'effort', kicker: 'Effort invested', metric: impact.effort },
+  { key: 'quality', kicker: 'Quality', metric: impact.quality },
+];
+
+/** Decimal places for the count-up. Taken from the source number rather than
+    hard-coded, or 4.2 would animate up to "4". */
+const dec = (n: number) => String(n).split('.')[1]?.length ?? 0;
+---
+
+<section
+  class="cse-imp"
+  style={brandChipStyle(project.brand)}
+  data-stagger
+  aria-label={`Impact summary for ${project.title}`}
+>
+  {
+    slots.map(({ key, kicker, metric }) => (
+      <article class={`cse-imp__cell cse-imp__cell--${key} reveal`}>
+        <p class="cse-imp__kicker">{kicker}</p>
+        <p class="cse-imp__figure">
+          {metric.count !== undefined ? (
+            <span
+              class="cse-imp__n"
+              data-counter-to={String(metric.count)}
+              data-counter-prefix={metric.prefix}
+              data-counter-suffix={metric.suffix}
+              data-counter-dec={String(dec(metric.count))}
+            >{metric.value}</span>
+          ) : (
+            <span class="cse-imp__n">{metric.value}</span>
+          )}
+        </p>
+        <p class="cse-imp__label">{metric.label}</p>
+        {metric.note && <p class="cse-imp__note">{metric.note}</p>}
+      </article>
+    ))
+  }
+</section>
