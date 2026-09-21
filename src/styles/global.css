@@ -1,9 +1,9 @@
 /* ============================================================
-   Global design system — ported from reference, Apple-inspired.
+   Global design system — ported from reference, product-led.
    Asset paths rewritten: website_photos/ -> /images/
    ============================================================ */
   /* ============================================================
-     WOOLLAM ANALYTICS — Apple design language (per DESIGN.md)
+     WOOLLAM ANALYTICS — product-led design language (per DESIGN.md)
      Photography-first, edge-to-edge alternating tiles,
      single Action Blue accent, SF Pro Display/Text,
      pill CTAs, exactly one product-shadow.
@@ -303,7 +303,7 @@
   .nav-search-btn:active { transform: scale(0.92); }
   .nav-search-btn svg { width: 18px; height: 18px; display: block; }
 
-  /* Mobile hamburger — Apple-style two bars that morph into an ✕ (hidden on desktop) */
+  /* Mobile hamburger — two bars that morph into an ✕ (hidden on desktop) */
   .nav-burger {
     display: none;
     width: 44px; height: 44px;
@@ -352,7 +352,7 @@
     .nav-menu { transition: visibility 0s; }
   }
 
-  /* Desktop hover mega-menu (Apple-style full-width panel under "About me") */
+  /* Desktop hover mega-menu (full-width panel under "About me") */
   .navbar__item { position: relative; display: inline-flex; align-items: center; }
   .navbar__mega {
     position: absolute; top: calc(100% - 1px); left: 0; right: 0; z-index: 99;
@@ -2624,8 +2624,6 @@
     overflow: hidden;
   }
   .exp__logo img { width: 100%; height: 100%; object-fit: contain; padding: 7px; display: block; }
-  /* Apple glyph (adapts to theme via currentColor) */
-  .exp__logo-glyph { width: 26px; height: 26px; display: block; color: var(--color-ink); }
   /* Full-bleed brand logo that carries its own background (e.g. DataForce) */
   .exp__logo--fill { padding: 0; background: none; border: none; }
   .exp__logo--fill img { object-fit: cover; padding: 0; }
@@ -2657,7 +2655,7 @@
   .exp__tools { font-size: 13.5px; line-height: 1.5; letter-spacing: -0.1px; color: var(--color-ink-48); padding-top: 12px; }
   .exp__tools strong { color: var(--color-ink-80); font-weight: 600; }
 
-  /* Inline "read more" within a single role (Apple) */
+  /* Inline "read more" within a single role */
   html.js .exp__inline-more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--reveal-ease); }
   html.js .exp__inline-more.is-open { grid-template-rows: 1fr; }
   .exp__inline-more > .exp__points { overflow: hidden; min-height: 0; }
@@ -2987,7 +2985,7 @@
 
   /* ============================================================
      V4 — FULL-SCREEN CASE-STUDY READER
-     Apple App-Store-style detail view: expands over the page,
+     App-store-style detail view: expands over the page,
      scrolls on its own, closes back to the exact portfolio spot.
      Theme-aware via the same tokens; z-index 550 sits above the
      nav/modal but below the ⌘K palette (600) so search still works.
@@ -3050,8 +3048,6 @@
   }
   .cs-lead { font-family: var(--font-display); font-size: clamp(20px, 2.6vw, 26px); font-weight: 500; line-height: 1.42; letter-spacing: -0.4px; color: var(--color-ink); padding-top: 24px; max-width: 760px; }
   .cs-lead strong, .cs-p strong, .cs-numlist strong { color: var(--color-ink); font-weight: 600; }
-  /* Christmas case study: keep the original blue-highlighted words (site accent) */
-  #csApple .cs-p strong, #csApple .cs-lead strong, #csApple .cs-numlist strong, #csApple .exp__points strong { color: var(--color-primary); }
   .reader__case .cs-qlabel { color: var(--color-primary); display: inline-block; margin-bottom: 4px; }
 
   .cs-section { padding-top: 72px; }
@@ -3119,8 +3115,6 @@
     0%, 100% { background: transparent; box-shadow: none; }
     18% { background: color-mix(in srgb, var(--color-primary) 20%, transparent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 20%, transparent); }
   }
-  #csApple [id^="analysis-"] { scroll-margin-top: 76px; }
-
   /* floating "back to key takeaways" pill (lives inside the reader scrim) */
   .cs-qa-back {
     position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom, 0px)); z-index: 560;
@@ -3175,9 +3169,6 @@
   /* Loom / video */
   .cs-video { position: relative; width: 100%; padding-top: 56.25%; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--product-shadow); margin-top: 26px; background: var(--surface-card); }
   .cs-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-
-  /* Ensure the Tableau embed inside the reader hero card fills the cell */
-  #csApple .cs-hero-card__viz .tableau-embed { position: absolute; inset: 0; width: 100%; max-width: none; border-radius: 0; box-shadow: none; }
 
   /* Recognition header above the hero carousel */
   .cs-recog { display: grid; grid-template-columns: 1fr auto; column-gap: 40px; row-gap: 10px; align-items: center; padding-top: 36px; padding-bottom: 4px; }
@@ -3370,9 +3361,9 @@
   }
 
   /* ============================================================
-     V5 — HOVER MICRO-INTERACTIONS + APPLE-STYLE GALLERY / CAROUSEL
+     V5 — HOVER MICRO-INTERACTIONS + PRODUCT-STYLE GALLERY / CAROUSEL
      ============================================================ */
-  /* Premium hover: the whole frame expands very subtly (Apple-style) — no zoom-crop, no added shadow (pointer devices only) */
+  /* Premium hover: the whole frame expands very subtly — no zoom-crop, no added shadow (pointer devices only) */
   @media (hover: hover) and (pointer: fine) {
     .cs-figure__img { transition: transform 0.45s var(--reveal-ease); }
     .cs-figure__img:hover { transform: scale(1.02); }
@@ -3404,7 +3395,7 @@
   .carousel__btn:disabled:hover { background: var(--surface-card); border-color: var(--color-hairline); }
   .carousel__btn svg { width: 18px; height: 18px; display: block; }
 
-  /* Dashboard gallery — big slides, peek of the next (Apple Vision Pro style) */
+  /* Dashboard gallery — big slides, peek of the next (headset-UI style) */
   .cs-gallery { padding-top: 26px; }
   .cs-gallery__track {
     gap: 24px;
@@ -3699,7 +3690,7 @@
      V3 — command palette, minimal footer, mobile polish
      ============================================================ */
 
-  /* ---- Command palette (⌘K) — Apple-styled, theme aware ---- */
+  /* ---- Command palette (⌘K) — theme aware ---- */
   .cmdk-scrim {
     position: fixed; inset: 0; z-index: 600;
     background: rgba(0, 0, 0, 0.55);

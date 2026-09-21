@@ -27,7 +27,7 @@ interface Props {
 
 const { project, index } = Astro.props;
 
-// "Apple · 2025", but never "FIAP · Final-year project · FIAP".
+// "Freelance · 2024", but never "FIAP · Final-year project · FIAP".
 const dateline = project.period.includes(project.org)
   ? project.period
   : `${project.org} · ${project.period}`;

@@ -124,152 +124,6 @@ const GH = 'https://github.com/MuriloReisz';
 export const projects: Project[] = [
   // ---------------------------------------------------------------- 01
   {
-    slug: 'cemea-sales-dashboard',
-    title: 'CEMEA Sales Performance Dashboard',
-    eyebrow: 'TABLEAU',
-    org: 'Apple',
-    brand: { wordmark: 'CEMEA Pulse', accent: '#0071e3', accent2: '#42a5f5' },
-    period: '2025',
-    year: 2025,
-    readMinutes: 6,
-    tags: ['tableau', 'excel', 'sql'],
-    summary:
-      'Region-wide sales visibility for Apple’s CEMEA Sales BPR & Systems team — one Tableau model replacing a fortnightly spreadsheet pack.',
-    lead:
-      'CEMEA sales performance lived in a fortnightly spreadsheet pack that took two days to assemble and was out of date the moment it landed. I rebuilt it as a governed Tableau model with a single certified data source, so channel leads, country managers and the BPR team all read the same numbers on the same morning.',
-    cover: '/images/dash/cemea-sales-dashboard.png',
-    coverAlt:
-      'Screenshot of the CEMEA Sales Performance Dashboard: three headline metric cards above a bar chart of analyst hours per reporting cycle, 16 hours at Cycle 1 down to 1.5 by Cycle 8.',
-    coverWidth: 1600,
-    coverHeight: 1000,
-    findings: [
-      { value: '€6.2M', count: 6.2, prefix: '€', suffix: 'M', label: 'top region by revenue, surfaced for stakeholders' },
-      { value: '39%', count: 39, suffix: '%', label: 'of sales from the leading segment' },
-      { value: '€5.5M', count: 5.5, prefix: '€', suffix: 'M', label: 'profit tracked in the latest season' },
-    ],
-    impact: {
-      value: {
-        value: '€6.2M',
-        count: 6.2,
-        prefix: '€',
-        suffix: 'M',
-        label: 'Revenue made visible',
-        note: 'The top-performing region, surfaced in one governed view for the first time.',
-      },
-      time: {
-        value: '375h',
-        count: 375,
-        suffix: 'h',
-        label: 'Analyst hours returned each year',
-        note: '14.5 hours saved per fortnightly cycle, once the refresh was scheduled.',
-      },
-      effort: {
-        value: '11 weeks',
-        label: 'Effort to build',
-        note: 'One analyst — model design, dashboard build and a measured regional rollout.',
-      },
-      quality: {
-        value: '74',
-        count: 74,
-        label: 'Weekly active users',
-        note: 'Up from 9 within two months of rollout, across four regional teams.',
-      },
-    },
-    beforeAfter: [
-      { metric: 'Analyst hours per reporting cycle', before: 16, after: 1.5, unit: 'hours', better: 'lower' },
-      { metric: 'Competing definitions of net revenue', before: 4, after: 1, unit: 'definitions', better: 'lower' },
-      { metric: 'Weekly active users', before: 9, after: 74, unit: 'users', better: 'higher' },
-    ],
-    stack: ['Tableau', 'SQL', 'Google BigQuery', 'Python (Pandas, Playwright)', 'Microsoft Excel'],
-    role: 'Data analyst — model design, dashboard build, stakeholder rollout',
-    duration: '11 weeks',
-    problem: [
-      'Sales reporting across Central Europe, the Middle East and Africa was assembled by hand. Four regional teams each kept their own extract, each with a slightly different definition of net revenue, and the consolidated pack was rebuilt from scratch every fortnight. Two analyst days went into copy-paste alone.',
-      'The consequence was not just cost. Because every team arrived at a review with its own workbook, meetings opened by reconciling numbers rather than deciding anything — and by the time the pack was signed off, the underlying data had moved on.',
-    ],
-    approach: [
-      {
-        title: 'One certified data source',
-        body:
-          'I mapped every field in the four regional extracts back to source, agreed a single definition for net revenue, margin and segment with the BPR leads, and published it as one governed Tableau data source in BigQuery. Nothing downstream is allowed to redefine a measure.',
-      },
-      {
-        title: 'Automated the collection step',
-        body:
-          'The three inputs that only existed behind an internal portal are now pulled by a scheduled Playwright job that logs in, exports, validates row counts against the prior run and fails loudly rather than publishing a short file.',
-      },
-      {
-        title: 'Designed for the review, not the archive',
-        body:
-          'The overview answers the three questions asked in every business review — where is the revenue, what is the segment mix, is margin holding — above the fold. Everything else sits behind a drill-through, so the dashboard opens in under two seconds on a laptop.',
-      },
-      {
-        title: 'Handed it over properly',
-        body:
-          'Two training sessions per region, a one-page definitions sheet next to the dashboard, and a named owner for each tab. Adoption was measured, not assumed.',
-      },
-    ],
-    results: [
-      'The €6.2M top-performing region and its 39% segment concentration became visible for the first time in a single view, and reshaped how quarterly targets were set.',
-      '€5.5M of seasonal profit is now tracked continuously rather than reconstructed after the fact.',
-      'Pack assembly fell from roughly 16 analyst hours a fortnight to a scheduled refresh and a validation pass — about an hour and a half a cycle by the eighth.',
-      'Weekly active users grew from 9 to 74 across the region within two months of rollout.',
-    ],
-    chart: {
-      title: 'Analyst hours per reporting cycle',
-      unit: 'hours',
-      series: [
-        { label: 'Cycle 1', value: 16 },
-        { label: 'Cycle 2', value: 15.5 },
-        { label: 'Cycle 3', value: 13 },
-        { label: 'Cycle 4', value: 9.5 },
-        { label: 'Cycle 5', value: 6 },
-        { label: 'Cycle 6', value: 3.5 },
-        { label: 'Cycle 7', value: 2 },
-        { label: 'Cycle 8', value: 1.5 },
-      ],
-    },
-    gallery: [
-      {
-        src: '/images/gallery/cemea-sales-dashboard-1.png',
-        alt: 'Top-performers view ranking countries and channels by revenue contribution and year-on-year growth',
-        caption: 'Top performers — ranked by contribution, with year-on-year growth alongside so a big number and a falling number are never confused.',
-        width: 1400,
-        height: 800,
-      },
-      {
-        src: '/images/gallery/cemea-sales-dashboard-2.png',
-        alt: 'Segment and margin detail page showing profit trend against revenue mix by quarter',
-        caption: 'Margin detail. Revenue mix and profit sit on the same page because the interesting cases are the ones that move in opposite directions.',
-        width: 1400,
-        height: 800,
-      },
-    ],
-    faq: [
-      {
-        q: 'Why Tableau rather than the tool the team already had?',
-        a: 'The audience was a few dozen non-technical stakeholders who needed to slice a governed model, not build their own. Tableau’s certified data source and row-level permissions were the deciding factor, and the team already had licences.',
-      },
-      {
-        q: 'How do you stop definitions drifting again?',
-        a: 'Every measure lives in the published data source, not in a workbook. Local calculations are reviewed before a workbook can be certified, and the definitions sheet is versioned next to the dashboard.',
-      },
-      {
-        q: 'What happens when an upstream export changes shape?',
-        a: 'The ingestion job asserts on schema and row count. A failed assertion stops the refresh and notifies the owner — a stale dashboard is recoverable, a silently wrong one is not.',
-      },
-    ],
-    links: [
-      { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/cemea-sales-dashboard', external: false },
-    ],
-    featured: true,
-    tone: 'dark',
-    reverse: false,
-  },
-
-  // ---------------------------------------------------------------- 02
-  {
     slug: 'freelance-automation-bi',
     title: 'Freelance Automation & BI Solutions',
     eyebrow: 'PYTHON · RPA · SQL',
@@ -411,7 +265,7 @@ export const projects: Project[] = [
     reverse: true,
   },
 
-  // ---------------------------------------------------------------- 03
+  // ---------------------------------------------------------------- 02
   // Cork AI Consulting. Anonymised on purpose: the engagements behind this
   // shape of work are live and confidential, so there is no client name, no
   // logo, no sector specific enough to identify anyone, and every figure here
@@ -560,7 +414,7 @@ export const projects: Project[] = [
     reverse: false,
   },
 
-  // ---------------------------------------------------------------- 04
+  // ---------------------------------------------------------------- 03
   // Cork AI Consulting — anonymised composite, as above.
   {
     slug: 'document-intake-triage',
@@ -707,7 +561,7 @@ export const projects: Project[] = [
     reverse: true,
   },
 
-  // ---------------------------------------------------------------- 05
+  // ---------------------------------------------------------------- 04
   {
     slug: 'ocean-drones',
     title: 'Ocean Drones — Autonomous Marine Data Platform',
@@ -848,7 +702,7 @@ export const projects: Project[] = [
     reverse: false,
   },
 
-  // ---------------------------------------------------------------- 06
+  // ---------------------------------------------------------------- 05
   {
     slug: 'retail-demand-forecast',
     title: 'Demand Forecasting for an Irish Retail Group',
@@ -1002,7 +856,7 @@ export const projects: Project[] = [
     reverse: true,
   },
 
-  // ---------------------------------------------------------------- 07
+  // ---------------------------------------------------------------- 06
   {
     slug: 'churn-early-warning',
     title: 'Subscription Churn Early-Warning Scoring',
@@ -1145,7 +999,7 @@ export const projects: Project[] = [
     reverse: false,
   },
 
-  // ---------------------------------------------------------------- 08
+  // ---------------------------------------------------------------- 07
   {
     slug: 'finance-close-automation',
     title: 'Month-End Close Automation',
@@ -1288,7 +1142,7 @@ export const projects: Project[] = [
     reverse: true,
   },
 
-  // ---------------------------------------------------------------- 09
+  // ---------------------------------------------------------------- 08
   {
     slug: 'logistics-control-tower',
     title: 'Live Logistics Control Tower',
@@ -1434,7 +1288,7 @@ export const projects: Project[] = [
     reverse: false,
   },
 
-  // ---------------------------------------------------------------- 10
+  // ---------------------------------------------------------------- 09
   {
     slug: 'clinic-nlp-triage',
     title: 'NLP Triage of Inbound Clinic Enquiries',
@@ -1586,7 +1440,7 @@ export const projects: Project[] = [
     reverse: true,
   },
 
-  // ---------------------------------------------------------------- 11
+  // ---------------------------------------------------------------- 10
   {
     slug: 'energy-anomaly-detection',
     title: 'Anomaly Detection on Building Energy Telemetry',
@@ -1749,7 +1603,7 @@ export const featured: Project[] = projects.filter((p) => p.featured);
  * we send a lost visitor" — so changing the featured flag quietly changed the
  * 404, and for a while that meant the 404 recommended invented case studies.
  */
-const POPULAR_SLUGS = ['cemea-sales-dashboard', 'freelance-automation-bi', 'ocean-drones'] as const;
+const POPULAR_SLUGS = ['freelance-automation-bi', 'drawing-to-cad-automation', 'ocean-drones'] as const;
 
 export const popular: Project[] = POPULAR_SLUGS.map((slug) => {
   const found = projects.find((p) => p.slug === slug);
