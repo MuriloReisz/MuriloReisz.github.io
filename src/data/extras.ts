@@ -73,10 +73,10 @@ export interface TechItem {
 export const proof: ProofItem[] = [
   {
     kind: 'Day job',
-    headline: 'Data Analyst at Apple',
+    headline: 'Analytics inside a large sales organisation',
     body:
-      'CEMEA Sales BPR & Systems. I build and run the reporting and internal systems a large sales organisation depends on, which is the same problem most of my clients have at a smaller scale.',
-    verify: { label: 'Confirm on LinkedIn', href: site.socials.linkedin },
+      'My day job is building and running the reporting and internal systems a large, multi-region sales organisation depends on — the same problem most of my clients have at a smaller scale. Employer details on request.',
+    verify: { label: 'See my history on LinkedIn', href: site.socials.linkedin },
   },
   {
     kind: 'Live now',

@@ -1,7 +1,7 @@
 # Murilo Reis — Portfolio & Business Site
 
 A framework-free **Astro 4** static site: a data-analyst portfolio and a consulting
-business site in one, with an Apple-inspired design language, full light/dark theming,
+business site in one, with a restrained product-led design language, full light/dark theming,
 and a hand-rolled interaction layer (no React, no GSAP, no chart library).
 
 ## Run it locally
@@ -104,8 +104,8 @@ command `npm run build` and output directory `dist`.
 
 ## Content note
 
-The portfolio in `src/data/projects.ts` mixes real delivered work (the Apple CEMEA
-dashboard, the freelance automation practice, the FIAP Ocean Drones project) with
+The portfolio in `src/data/projects.ts` mixes real delivered work (the freelance
+automation practice, the FIAP Ocean Drones project) with
 additional projects written to fill out the site. Swap the latter for real engagements
 before using this as a live CV, and keep the metrics honest — they are the first thing
 a technical reader will probe.

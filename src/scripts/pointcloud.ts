@@ -1470,7 +1470,7 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
     codeScreen(c, [
       '> DBT RUN --MODELS SALES',
       '  84 MODELS COMPILED OK',
-      '  SALES.CEMEA_FCT 4.21M',
+      '  SALES.REGION_FCT 4.21M',
       '> PYTEST -Q',
       '  479 PASSED  0 FAILED',
       '> FIT LGBM  MAPE 0.94',
@@ -1760,7 +1760,7 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
 
     terminalPanel(c, [
       'SELECT * FROM',
-      'SALES.CEMEA',
+      'SALES.REGION',
       'WHERE FY = 2026',
       '-- 4210331 ROWS',
     ], [1.2, 0.5, 0.8], 0.0142, B.mid * 1.45, -0.6, 2);

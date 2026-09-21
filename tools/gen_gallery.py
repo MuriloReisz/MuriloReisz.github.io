@@ -336,18 +336,6 @@ def waste_availability(waste, avail):
 # ---------------------------------------------------------------- specs
 
 SPECS = {
-    'cemea-sales-dashboard': [
-        ('top performers', lambda accent, ramp: frame(ranked_bars([
-            ('CEMEA-DACH Retail', 6.2, '+18%'),
-            ('Gulf Enterprise', 4.1, '+9%'),
-            ('Iberia Retail', 3.4, '+12%'),
-            ('South Africa SMB', 2.1, '−4%'),
-            ('Levant Channel', 1.6, '+6%'),
-        ], ramp, unit='M'), 'Revenue by region · €M, YoY', accent)),
-        ('margin detail', lambda accent, ramp: frame(donut_and_line(
-            [('Leading segment', 39), ('Enterprise', 27), ('SMB', 19), ('Other', 15)],
-            [('Q1', 4.1), ('Q2', 4.6), ('Q3', 5.1), ('Q4', 5.5)], '€M', ramp), 'Segment mix & profit trend', accent)),
-    ],
     'freelance-automation-bi': [
         ('spec sheet', lambda accent, ramp: frame(table(
             ['Source', 'Cadence', 'Validation', 'Owner'],
