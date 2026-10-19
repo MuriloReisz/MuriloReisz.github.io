@@ -93,7 +93,7 @@ const cmdkProjects = projects.map((p) => ({
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content={site.name} />
-    {canonical && <link rel="canonical" href={canonical} />}
+    {canonical && !noindex && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex,follow" />}
 
     <!-- Open Graph / Twitter -->
@@ -135,7 +135,7 @@ const cmdkProjects = projects.map((p) => ({
     <link rel="icon" type="image/png" sizes="64x64" href="/images/favicon.png" />
     <!-- iOS ignores SVG here, so this one is a raster -->
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(personLd)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(personLd).replace(/</g, '\\u003c')} />
   </head>
   <body data-measure={wide ? 'wide' : undefined}>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -147,7 +147,7 @@ const cmdkProjects = projects.map((p) => ({
     <!-- Fixed-position overlays last: keeps the page h1 first in source order
          and puts this chrome at the end of the focus order. -->
     <Chrome />
-    <script type="application/json" id="cmdkProjects" set:html={JSON.stringify(cmdkProjects)} is:inline />
+    <script type="application/json" id="cmdkProjects" set:html={JSON.stringify(cmdkProjects).replace(/</g, '\\u003c')} is:inline />
     <script src="../scripts/site.ts"></script>
     <script src="../scripts/motion.ts"></script>
     <script src="../scripts/motion2.ts"></script>

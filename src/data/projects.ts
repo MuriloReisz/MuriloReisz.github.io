@@ -677,7 +677,7 @@ export const projects: Project[] = [
     ],
     links: [
       { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/freelance-automation-bi', external: false },
+      { label: 'Read the case study', href: '/work/freelance-automation-bi/', external: false },
     ],
     featured: false,
     tone: 'parchment',
@@ -826,7 +826,7 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: 'Read the case study', href: '/work/drawing-to-cad-automation', external: false },
+      { label: 'Read the case study', href: '/work/drawing-to-cad-automation/', external: false },
     ],
     featured: false,
     tone: 'dark-3',
@@ -963,7 +963,7 @@ export const projects: Project[] = [
     ],
     links: [
       { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/ocean-drones', external: false },
+      { label: 'Read the case study', href: '/work/ocean-drones/', external: false },
     ],
     // Unfeatured when the Cork AI consultancy work joined the home strip: the
     // featured three are the AI/data/automation positioning, and an academic

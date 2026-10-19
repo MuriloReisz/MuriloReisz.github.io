@@ -89,6 +89,12 @@ burger?.addEventListener('click', () => {
   const open = menu?.classList.toggle('is-open');
   burger.setAttribute('aria-expanded', String(!!open));
 });
+addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !menu?.classList.contains('is-open')) return;
+  menu.classList.remove('is-open');
+  burger?.setAttribute('aria-expanded', 'false');
+  burger?.focus();
+});
 $$('#navMenu a').forEach((a) => a.addEventListener('click', () => {
   menu?.classList.remove('is-open');
   burger?.setAttribute('aria-expanded', 'false');
@@ -202,6 +208,11 @@ $$('[aria-controls]').forEach((btn) => {
     target?.classList.toggle('is-open', !open);
     const label = $('.exp__toggle-label, .exp__readmore-label', btn);
     if (label && btn.classList.contains('exp__readmore')) label.textContent = open ? 'Read more' : 'Read less';
+    if (label && btn.classList.contains('exp__toggle')) {
+      // Remember the server-rendered "Show N earlier roles" so it can come back.
+      label.dataset.closed ??= label.textContent ?? '';
+      label.textContent = open ? label.dataset.closed : 'Show fewer roles';
+    }
   });
 });
 
@@ -324,7 +335,7 @@ $$<HTMLFormElement>('form.cta__form').forEach((form) => {
     let ok = true;
     const setErr = (name: string, msg: string) => {
       const err = form.querySelector(`#err-${name}, [data-err="${name}"]`);
-      if (err) err.textContent = msg;
+      if (err) { err.textContent = msg; err.classList.toggle('is-shown', !!msg); }
       if (msg) ok = false;
     };
     const name = form.querySelector<HTMLInputElement>('[name="name"]');
@@ -495,6 +506,10 @@ function paintCmdkActive(items: HTMLElement[]) {
   active?.scrollIntoView({ block: 'nearest' });
 }
 
+/** Entries are build-time data today; escaping keeps that safe if one ever isn't. */
+const escHtml = (s: string) =>
+  s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
 function renderCmdk(q: string) {
   if (!cmdkList) return;
   const ql = q.trim().toLowerCase();
@@ -509,9 +524,9 @@ function renderCmdk(q: string) {
   cmdkList.innerHTML = items
     .map(
       (i, idx) =>
-        `<li class="cmdk-item" id="cmdk-opt-${idx}" role="option" aria-selected="false" data-href="${i.href}"${
-          i.egg ? ` data-egg-run="${i.egg}"` : ''
-        }><span>${i.label}</span></li>`
+        `<li class="cmdk-item" id="cmdk-opt-${idx}" role="option" aria-selected="false" data-href="${escHtml(i.href)}"${
+          i.egg ? ` data-egg-run="${escHtml(i.egg)}"` : ''
+        }><span>${escHtml(i.label)}</span></li>`
     )
     .join('');
   /* The empty state lives outside the listbox — a non-option child of

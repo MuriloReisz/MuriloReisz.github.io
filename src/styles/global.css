@@ -103,6 +103,8 @@
   * { box-sizing: border-box; }
 
   html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  /* Belt and braces against any one wide element pushing the page sideways on phones. */
+  html, body { overflow-x: clip; }
 
   body {
     margin: 0;
@@ -3675,7 +3677,7 @@
     .kpi { flex: 1 1 40%; }
     .navbar__name { display: none; }
     .navbar__links a:not(.pill) { display: none; }
-    .navbar__links { gap: 10px; }
+    .navbar__links { gap: 10px; min-width: 0; }
     .nav-burger { display: inline-flex; }
     .nav-menu { display: flex; }
     .modal { padding: 28px 22px; max-width: 100%; }
@@ -4030,4 +4032,10 @@
   letter-spacing: 0.6px;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+/* Narrow phones: the burger menu already offers Contact, so drop the pill
+   rather than let the navbar run past the viewport. */
+@media (max-width: 440px) {
+  .navbar__links a.pill { display: none; }
 }
