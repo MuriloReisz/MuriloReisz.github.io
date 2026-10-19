@@ -41,13 +41,14 @@ const shareUrl = Astro.site ? new URL(path, Astro.site).href : Astro.url.href;
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /* A time series reads as a line; a small comparison reads as bars. */
-const chartKind = project.chart.series.length >= 6 ? 'line' : 'bar';
-const chartSeries = JSON.stringify(
-  project.chart.series.map((p) => ({ label: p.label, value: p.value }))
-);
-const chartDec = project.chart.series.some((p) => !Number.isInteger(p.value)) ? '1' : '0';
-const chartMin = Math.min(...project.chart.series.map((p) => p.value));
-const chartMax = Math.max(...project.chart.series.map((p) => p.value));
+/* No chart means no measured series to show — never a placeholder one. */
+const chart = project.chart;
+const series = chart?.series ?? [];
+const chartKind = series.length >= 6 ? 'line' : 'bar';
+const chartSeries = JSON.stringify(series.map((p) => ({ label: p.label, value: p.value })));
+const chartDec = series.some((p) => !Number.isInteger(p.value)) ? '1' : '0';
+const chartMin = Math.min(...series.map((p) => p.value));
+const chartMax = Math.max(...series.map((p) => p.value));
 
 const lbGroup = `case-${project.slug}`;
 
@@ -79,7 +80,7 @@ const sections = [
   { id: 'cs-approach', label: 'The approach' },
   { id: 'cs-results', label: 'What changed' },
   ...(project.beforeAfter.length ? [{ id: 'cs-delta', label: 'Before & after' }] : []),
-  { id: 'cs-chart', label: 'The numbers' },
+  ...(chart ? [{ id: 'cs-chart', label: 'The numbers' }] : []),
   ...(project.gallery.length ? [{ id: 'cs-gallery', label: 'Screens' }] : []),
   { id: 'cs-stack', label: 'Stack & role' },
   ...(project.faq.length ? [{ id: 'cs-faq', label: 'Questions' }] : []),
@@ -253,11 +254,12 @@ const pageDesc = project.summary;
           </section>
         )}
 
+        {chart && (
         <section class="cs-section cse-section" id="cs-chart" data-toc-target>
           <p class="cs-kicker">{step('cs-chart')} — The numbers</p>
-          <h2 class="cs-h">{project.chart.title}.</h2>
+          <h2 class="cs-h">{chart.title}.</h2>
           <p class="cs-p">
-            Tracked as {project.chart.unit}, from {project.chart.series[0].label} through {project.chart.series[project.chart.series.length - 1].label} —
+            Tracked as {chart.unit}, from {series[0].label} through {series[series.length - 1].label} —
             low {chartMin}, high {chartMax}.
           </p>
           <figure
@@ -268,14 +270,15 @@ const pageDesc = project.summary;
               class="cse-chart__frame"
               data-chart={chartKind}
               data-series={chartSeries}
-              data-chart-title={`${project.chart.title} (${project.chart.unit})`}
-              data-chart-unit={project.chart.unit}
+              data-chart-title={`${chart.title} (${chart.unit})`}
+              data-chart-unit={chart.unit}
               data-chart-color={project.brand.accent}
               data-chart-dec={chartDec}
             ></div>
-            <figcaption class="cse-chart__cap">{project.brand.wordmark} — {project.chart.title}, {project.chart.unit}, {project.period}.</figcaption>
+            <figcaption class="cse-chart__cap">{project.brand.wordmark} — {chart.title}, {chart.unit}, {project.period}.</figcaption>
           </figure>
         </section>
+        )}
 
         {project.gallery.length > 0 && (
           <section class="cs-section cse-section" id="cs-gallery" data-toc-target>

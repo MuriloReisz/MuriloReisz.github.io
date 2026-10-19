@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif">
+<rect width="1600" height="1000" fill="#edf6f1"/>
+<text x="100" y="150" font-size="34" font-weight="600" fill="#1f8a4c">BlarneyKey</text>
+<text x="90" y="560" font-size="420" font-weight="800" letter-spacing="-14" fill="#1f8a4c">€0</text>
+<text x="100" y="660" font-size="54" font-weight="700" fill="#1d1d1f">and fully offline</text>
+<text x="100" y="730" font-size="36" fill="#555">Whisper on the Apple Neural Engine</text>
+<rect x="100" y="820" width="135" height="72" rx="36" fill="#fff"/>
+<text x="122" y="868" font-size="32" fill="#1d1d1f">Swift</text>
+<rect x="251" y="820" width="173" height="72" rx="36" fill="#fff"/>
+<text x="273" y="868" font-size="32" fill="#1d1d1f">SwiftUI</text>
+<rect x="440" y="820" width="173" height="72" rx="36" fill="#fff"/>
+<text x="462" y="868" font-size="32" fill="#1d1d1f">Whisper</text>
+<rect x="629" y="820" width="287" height="72" rx="36" fill="#fff"/>
+<text x="651" y="868" font-size="32" fill="#1d1d1f">Neural Engine</text>
+</svg>

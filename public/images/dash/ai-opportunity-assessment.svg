@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif">
+<rect width="1600" height="1000" fill="#111114"/>
+<circle cx="1350" cy="150" r="420" fill="#0f8a6c" opacity=".18"/>
+<text x="100" y="150" font-size="34" font-weight="600" fill="#6fb9a7">Assessment Engine</text>
+<text x="100" y="270" font-size="86" font-weight="800" letter-spacing="-2" fill="#fff">Call → ROI report</text>
+<rect x="100" y="420" width="440" height="300" rx="32" fill="#1f1f24"/>
+<text x="140" y="545" font-size="46" font-weight="800" fill="#fff">Opportunity sizing</text>
+<text x="140" y="610" font-size="30" fill="#93cabd" opacity="1">Hours × conservative cost</text>
+<rect x="580" y="420" width="440" height="300" rx="32" fill="#0f8a6c"/>
+<text x="620" y="545" font-size="46" font-weight="800" fill="#fff">Honesty gate</text>
+<text x="620" y="610" font-size="30" fill="#ffffff" opacity="0.8">No source, no claim</text>
+<rect x="1060" y="420" width="440" height="300" rx="32" fill="#1f1f24"/>
+<text x="1100" y="545" font-size="46" font-weight="800" fill="#fff">Branded report</text>
+<text x="1100" y="610" font-size="30" fill="#93cabd" opacity="1">Human-reviewed</text>
+<text x="100" y="860" font-size="36" font-weight="600" fill="#fff" opacity=".7">Claude API · Python · Structured outputs · PDF / HTML</text>
+</svg>

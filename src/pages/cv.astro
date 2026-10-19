@@ -1,14 +1,13 @@
 ---
 // /cv — a single print-friendly page covering the same ground as the .docx
 // résumé, so a visitor (or Murilo) can preview it in the browser and use
-// Print → Save as PDF without opening a Word doc. Content is a deliberate
-// duplicate of the Experience/Education section on the homepage, not a
-// shared data source — this page renders everything expanded (no read-more
-// toggles) and needs its own print stylesheet, so keeping it independent
-// avoids coupling two very different presentations to one markup shape.
+// Print → Save as PDF without opening a Word doc. Experience and
+// education come from data/experience.ts, shared with the homepage, so the
+// two can't drift from the CV; this page just renders everything expanded.
 import Layout from '../layouts/Layout.astro';
 import { site } from '../data/site';
-import { skills } from '../data/extras';
+import { skills, certs } from '../data/extras';
+import { experience, education, languages } from '../data/experience';
 
 const groups = [...new Set(skills.map((s) => s.group))];
 ---
@@ -18,7 +17,8 @@ const groups = [...new Set(skills.map((s) => s.group))];
     <div class="inner">
       <div class="cv-toolbar no-print">
         <button class="pill pill--primary" id="cvPrint" type="button">Print / Save as PDF</button>
-        <a class="pill pill--ghost" href={site.resume} download>Download .docx</a>
+        <a class="pill pill--ghost" href={site.resume} download>Download PDF</a>
+        <a class="pill pill--ghost" href={site.resumeDocx} download>Download .docx</a>
         <a class="pill pill--ghost" href="/">Back to portfolio</a>
       </div>
 
@@ -36,66 +36,20 @@ const groups = [...new Set(skills.map((s) => s.group))];
       <section class="cv-section">
         <h2 class="cv-h2">Experience</h2>
         <div class="exp__list">
-          <div class="exp__item">
-            <div class="exp__when">
-              <div class="exp__role">AI &amp; Data Consultant</div>
-              <div class="exp__dates">Sep 2026 — Present · Cork, Ireland</div>
+          {experience.map((r) => (
+            <div class="exp__item">
+              <div class="exp__when">
+                <div class="exp__role" set:html={r.role} />
+                <div class="exp__dates">{r.dates} · {r.place}</div>
+              </div>
+              <div class="exp__body">
+                <div class="exp__org">{r.org}</div>
+                {r.intro && <p class="exp__intro" set:html={r.intro} />}
+                {r.tools && <p class="exp__tools"><strong>Tools:</strong> {r.tools}</p>}
+                <ul class="exp__points">{r.points.map((pt) => <li set:html={pt} />)}</ul>
+              </div>
             </div>
-            <div class="exp__body">
-              <div class="exp__org">Cork AI Consulting</div>
-              <p class="exp__intro">The consultancy I co-founded with Douglas Woollam, delivering <strong>AI, data and automation</strong> work to small and mid-sized Irish businesses — scoped around a measurable outcome rather than a day rate, and run end to end from discovery to handover.</p>
-              <p class="exp__tools"><strong>Tools:</strong> Python · Claude API · FastAPI · SQL · BigQuery · Cloud Run · Power BI</p>
-              <ul class="exp__points">
-                <li>Scope engagements around a <strong>measurable business outcome</strong> — hours returned, cost avoided, turnaround reduced — agreed before any build starts.</li>
-                <li>Design and ship <strong>AI-assisted automation</strong> with confidence floors, validation gates and a human path, so the system is allowed to decline rather than assert a wrong answer.</li>
-                <li>Hand over with documentation, version control and a named owner, leaving the client owning what they paid for.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="exp__item">
-            <div class="exp__when">
-              <div class="exp__role">Freelance Data &amp; Automation Engineer</div>
-              <div class="exp__dates">Oct 2024 — Present · Remote</div>
-            </div>
-            <div class="exp__body">
-              <div class="exp__org">Freelance · Remote</div>
-              <ul class="exp__points">
-                <li>Manage the full project lifecycle for multiple clients — from consultation and stakeholder engagement to architecting and deploying <strong>end-to-end data &amp; automation solutions</strong>.</li>
-                <li>Engineer custom automation with <strong>Python and RPA</strong>, streamlining complex processes and <strong>reducing manual effort by up to 80%</strong>.</li>
-                <li>Perform exploratory data analysis and statistical modelling to surface KPIs and predictive insight for forecasting; version control with Git / GitHub / GitLab.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="exp__item">
-            <div class="exp__when">
-              <div class="exp__role">Data Analyst</div>
-              <div class="exp__dates">Nov 2022 — Oct 2024</div>
-            </div>
-            <div class="exp__body">
-              <div class="exp__org">Porto · São Paulo, Brazil</div>
-              <ul class="exp__points">
-                <li>Engineered and maintained scalable <strong>ETL pipelines processing terabytes</strong> of data from disparate sources into <strong>Google BigQuery</strong>, ensuring integrity and data governance.</li>
-                <li>Delivered dynamic <strong>BI dashboards</strong> that guided strategic decisions, and drove process improvements with low-code apps (AppSheet) and AI automation (n8n).</li>
-                <li>Automated extraction from legacy systems (RPA) and external sites (web scraping), and optimised BigQuery performance with complex SQL and stored procedures.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="exp__item">
-            <div class="exp__when">
-              <div class="exp__role">IT Assistant</div>
-              <div class="exp__dates">Dec 2021 — May 2022</div>
-            </div>
-            <div class="exp__body">
-              <div class="exp__org">Marcelo Tostes Advogados · São Paulo, Brazil</div>
-              <ul class="exp__points">
-                <li>First point of contact for all IT issues, providing timely hardware and software support to a busy legal office.</li>
-                <li>Managed system maintenance, network configuration and software updates to keep workstations stable and secure.</li>
-              </ul>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -116,16 +70,22 @@ const groups = [...new Set(skills.map((s) => s.group))];
         <div class="creds">
           <div class="cred">
             <div>
-              <div class="cred__name">BSc — Analysis &amp; Development of Systems</div>
-              <div class="cred__meta">FIAP · São Paulo · 2022–2024</div>
+              <div class="cred__name" set:html={education.name} />
+              <div class="cred__meta">{education.meta}</div>
             </div>
           </div>
           <div class="cred">
             <div>
               <div class="cred__name">Fluent in 5 languages</div>
-              <div class="cred__meta">Portuguese (native) · English C2 · Spanish C1 · French &amp; Italian B2</div>
+              <div class="cred__meta">{languages}</div>
             </div>
           </div>
+          {certs.map((c) => (
+            <div class="cred"><div>
+              <div class="cred__name">{c.name}</div>
+              <div class="cred__meta">{c.issuer}{c.year ? ` · ${c.year}` : ''}</div>
+            </div></div>
+          ))}
         </div>
       </section>
     </div>
