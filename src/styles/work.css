@@ -222,6 +222,9 @@
 /* ============================================================
    /work — PROJECT CARD
    ============================================================ */
+/* The tool chips hide cards with .work--hidden; this display:flex would
+   otherwise outrank the global display:none. */
+.pc-card.work--hidden { display: none; }
 .pc-card {
   position: relative;
   display: flex;

@@ -349,6 +349,10 @@ html.ix-noscroll { overflow: hidden; }
   border-bottom: 1px solid var(--color-divider-soft);
   white-space: nowrap;
 }
+@media (max-width: 640px) {
+  .ix-table th, .ix-table td { white-space: normal; }
+}
+.cmp { min-width: 0; }
 .ix-table th {
   font-family: var(--font-text);
   font-size: 12px;
