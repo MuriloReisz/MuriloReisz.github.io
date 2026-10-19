@@ -147,7 +147,7 @@ export const projects: Project[] = [
     coverWidth: 1600,
     coverHeight: 1000,
     findings: [
-      { value: 'Aug 2026', label: 'first assessment delivered to a paying client' },
+      { value: 'Live', label: 'delivered to the first client before launch' },
       { value: 'Transcript → report', label: 'one pipeline, client-branded output' },
       { value: 'Honesty gate', label: 'unsupported claims are blocked, not softened' },
     ],
@@ -172,7 +172,7 @@ export const projects: Project[] = [
       { title: 'Client-branded, human-reviewed', body: 'The report renders in the client’s colours and logo, and a consultant reviews it before it is sent. The agent does the drafting; a person signs it.' },
     ],
     results: [
-      'First assessment delivered to a client in August 2026.',
+      'First assessment delivered to a client in August 2026, ahead of the company’s September launch.',
       'Report drafting moved from a manual write-up to an agent run plus a human review.',
       'Every figure in a delivered report can be traced back to something the client actually said.',
     ],

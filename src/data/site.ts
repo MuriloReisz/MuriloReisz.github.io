@@ -85,6 +85,7 @@ export const nav = {
   servicesMenu: [
     { label: 'AI services', href: '/ai-services/', desc: 'Find 5+ hours a week or your money back, fee credited to a build' },
     { label: 'Analytics services', href: '/services/', desc: 'Dashboards, forecasts and automation you can trust' },
+    { label: 'Cork AI Consulting ↗', href: 'https://corkaiconsulting.ie', desc: 'The consultancy I co-founded — engagements run through here' },
   ],
   mobile: [
     { label: 'About me', href: '/#about' },
