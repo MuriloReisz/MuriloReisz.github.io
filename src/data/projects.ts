@@ -116,6 +116,9 @@ export interface Project {
   faq: { q: string; a: string }[];
   links: { label: string; href: string; external: boolean }[];
   featured: boolean;
+  /** Show the illustrative "how a run looks" trace (AgentTrace) — agent
+      projects only. The trace is a reading of the approach steps, never a log. */
+  trace?: boolean;
   tone: 'white' | 'parchment' | 'dark' | 'dark-3';
   reverse: boolean;
 }
@@ -129,6 +132,7 @@ export const projects: Project[] = [
   // detail, and no outcome figures until a client has signed one off.
   {
     slug: 'ai-opportunity-assessment',
+    trace: true,
     title: 'AI Opportunity Assessment Engine',
     eyebrow: 'CLAUDE API · AGENTS · PYTHON',
     org: 'Cork AI Consulting',
@@ -176,7 +180,10 @@ export const projects: Project[] = [
       'Report drafting moved from a manual write-up to an agent run plus a human review.',
       'Every figure in a delivered report can be traced back to something the client actually said.',
     ],
-    gallery: [],
+    gallery: [
+      { src: '/images/gallery/ai-opportunity-assessment-1.png', alt: 'Assessment run: extract, size, gate, review — the four steps of the approach as a pipeline.', caption: 'The four steps as a pipeline: extract before writing, size conservatively, the honesty gate, client-branded and human-reviewed.', width: 1400, height: 800 },
+      { src: '/images/gallery/ai-opportunity-assessment-2.png', alt: 'Report structure wireframe: opportunities, hours returned, cost, with every figure traced to a transcript line.', caption: 'The shape of a report: opportunities, hours returned and cost, each traced to a line in the transcript.', width: 1400, height: 800 },
+    ],
     faq: [
       { q: 'Why not just let the model write the report?', a: 'Because it will. Fluent, specific and wrong is the worst possible output for an ROI document. Separating extraction, sizing and checking is what makes the output defensible.' },
       { q: 'Does client data leave the engagement?', a: 'Transcripts are processed for that client’s report only and are not reused across clients.' },
@@ -194,6 +201,7 @@ export const projects: Project[] = [
   // name, no internal system, no figures beyond the CV's own wording.
   {
     slug: 'customer-approval-agent',
+    trace: true,
     title: 'Customer-Approval Agent Pipeline',
     eyebrow: 'PLAYWRIGHT · SNOWFLAKE · CLAUDE CODE',
     org: 'Apple · EMEIA Sales',
@@ -242,7 +250,10 @@ export const projects: Project[] = [
       'Playwright workflows replaced manual data collection, validation and reporting for the team.',
       'Predictive scripts on programme sales data supported forecasting and targeted outreach to historical customers.',
     ],
-    gallery: [],
+    gallery: [
+      { src: '/images/gallery/customer-approval-agent-1.png', alt: 'Terminal view of a scheduled run: collect with Playwright, land in Snowflake, apply the rules, publish to Tableau.', caption: 'One scheduled run: collect, land in Snowflake, apply the programme rules, publish to Tableau.', width: 1400, height: 800 },
+      { src: '/images/gallery/customer-approval-agent-2.png', alt: 'Leadership dashboard wireframe: programme KPIs, regions, approvals on live Snowflake data.', caption: 'What leadership sees: programme KPIs, regions and approvals on live Snowflake data.', width: 1400, height: 800 },
+    ],
     faq: [
       { q: 'Can you share the dashboards or data?', a: 'No — they are Apple’s. This write-up describes the approach only; I am happy to go deeper on the engineering on a call.' },
     ],
@@ -257,6 +268,7 @@ export const projects: Project[] = [
   // ---------------------------------------------------------------- 05
   {
     slug: 'instagram-dm-assistant',
+    trace: true,
     title: 'Guardrailed Instagram DM Assistant',
     eyebrow: 'META MESSENGER PLATFORM · LLM · GUARDRAILS',
     org: 'Cork AI Consulting',
@@ -302,7 +314,10 @@ export const projects: Project[] = [
       'Customer enquiries answered 24/7 within strict rules.',
       'Out-of-scope questions reach the owner instead of getting an invented answer.',
     ],
-    gallery: [],
+    gallery: [
+      { src: '/images/gallery/instagram-dm-assistant-1.png', alt: 'Decision flow: an Instagram DM is checked against the approved facts, then answered or handed to the owner.', caption: 'Every message takes the same path: in the approved facts, reply; otherwise hand over to the owner.', width: 1400, height: 800 },
+      { src: '/images/gallery/instagram-dm-assistant-2.png', alt: 'Approved-facts wireframe: opening hours, prices, availability — the closed book the assistant answers from.', caption: 'The closed book: opening hours, prices and availability. No answer comes from outside it.', width: 1400, height: 800 },
+    ],
     faq: [
       { q: 'What stops it hallucinating?', a: 'It only answers from approved content, and anything it cannot ground in that content is escalated instead of answered.' },
     ],
@@ -315,6 +330,7 @@ export const projects: Project[] = [
   // ---------------------------------------------------------------- 06
   {
     slug: 'agent-skills-library',
+    trace: true,
     title: 'Agent Skills Library & Knowledge Sync',
     eyebrow: 'CLAUDE CODE · CODEX · GIT · NOTION',
     org: 'Cork AI Consulting',
@@ -360,7 +376,10 @@ export const projects: Project[] = [
       '28 standalone AI workflows consolidated into one shared skills library.',
       'A knowledge base that syncs Git and Notion automatically as one source of truth.',
     ],
-    gallery: [],
+    gallery: [
+      { src: '/images/gallery/agent-skills-library-1.png', alt: 'Tiles: 28 workflows before, 1 library after, Git and Notion kept in sync.', caption: '28 workflows became one library, with Git and Notion kept in sync.', width: 1400, height: 800 },
+      { src: '/images/gallery/agent-skills-library-2.png', alt: 'Skill format wireframe: purpose, inputs, steps, guardrails.', caption: 'Every skill has the same four sections: purpose, inputs, steps, guardrails.', width: 1400, height: 800 },
+    ],
     faq: [],
     links: [],
     featured: false,
@@ -420,7 +439,10 @@ export const projects: Project[] = [
       'Listing drafts produced from photos, reviewed and published by me.',
       '780+ automated tests guarding every page and calculation.',
     ],
-    gallery: [],
+    gallery: [
+      { src: '/images/gallery/vinted-tracker-1.png', alt: 'Tiles: 194 orders, 183 inventory items, 780+ automated tests.', caption: '194 orders across 183 items, guarded by 780+ tests.', width: 1400, height: 800 },
+      { src: '/images/gallery/vinted-tracker-2.png', alt: 'Listing flow: photos, the agent drafts title, text and price, I review, I publish.', caption: 'The listing workflow: photos in, a draft out, reviewed and published by me in Vinted’s own form.', width: 1400, height: 800 },
+    ],
     faq: [
       { q: 'Does it post to Vinted automatically?', a: 'No, deliberately. The agent drafts; I confirm and publish in Vinted’s own sell form.' },
     ],
@@ -478,7 +500,10 @@ export const projects: Project[] = [
       '1,350 roles collected from 71 companies; 1,245 scored — 154 hot, 658 warm, 433 cold.',
       'A tailored, verified CV and gaps note for each application.',
     ],
-    gallery: [],
+    gallery: [
+      { src: '/images/gallery/job-hunt-pipeline-1.png', alt: 'Ranked bars: 154 hot, 658 warm, 433 cold scored roles.', caption: 'How the 1,245 scored roles split: 154 hot, 658 warm, 433 cold.', width: 1400, height: 800 },
+      { src: '/images/gallery/job-hunt-pipeline-2.png', alt: 'CV verifier stages: title, dates, numbers and skills each checked against the source profile.', caption: 'The verifier: every title, date, number and skill is checked against the one source profile.', width: 1400, height: 800 },
+    ],
     faq: [],
     links: [],
     featured: false,
@@ -489,6 +514,7 @@ export const projects: Project[] = [
   // ---------------------------------------------------------------- 09
   {
     slug: 'blarneykey',
+    trace: true,
     title: 'BlarneyKey — Private, Offline AI Dictation for macOS',
     eyebrow: 'SWIFT · WHISPER · ON-DEVICE AI',
     org: 'Cork AI Consulting',
@@ -533,7 +559,10 @@ export const projects: Project[] = [
       'Shipped as a free macOS app with a public repository.',
       'Featured as a live demo in the Cork AI Consulting products showcase.',
     ],
-    gallery: [],
+    gallery: [
+      { src: '/images/gallery/blarneykey-1.png', alt: 'Terminal view of one gesture: hold the hotkey, audio captured locally, Whisper on the Apple Neural Engine, text typed, zero bytes sent.', caption: 'One gesture, end to end, with nothing leaving the machine.', width: 1400, height: 800 },
+      { src: '/images/gallery/blarneykey-2.png', alt: 'Tiles: €0, 0 bytes of audio sent over the network, 100% on-device.', caption: '€0 to use, 0 bytes of audio sent, 100% on-device.', width: 1400, height: 800 },
+    ],
     faq: [],
     links: [{ label: 'Source on GitHub ↗', href: 'https://github.com/AirDoogle/blarneykey', external: true }],
     featured: false,

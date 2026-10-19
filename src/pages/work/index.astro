@@ -14,6 +14,7 @@
 // ---------------------------------------------------------------------------
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectDash from '../../components/ProjectDash.astro';
 import { projects, toolFilters } from '../../data/projects';
 
 const total = projects.length;
@@ -71,6 +72,30 @@ const orgCount = new Set(projects.map((p) => p.org)).size;
         the shape of the work and how I approach it, not a delivered result. Everything
         without that mark is real, named work.
       </p>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURED (measured) =====================
+       The three projects with measured series and before/after rows get
+       their dashboard mocks up front. Not filter items: search and sort
+       leave this band alone. -->
+  <section class="tile tile--white pc-featured" aria-labelledby="pc-featured-h">
+    <div class="inner" data-stagger>
+      <div class="pc-featured__lead reveal">
+        <span class="hud-label">Measured</span>
+        <h2 class="pc-featured__h" id="pc-featured-h">Three with the numbers either side of the work.</h2>
+      </div>
+      <div class="pc-featured__grid">
+        {projects.filter((p) => p.chart).map((p) => (
+          <a class="pc-featured__item reveal hud-frame hud-frame--hover" href={`/work/${p.slug}/`} aria-label={`Read the ${p.title} case study`}>
+            <span class="pc-featured__media">
+              <ProjectDash project={p} variant="compact" />
+            </span>
+            <span class="pc-featured__title">{p.title}{p.illustrative && <span class="pc-card__illus pc-featured__illus">Illustrative</span>}</span>
+            <span class="pc-featured__sum">{p.summary}</span>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -239,3 +264,26 @@ const orgCount = new Set(projects.map((p) => p.org)).size;
     </div>
   </section>
 </Layout>
+
+<style>
+  .pc-featured { padding-top: 0; }
+  .pc-featured__lead { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+  .pc-featured__h { font-family: var(--font-display); font-size: clamp(22px, 2.6vw, 30px); font-weight: 600; letter-spacing: -0.4px; margin: 0; }
+  .pc-featured__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+  .pc-featured__item {
+    --hud-c: var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    color: inherit;
+    text-decoration: none;
+    border: 1px solid var(--color-hairline);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .pc-featured__item:hover, .pc-featured__item:focus-visible { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--color-primary); }
+  .pc-featured__media { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; }
+  .pc-featured__title { font-family: var(--font-display); font-size: 18px; font-weight: 600; letter-spacing: -0.3px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .pc-featured__sum { font-size: 13.5px; line-height: 1.5; color: var(--color-ink-80); }
+  @media (prefers-reduced-motion: reduce) { .pc-featured__item { transition: none; } .pc-featured__item:hover { transform: none; } }
+</style>

@@ -17,7 +17,8 @@ $('#themeToggle')?.addEventListener('click', () => {
 
 /* ---------- Scroll progress ---------- */
 const progress = $('#scrollProgress');
-if (progress) {
+/* Hidden in CSS under reduced motion (global.css), so skip the work too. */
+if (progress && !prefersReduced()) {
   /* scrollHeight/clientHeight are layout reads that only change on resize, so
      cache them; paint with scaleX (compositor) rather than width (layout), and
      coalesce to one write per frame. */

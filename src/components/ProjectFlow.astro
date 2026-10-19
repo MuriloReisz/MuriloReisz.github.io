@@ -1,0 +1,135 @@
+---
+// ---------------------------------------------------------------------------
+// ProjectFlow — the approach, drawn as a system diagram.
+//
+// Sources (the first stack items) → one node per approach step → the output
+// (the project's value metric). The step that reads as a guardrail is marked
+// as the gate. Edges carry a travelling dash so the thing reads as a live
+// pipeline; under reduced motion they are static lines.
+//
+// Build-time only: no script, no invented nodes — every label is a string
+// the write-up already contains.
+// ---------------------------------------------------------------------------
+import { brandChipStyle, type Project } from '../data/projects';
+import { gateIndex, pad2 } from '../data/caseVisuals';
+
+interface Props {
+  project: Project;
+  /** Chips only (kickers, no titles), for a card cover. */
+  compact?: boolean;
+  /** Stacked rows with vertical edges, for the narrow hero panel. */
+  column?: boolean;
+}
+
+const { project, compact = false, column = false } = Astro.props;
+const gate = gateIndex(project.approach);
+const sources = compact || column ? [] : project.stack.slice(0, 3);
+---
+
+<figure class:list={['flow', compact && 'flow--compact', column && 'flow--column']} style={brandChipStyle(project.brand)}>
+  {!compact && !column && <figcaption class="flow__cap hud-label">Flow · from the approach steps</figcaption>}
+  <ol class="flow__row" aria-label="System flow">
+    {sources.length > 0 && (
+      <>
+        <li class="flow__node flow__node--src">
+          <span class="flow__k">Sources</span>
+          {sources.map((s) => <span class="flow__src">{s}</span>)}
+        </li>
+        <li class="flow__edge" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path class="flow__h" d="M0 50H100" /><path class="flow__v" d="M50 0V100" /></svg></li>
+      </>
+    )}
+    {project.approach.map((step, i) => (
+      <>
+        <li class:list={['flow__node', i === gate && 'is-gate']}>
+          <span class="flow__k">{i === gate ? 'Gate' : `Step ${pad2(i + 1)}`}</span>
+          <span class="flow__t">{step.title}</span>
+        </li>
+        <li class="flow__edge" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path class="flow__h" d="M0 50H100" /><path class="flow__v" d="M50 0V100" /></svg></li>
+      </>
+    ))}
+    <li class="flow__node flow__node--out">
+      <span class="flow__k">Output</span>
+      <span class="flow__t">{project.impact.value.value}</span>
+      <span class="flow__l">{project.impact.value.label}</span>
+    </li>
+  </ol>
+</figure>
+
+<style>
+  .flow { margin: 0; --fa: var(--chip-a, var(--color-primary)); --fb: var(--chip-a2, var(--color-primary)); }
+  .flow__cap { display: block; margin-bottom: 14px; }
+  .flow__row {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .flow__node {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--fa) 45%, transparent);
+    background: color-mix(in srgb, var(--fa) 7%, transparent);
+    color: inherit;
+  }
+  .flow__node.is-gate {
+    border-color: var(--fa);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--fa) 22%, transparent), color-mix(in srgb, var(--fb) 10%, transparent));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fa) 35%, transparent);
+  }
+  .flow__node--out { border-style: double; border-width: 3px; }
+  .flow__k {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fa);
+  }
+  .flow__k::before { content: "[ "; opacity: 0.55; }
+  .flow__k::after { content: " ]"; opacity: 0.55; }
+  .flow__t { font-family: var(--font-text); font-size: 14px; font-weight: 600; line-height: 1.3; letter-spacing: -0.2px; }
+  .flow__l { font-size: 12px; line-height: 1.35; opacity: 0.7; }
+  .flow__src { font-family: var(--font-mono); font-size: 11.5px; line-height: 1.4; opacity: 0.85; }
+
+  /* Edges: a short svg between nodes; the dash runs along it. */
+  .flow__edge { flex: 0 0 26px; display: flex; align-items: center; }
+  .flow__edge svg { width: 100%; height: 100%; overflow: visible; }
+  .flow__edge path { fill: none; stroke: var(--fa); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: 6 9; animation: flow-dash 1.4s linear infinite; }
+  .flow__v { display: none; }
+  @keyframes flow-dash { to { stroke-dashoffset: -30; } }
+
+  /* Compact (inside a card): a strip of chips — kickers only, the gate lit.
+     Titles would never fit at card size. */
+  .flow--compact .flow__node { padding: 7px 8px; gap: 0; flex: 0 1 auto; justify-content: center; }
+  .flow--compact .flow__t, .flow--compact .flow__l { display: none; }
+  .flow--compact .flow__node--out .flow__t { display: block; font-size: 11px; }
+  .flow--compact .flow__k { font-size: 8.5px; letter-spacing: 0.08em; white-space: nowrap; }
+  .flow--compact .flow__edge { flex: 1 1 10px; min-width: 8px; }
+  .flow--compact .flow__row { flex-wrap: nowrap; }
+
+  /* Column (inside the hero dash): one row per step, edges run down. */
+  .flow--column .flow__row { flex-direction: column; }
+  .flow--column .flow__node { padding: 9px 11px 10px; gap: 2px; flex: 0 0 auto; }
+  .flow--column .flow__t { font-size: 12.5px; }
+  .flow--column .flow__k { font-size: 9.5px; }
+  .flow--column .flow__l { font-size: 11px; }
+  .flow--column .flow__edge { flex: 0 0 18px; height: 18px; justify-content: center; }
+  .flow--column .flow__h { display: none; }
+  .flow--column .flow__v { display: block; }
+
+  @media (max-width: 832px) {
+    .flow:not(.flow--compact) .flow__row { flex-direction: column; }
+    .flow:not(.flow--compact) .flow__edge { flex-basis: 26px; height: 26px; justify-content: center; }
+    .flow:not(.flow--compact) .flow__h { display: none; }
+    .flow:not(.flow--compact) .flow__v { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow__edge path { animation: none; }
+  }
+</style>

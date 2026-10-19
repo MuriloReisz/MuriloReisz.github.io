@@ -69,12 +69,32 @@
 //  live bug in an earlier version (it put the camera behind the
 //  chair), so the centring now happens in exactly one place.
 //
+//  FOCUS, NOT JUST FOG. A thin depth of field in the vertex shader:
+//  points off the focal plane grow and soften (bokeh), points on it
+//  stay crisp. The plane sits on the figure in the opening frame and
+//  pulls to the monitor as the camera dollies in, so the scroll reads
+//  as a focus pull as well as a move. Fog shifts colour toward a deep
+//  indigo rather than straight to black, which is where the depth of
+//  the room comes from on a dark stage.
+//
+//  THE POSTER IS THIS SCENE. public/images/itm-poster*.webp are
+//  headless renders of this exact code at p = 0 (tools/poster.js —
+//  rerun it after any change in here), painted by intro.css
+//  before the library has even downloaded. The reveal clock therefore
+//  starts at first contentful paint, not at module load, so the live
+//  scan-in is in phase with the poster's CSS scan-in and the crossfade
+//  between them is invisible. The sway starts from zero at the same
+//  moment for the same reason; the poster is captured on a zero
+//  crossing of the sway.
+//
 //  Loaded only from IntoTheMachine.astro (component-scoped <script>),
-//  so Three.js never ships on pages that don't render this section.
-//  Bails out cleanly (leaving the CSS fallback visible) if WebGL is
+//  so Three.js never ships on pages that don't render this section —
+//  and not at all in lite mode (phones), where the poster is the whole
+//  show. Bails out cleanly (leaving the poster visible) if WebGL is
 //  unavailable or the visitor prefers reduced motion.
 // ============================================================
 import * as THREE from 'three';
+import { createNameMorph, type NameMorph } from './nameMorph';
 
 const wrap = document.querySelector<HTMLElement>('.itm-wrap');
 const canvas = document.querySelector<HTMLCanvasElement>('.itm-canvas');
@@ -97,7 +117,9 @@ const TAU = Math.PI * 2;
 // Quality scalar. Every point count below is multiplied by this, so
 // the whole scene scales coherently instead of needing per-element
 // mobile overrides. Measured: 0.34 -> 237k points, 0.75 -> 470k,
-// 1.2 -> 728k.
+// 1.2 -> 728k. Phones normally never reach this file at all (lite mode
+// in IntoTheMachine.astro shows the poster instead); the coarse branch
+// is the safety net for a touch laptop that does.
 const QUALITY = (() => {
   const coarse = matchMedia('(max-width: 820px), (pointer: coarse)').matches;
   if (coarse) return 0.34;
@@ -162,6 +184,14 @@ const FLAG = {
    * baseline, because all five of its dot rows would scroll to the same y.
    */
   code: 6,
+  /** Oscilloscope trace on the right-hand monitor. aParam = position along
+   *  the trace (fractional part) + trace index (integer part). */
+  trace: 7,
+  /** Rain beyond the window. aParam = drop phase; stored y is the TOP of the
+   *  fall, the shader drops it. */
+  rain: 8,
+  /** Keycap. aParam = key id, so a whole cap lights as one when "pressed". */
+  key: 9,
 };
 
 // The scrolling code block. `h` is the world height of one screen's worth
@@ -1351,8 +1381,8 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
     const lidStart = c.n;
     planePatch(c, [dx, 0.845, dz - 0.13], [0.155, 0, 0], [0, 0.105, 0], q(4200), B.bg * 0.8, SZ.base, { edge: 0.2 });
     glyphLine(c, '> TAIL -F  AGENT.LOG', [dx + 0.115, 0.905, dz - 0.132], [-0.0072, 0, 0], [0, 0.0072, 0], B.screen * 0.8, SZ.code, 1);
-    glyphLine(c, '  STEP 41  OK', [dx + 0.115, 0.858, dz - 0.132], [-0.0072, 0, 0], [0, 0.0072, 0], B.screen * 0.8, SZ.code, 1);
-    glyphLine(c, '  TOKENS 128K', [dx + 0.115, 0.811, dz - 0.132], [-0.0072, 0, 0], [0, 0.0072, 0], B.screen * 0.8, SZ.code, 1);
+    glyphLine(c, '  TOOL: SEARCH', [dx + 0.115, 0.858, dz - 0.132], [-0.0072, 0, 0], [0, 0.0072, 0], B.screen * 0.8, SZ.code, 1);
+    glyphLine(c, '  TOOL: WRITE', [dx + 0.115, 0.811, dz - 0.132], [-0.0072, 0, 0], [0, 0.0072, 0], B.screen * 0.8, SZ.code, 1);
     rotateRange(c, lidStart, [dx, 0.74, dz - 0.13], [1, 0, 0], 0.2);
   });
 
@@ -1467,15 +1497,20 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
     // Real scrolling output, not the row of fake scanlines this used to
     // carry. This is the payoff of the whole dolly: the camera flies into
     // this panel, so it is the one surface that ends up filling the frame.
+    // This is the one surface the visitor ends up reading, so it says
+    // who he is — and nothing invented. The earlier text was a plausible
+    // build log with made-up pass counts and latencies, which is exactly
+    // the kind of fake telemetry the HUD rule in IntoTheMachine.astro
+    // exists to keep off this site. (No '&' in the dot-matrix font.)
     codeScreen(c, [
-      '> DBT RUN --MODELS SALES',
-      '  84 MODELS COMPILED OK',
-      '  SALES.REGION_FCT 4.21M',
-      '> PYTEST -Q',
-      '  479 PASSED  0 FAILED',
-      '> FIT LGBM  MAPE 0.94',
-      '  DRIFT PSI 0.02 STABLE',
-      '> DEPLOY PROD  P95 41MS',
+      '> WHOAMI',
+      '  MURILO REIS',
+      '  CO-FOUNDER',
+      '  CORK AI CONSULTING',
+      '> ROLE',
+      '  DATA AND AI CONSULTANT',
+      '> BASE',
+      '  CORK  EX-APPLE EMEIA',
     ], [0, cy, zCode], B.screen * 1.5);
 
     // Bezel as four strips rather than one filled patch, so it frames the
@@ -1529,6 +1564,7 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
       for (const u of row) {
         const w = u * unitW;
         const cxx = x + w / 2;
+        const capStart = c.n;
         planePatch(
           c,
           [cxx, ky + 0.004, zc],
@@ -1537,6 +1573,10 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
           q(ri === 0 ? 62 : 100), B.edge, SZ.bold,
           { edge: 0.62, jitter: 0.0006 }
         );
+        // Every dot of this cap shares one id, so the shader can light the
+        // whole cap for a tick — the typing animation.
+        const keyId = Math.random();
+        for (let i = capStart; i < c.n; i++) { c.flag[i] = FLAG.key; c.param[i] = keyId; }
         x += w;
       }
     });
@@ -1734,13 +1774,13 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
   // was clipping off the top of the viewport.
   steps.push(() => {
     terminalPanel(c, [
-      '> PIPELINE RUN',
+      '> DBT RUN',
+      '  COMPILING',
       '  BIGQUERY   OK',
-      '  ROWS  4.21M',
-      '  ETL 00:03:41',
-      '> MODEL FIT',
-      '  MAPE   0.94',
-      '  DEPLOY     OK',
+      '> PYTEST -Q',
+      '  PASSED',
+      '> DEPLOY',
+      '  LIVE',
     ], [-1.3, 1.1, 0.1], 0.017, B.obj * 1.3, 0.4, 2);
 
     terminalPanel(c, [
@@ -1752,17 +1792,17 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
     ], [1.36, 1.35, 0.1], 0.016, B.obj * 1.25, -0.44, 2);
 
     terminalPanel(c, [
-      'AGENT LOOP ACTIVE',
+      'AGENT LOOP',
       '01001101 01010010',
-      'TOKENS 128K/200K',
-      'LATENCY   41MS',
+      'PLAN > ACT > CHECK',
+      'HANDOFF: HUMAN',
     ], [0.95, 1.95, 1.1], 0.0135, B.mid * 1.45, -0.55, 2);
 
     terminalPanel(c, [
       'SELECT * FROM',
       'SALES.REGION',
       'WHERE FY = 2026',
-      '-- 4210331 ROWS',
+      'ORDER BY REGION',
     ], [1.2, 0.5, 0.8], 0.0142, B.mid * 1.45, -0.6, 2);
   });
 
@@ -1914,6 +1954,340 @@ function buildSteps(c: Cloud, soft: Cloud): Array<() => void> {
     }
   });
 
+  // ---------- the figure, more life ----------
+  // Fingers on the keys, headphones over the hood, a watch, steam off the
+  // mug. The arms end at the knuckle line (x ±0.311, y 0.808, z -0.085);
+  // the keyboard's back row is at z -0.085 and its caps at y 0.7925.
+  steps.push(() => {
+    for (const sx of [-1, 1]) {
+      // Five fingers fanning inward and forward from the knuckles onto the
+      // caps. Fingertips carry FLAG.key with their own ids, so a fingertip
+      // and the cap under it can light on the same tick.
+      for (let f = 0; f < 5; f++) {
+        const t = f / 4;
+        const k0: V3 = [sx * (0.325 - t * 0.04), 0.808 - t * 0.004, -0.095 + t * 0.012];
+        const tip: V3 = [sx * (0.292 - t * 0.075), 0.795, -0.062 + t * 0.03 - (f === 0 ? 0.03 : 0)];
+        const r = f === 0 ? 0.0085 : 0.007 - t * 0.001;
+        const start = c.n;
+        tubeShell(c, k0, tip, r, r * 0.8, q(900), B.skin, SZ.fine, 0.04);
+        // The last few points of each finger are the tip.
+        const keyId = Math.random();
+        for (let i = c.n - q(120); i < c.n; i++) { c.flag[i] = FLAG.key; c.param[i] = keyId; }
+        // Code glyphs on the back of the hand, like the arms.
+        if (f === 2) {
+          for (let i = 0; i < q(90); i++) {
+            stampGlyph(c, randomCodeChar(), [sx * 0.31 + gauss() * 0.012, 0.813, -0.08 + gauss() * 0.01], 0.0095, B.obj, SZ.glyphSm, 1);
+          }
+        }
+        void start;
+      }
+    }
+
+    // Headphones: a band over the crown, two cups against the hood.
+    const cy = 1.56;
+    const cz = 0.258;
+    for (let i = 0; i < 12; i++) {
+      const a0 = Math.PI * (i / 12);
+      const a1 = Math.PI * ((i + 1) / 12);
+      tubeShell(
+        c, [Math.cos(a0) * 0.128, cy + Math.sin(a0) * 0.155, cz],
+        [Math.cos(a1) * 0.128, cy + Math.sin(a1) * 0.155, cz],
+        0.011, 0.011, q(260), B.obj * 1.1, SZ.base, 0.03
+      );
+    }
+    for (const sx of [-1, 1]) {
+      ellipsoidShell(c, [sx * 0.132, cy, cz], [0.022, 0.052, 0.048], q(2600), B.obj * 1.15, SZ.fine, {});
+      // Rim of the cup, crisp.
+      const rs = c.n;
+      ringY(c, [sx * 0.132, cy, cz], 0.05, 0.004, q(900), B.edge, SZ.bold);
+      rotateRange(c, rs, [sx * 0.132, cy, cz], [0, 0, 1], Math.PI / 2);
+    }
+    // Power LED on the right cup, and the lead down to the desk.
+    c.push(-0.156, cy - 0.03, cz - 0.02, B.edge * 1.3, SZ.bold, FLAG.glyph, Math.random());
+    cableSag(c, [-0.14, cy - 0.05, cz + 0.01], [-0.5, 0.79, -0.3], 0.12, 0.004, q(1600), B.mid, SZ.base);
+
+    // Watch on the left wrist (room +x = screen left): a band and a lit face.
+    const wx = 0.306;
+    const wy = 0.83;
+    const wz = -0.01;
+    const ws = c.n;
+    ringY(c, [wx, wy, wz], 0.038, 0.005, q(1100), B.obj, SZ.base);
+    rotateRange(c, ws, [wx, wy, wz], [0, 0, 1], Math.PI / 2);
+    planePatch(c, [wx, wy + 0.04, wz], [0.014, 0, 0], [0, 0, 0.016], q(700), B.screen * 0.8, SZ.fine, { flag: FLAG.screen, edge: 0.4 });
+
+    // Steam off the mug: slow motes orbiting a vertical axis above it.
+    for (let i = 0; i < q(420); i++) {
+      const h = Math.random();
+      const r = 0.012 + h * 0.03;
+      const a = rand(0, TAU);
+      // Static wisps: the shimmer and dropout in the shader give them life,
+      // and FLAG.orbit would swing them around the figure, not the mug.
+      soft.push(-0.42 + Math.cos(a) * r + gauss() * 0.004, 0.88 + h * 0.16, -0.09 + Math.sin(a) * r, B.dust * (1.5 - h), SZ.dust);
+    }
+  });
+
+  // ---------- operator's den: side monitors ----------
+  // Two panels flanking the main one, on arms, yawed inward so the three
+  // read as one curved wall. Built facing -z and yawed about their own
+  // centre — a yaw is safe for FLAG.code, a pitch is not (see codeScreen).
+  steps.push(() => {
+    for (const sx of [-1, 1]) {
+      const mx = sx * 0.66;
+      const my = 1.0;
+      const mz = -0.40;
+      const hw = 0.205;
+      const hh = 0.122;
+      const start = c.n;
+      // Glass, glow layer, bezel strips, back, arm — same recipe as the
+      // main monitor, slightly smaller.
+      planePatch(c, [mx, my, mz + 0.0035], [hw, 0, 0], [0, hh, 0], q(7000), B.bg * 0.55, SZ.base, { jitter: 0.0006 });
+      planePatch(c, [mx, my, mz + 0.003], [hw, 0, 0], [0, hh, 0], q(700), B.mid * 0.5, SZ.fine, { jitter: 0.0006, flag: FLAG.screen });
+      if (sx < 0) {
+        // Left: a second terminal. Commands and tool calls, no figures.
+        codeScreen(c, [
+          '> SSH OPS-EDGE',
+          '  CONNECTED',
+          '> TAIL -F AGENT.LOG',
+          '  TOOL: SEARCH',
+          '  TOOL: WRITE',
+          '  REVIEW: OK',
+          '> PYTEST -Q',
+          '  PASSED',
+        ], [mx, my, mz + 0.0015], B.screen * 1.3);
+      } else {
+        // Right: an oscilloscope. A dim grid, then two traces the shader
+        // waves and sweeps — an abstract signal, deliberately unlabelled.
+        for (let i = -3; i <= 3; i++) {
+          planePatch(c, [mx, my + i * (hh / 3.5), mz + 0.002], [hw * 0.94, 0, 0], [0, 0.0006, 0], q(380), B.bg * 0.9, SZ.fine, {});
+          planePatch(c, [mx + i * (hw / 3.5), my, mz + 0.002], [0.0006, 0, 0], [0, hh * 0.94, 0], q(300), B.bg * 0.9, SZ.fine, {});
+        }
+        for (let k = 0; k < 2; k++) {
+          const n = q(k === 0 ? 2600 : 1700);
+          for (let i = 0; i < n; i++) {
+            const a = Math.random();
+            c.push(
+              mx + hw * 0.94 - a * hw * 1.88, my + gauss() * 0.0012 + (k === 1 ? -0.02 : 0.02), mz + 0.001,
+              k === 0 ? B.screen * 1.3 : B.screen * 0.8, k === 0 ? SZ.code * 0.8 : SZ.base, FLAG.trace, a + k
+            );
+          }
+        }
+      }
+      const bw = 0.011;
+      planePatch(c, [mx, my + hh + bw, mz], [hw + bw * 2, 0, 0], [0, bw, 0], q(2000), B.edge, SZ.bold, { edge: 0.5 });
+      planePatch(c, [mx, my - hh - bw, mz], [hw + bw * 2, 0, 0], [0, bw, 0], q(2000), B.edge, SZ.bold, { edge: 0.5 });
+      planePatch(c, [mx - (hw + bw), my, mz], [bw, 0, 0], [0, hh, 0], q(1200), B.edge, SZ.bold, { edge: 0.5 });
+      planePatch(c, [mx + (hw + bw), my, mz], [bw, 0, 0], [0, hh, 0], q(1200), B.edge, SZ.bold, { edge: 0.5 });
+      planePatch(c, [mx, my, mz + 0.03], [hw, 0, 0], [0, hh, 0], q(2200), B.mid * 0.5, SZ.fine, { falloff: 0.35 });
+      // Monitor arm: a post from the desk and a horizontal reach.
+      tubeShell(c, [mx + sx * 0.12, 0.782, mz + 0.06], [mx + sx * 0.12, 1.0, mz + 0.06], 0.014, 0.014, q(1500), B.obj, SZ.base, 0.03);
+      tubeShell(c, [mx + sx * 0.12, 1.0, mz + 0.06], [mx, 1.0, mz + 0.035], 0.012, 0.012, q(700), B.obj, SZ.base, 0.03);
+      discY(c, [mx + sx * 0.12, 0.782, mz + 0.06], 0.06, q(900), B.obj, SZ.fine);
+      rotateRange(c, start, [mx, my, mz], [0, 1, 0], sx * 0.46);
+    }
+  });
+
+  // ---------- operator's den: desk kit ----------
+  steps.push(() => {
+    const dy = 0.778;
+    // Headphones on a stand, back-left of the desk.
+    const hx = -0.68;
+    const hz = -0.3;
+    tubeShell(c, [hx, dy, hz], [hx, dy + 0.21, hz], 0.012, 0.012, q(900), B.obj, SZ.base, 0.03);
+    discY(c, [hx, dy + 0.003, hz], 0.05, q(700), B.obj, SZ.fine);
+    // Headband: a half torus made of short tube segments.
+    for (let i = 0; i < 10; i++) {
+      const a0 = Math.PI * (i / 10);
+      const a1 = Math.PI * ((i + 1) / 10);
+      tubeShell(
+        c, [hx + Math.cos(a0) * 0.075, dy + 0.21 + Math.sin(a0) * 0.075, hz],
+        [hx + Math.cos(a1) * 0.075, dy + 0.21 + Math.sin(a1) * 0.075, hz],
+        0.009, 0.009, q(220), B.obj, SZ.base, 0.04
+      );
+    }
+    for (const sx of [-1, 1]) {
+      ellipsoidShell(c, [hx + sx * 0.078, dy + 0.19, hz], [0.016, 0.045, 0.042], q(1600), B.obj, SZ.fine, {});
+    }
+    // Phone, face up, front-right.
+    const px = 0.58;
+    const pz = 0.1;
+    planePatch(c, [px, dy + 0.004, pz], [0.034, 0, 0], [0, 0, 0.07], q(1500), B.obj, SZ.fine, { edge: 0.5 });
+    planePatch(c, [px, dy + 0.0045, pz], [0.029, 0, 0], [0, 0, 0.062], q(900), B.screen * 0.6, SZ.fine, { flag: FLAG.screen });
+    // Sticky notes on the outside of the main bezel.
+    for (const [ny, tilt] of [[1.13, 0.08], [1.06, -0.05]] as [number, number][]) {
+      const st = c.n;
+      planePatch(c, [0.315, ny, -0.457], [0.026, 0, 0], [0, 0.026, 0], q(1100), B.edge * 0.95, SZ.fine, { edge: 0.3 });
+      rotateRange(c, st, [0.315, ny, -0.457], [0, 0, 1], tilt);
+    }
+    // Power strip on the floor under the desk, one live LED.
+    planePatch(c, [0.3, 0.025, -0.3], [0.12, 0, 0], [0, 0, 0.03], q(1300), B.mid, SZ.fine, { edge: 0.3 });
+    planePatch(c, [0.3, 0.013, -0.27], [0.12, 0, 0], [0, 0.012, 0], q(600), B.mid * 0.9, SZ.base, { edge: 0.4 });
+    c.push(0.4, 0.027, -0.3, B.edge * 1.3, SZ.bold, FLAG.glyph, Math.random());
+  });
+
+  // ---------- operator's den: desk lamp ----------
+  // Left of the desk, aimed at the keyboard. The cone of light is a sparse
+  // plume of soft motes, which is how a point cloud shows volumetric light.
+  steps.push(() => {
+    const bx = -0.78;
+    const bz = -0.42;
+    discY(c, [bx, 0.781, bz], 0.07, q(1300), B.obj, SZ.fine);
+    ringY(c, [bx, 0.784, bz], 0.07, 0.005, q(900), B.edge, SZ.bold);
+    tubeShell(c, [bx, 0.78, bz], [bx + 0.05, 1.3, bz + 0.02], 0.011, 0.011, q(1800), B.obj, SZ.base, 0.03);
+    tubeShell(c, [bx + 0.05, 1.3, bz + 0.02], [bx + 0.28, 1.36, bz + 0.1], 0.011, 0.011, q(1100), B.obj, SZ.base, 0.03);
+    // Head: a cone, open end down and toward the keyboard.
+    const head: V3 = [bx + 0.28, 1.36, bz + 0.1];
+    const mouth: V3 = [bx + 0.36, 1.24, bz + 0.2];
+    tubeShell(c, head, mouth, 0.03, 0.085, q(3600), B.obj, SZ.fine, 0.02);
+    ringY(c, mouth, 0.085, 0.004, q(1200), B.edge, SZ.bold);
+    discY(c, [mouth[0], mouth[1] + 0.01, mouth[2]], 0.06, q(1400), B.screen, SZ.fine);
+    // The beam: motes thin out with distance from the mouth.
+    const dir: V3 = [0.22, -1, 0.3];
+    const dl = Math.hypot(dir[0], dir[1], dir[2]);
+    dir[0] /= dl; dir[1] /= dl; dir[2] /= dl;
+    const n = q(12000);
+    for (let i = 0; i < n; i++) {
+      const t = Math.pow(Math.random(), 1.1);
+      const L = t * 0.62;
+      const r = (0.04 + t * 0.3) * Math.sqrt(Math.random());
+      const th = rand(0, TAU);
+      // Any two vectors perpendicular to the beam will do for the radial.
+      const ux = Math.cos(th) * r;
+      const uz = Math.sin(th) * r;
+      soft.push(
+        mouth[0] + dir[0] * L + ux, mouth[1] + dir[1] * L, mouth[2] + dir[2] * L + uz,
+        B.dust * (1.9 - t * 1.2), SZ.dust
+      );
+    }
+    // The pool of light on the desk under it.
+    planePatch(c, [bx + 0.5, 0.779, bz + 0.38], [0.2, 0, 0], [0, 0, 0.16], q(3500), B.obj * 1.25, SZ.fine, { falloff: 0.9 });
+  });
+
+  // ---------- operator's den: rain beyond the window ----------
+  // A slab of drops just outside the glass, inside the aperture. The shader
+  // drops them from their stored y (the top) by uRainH, so the fall needs
+  // no per-frame CPU. Three points per drop make a short streak.
+  steps.push(() => {
+    const n = q(4200);
+    for (let i = 0; i < n; i++) {
+      const x = rand(-1.3, 1.3);
+      const z = rand(1.9, 2.5);
+      const phase = Math.random();
+      for (let k = 0; k < 3; k++) {
+        soft.push(x, 2.12, z, B.obj * (1.05 - k * 0.22), SZ.glyph * 0.7, FLAG.rain, phase + k * 0.0045);
+      }
+    }
+  });
+
+  // ---------- operator's den: whiteboard ----------
+  // On the back wall's +x pier — screen LEFT, since the camera looks along
+  // +z (see the note above glyphLine: text runs along -x). A four-box
+  // system diagram with a feedback loop. Labels only, no figures.
+  steps.push(() => {
+    const wx = 1.98;
+    const wy = 1.62;
+    const wz = WALL_Z - 0.03;
+    const hw = 0.5;
+    const hh = 0.33;
+    planePatch(c, [wx, wy, wz], [hw, 0, 0], [0, hh, 0], q(14000), B.bg * 1.3, SZ.fine, { jitter: 0.001, falloff: 0.15 });
+    planePatch(c, [wx, wy, wz - 0.004], [hw + 0.012, 0, 0], [0, hh + 0.012, 0], q(4200), B.edge * 0.85, SZ.bold, { edge: 0.98 });
+    const labels = ['DATA', 'MODEL', 'AGENT', 'DASH'];
+    const bw = 0.17;
+    const gap = 0.05;
+    const total = labels.length * bw + (labels.length - 1) * gap;
+    const dot = 0.0066;
+    const zf = wz - 0.008;
+    labels.forEach((label, i) => {
+      // First label at the +x end, so it is leftmost on screen.
+      const cx = wx + total / 2 - bw / 2 - i * (bw + gap);
+      planePatch(c, [cx, wy + 0.06, zf], [bw / 2, 0, 0], [0, 0.058, 0], q(1600), B.obj * 1.1, SZ.base, { edge: 0.96 });
+      const cols = label.length * 4 - 1;
+      glyphLine(c, label, [cx + (cols * dot) / 2, wy + 0.06 - 2.5 * dot, zf - 0.002], [-dot, 0, 0], [0, dot, 0], B.edge * 1.15, SZ.code, 2);
+      if (i < labels.length - 1) {
+        const ax0 = cx - bw / 2 - gap / 2;
+        planePatch(c, [ax0, wy + 0.06, zf], [gap / 2 - 0.01, 0, 0], [0, 0.0012, 0], q(300), B.edge, SZ.bold, {});
+        glyphLine(c, '>', [ax0 - 0.004, wy + 0.06 - 2.5 * dot * 0.6, zf - 0.002], [-dot * 0.6, 0, 0], [0, dot * 0.6, 0], B.edge, SZ.bold, 1);
+      }
+    });
+    // Feedback loop under the row, DASH back to DATA.
+    const x0 = wx - total / 2 + bw / 2;
+    const x1 = wx + total / 2 - bw / 2;
+    planePatch(c, [(x0 + x1) / 2, wy - 0.07, zf], [(x1 - x0) / 2, 0, 0], [0, 0.0012, 0], q(900), B.obj, SZ.bold, {});
+    planePatch(c, [x0, wy - 0.035, zf], [0.0012, 0, 0], [0, 0.035, 0], q(300), B.obj, SZ.bold, {});
+    planePatch(c, [x1, wy - 0.035, zf], [0.0012, 0, 0], [0, 0.035, 0], q(300), B.obj, SZ.bold, {});
+    glyphLine(c, 'FEEDBACK', [(x0 + x1) / 2 + (31 * dot * 0.85) / 2, wy - 0.135, zf - 0.002], [-dot * 0.85, 0, 0], [0, dot * 0.85, 0], B.obj, SZ.code, 1);
+  });
+
+  // ---------- operator's den: atmosphere ----------
+  // Ceiling LED strip along the back wall with a down-glow, a wash of
+  // window light on the floor, a pinboard on the right pier (screen right,
+  // above the rack), a clock on top of the rack, a second plant.
+  steps.push(() => {
+    // LED strip: a bright thin line just below the ceiling, and motes under it.
+    planePatch(c, [0, 2.9, WALL_Z - 0.04], [3.3, 0, 0], [0, 0.004, 0], q(5200), B.edge * 1.2, SZ.bold, {});
+    for (let i = 0; i < q(2600); i++) {
+      const t = Math.random();
+      soft.push(rand(-3.2, 3.2), 2.9 - t * 0.7, WALL_Z - 0.05 - t * 0.35 + gauss() * 0.05, B.dust * (1.6 - t * 1.2), SZ.dust);
+    }
+    // Window light on the floor.
+    planePatch(c, [0, 0.006, WALL_Z - 0.9], [1.25, 0, 0], [0, 0, 0.75], q(9000), B.bg * 1.5, SZ.fine, { falloff: 0.85, jitter: 0.002 });
+    // Pinboard on the -x pier (screen right), above the rack.
+    const px = -2.35;
+    const py = 2.45;
+    const pz = WALL_Z - 0.03;
+    planePatch(c, [px, py, pz], [0.42, 0, 0], [0, 0.26, 0], q(6500), B.bg * 1.35, SZ.fine, { jitter: 0.001 });
+    planePatch(c, [px, py, pz - 0.004], [0.43, 0, 0], [0, 0.27, 0], q(2400), B.obj, SZ.bold, { edge: 0.98 });
+    const cards: [number, number, number, number, number][] = [
+      [px + 0.22, py + 0.08, 0.1, 0.07, 0.06], [px - 0.02, py + 0.1, 0.09, 0.06, -0.04],
+      [px - 0.24, py + 0.05, 0.08, 0.1, 0.08], [px + 0.1, py - 0.11, 0.12, 0.08, -0.03], [px - 0.18, py - 0.12, 0.09, 0.06, 0.05],
+    ];
+    cards.forEach(([cx, cyy, hw, hh, tilt]) => {
+      const st = c.n;
+      planePatch(c, [cx, cyy, pz - 0.008], [hw, 0, 0], [0, hh, 0], q(1300), B.obj * 1.15, SZ.fine, { edge: 0.35 });
+      c.push(cx, cyy + hh - 0.012, pz - 0.011, B.edge * 1.3, SZ.bold);
+      rotateRange(c, st, [cx, cyy, pz - 0.008], [0, 0, 1], tilt);
+    });
+    // Clock on the rack top: four dot-matrix digits that blink as a unit.
+    glyphLine(c, '00:00', [-2.06 + 0.06, 2.03, 0.6 - 0.01], [-0.009, 0, 0], [0, 0.009, 0], B.edge * 1.2, SZ.code, 1);
+    // Second plant on the floor, left of the rack (screen right).
+    const plx = -1.55;
+    const plz = 1.3;
+    tubeShell(c, [plx, 0.0, plz], [plx, 0.28, plz], 0.11, 0.09, q(3200), B.mid, SZ.fine, 0.03);
+    ringY(c, [plx, 0.28, plz], 0.09, 0.005, q(900), B.edge, SZ.bold);
+    for (let i = 0; i < 11; i++) {
+      const a = (i / 11) * TAU + rand(-0.2, 0.2);
+      const reach = rand(0.14, 0.26);
+      const h = rand(0.25, 0.55);
+      const st = c.n;
+      tubeShell(c, [plx, 0.28, plz], [plx + Math.cos(a) * reach, 0.28 + h, plz + Math.sin(a) * reach], 0.03, 0.01, q(520), B.mid, SZ.fine, 0.2);
+      rotateRange(c, st, [plx, 0.28, plz], [Math.sin(a), 0, -Math.cos(a)], rand(0.15, 0.4));
+    }
+  });
+
+  // ---------- operator's den: rack upgrade ----------
+  // Drive-activity LEDs beside the existing status LEDs, a 24-port switch
+  // across the top, and a bundle of cables running to the desk.
+  steps.push(() => {
+    const rx = -2.06;
+    const rz = 0.92;
+    const hw = 0.28;
+    const hd = 0.32;
+    const face = rz - hd - 0.008;
+    for (let i = 0; i < 16; i++) {
+      const y = 0.14 + i * 0.116 + 0.03;
+      for (let k = 0; k < 4; k++) {
+        c.push(rx + hw * 0.3 + k * 0.03 + gauss() * 0.001, y, face, B.edge * 1.1, SZ.base, FLAG.glyph, Math.random());
+      }
+    }
+    const sy = 0.14 + 16 * 0.116 + 0.02;
+    planePatch(c, [rx, sy, face + 0.004], [hw * 0.94, 0, 0], [0, 0.022, 0], q(1600), B.mid, SZ.fine, { edge: 0.5 });
+    for (let k = 0; k < 24; k++) {
+      c.push(rx - hw * 0.86 + k * ((hw * 1.72) / 23), sy + 0.004, face, B.edge * 1.2, SZ.base, FLAG.glyph, Math.random());
+    }
+    cableSag(c, [rx + 0.2, 2.0, rz + hd], [-0.75, 0.78, -0.5], 0.5, 0.012, q(3200), B.bg * 1.2, SZ.base);
+    cableSag(c, [rx + 0.22, 1.98, rz + hd], [-0.7, 0.78, -0.48], 0.44, 0.01, q(2600), B.bg * 1.15, SZ.base);
+    cableSag(c, [rx + 0.24, 2.02, rz + hd], [-0.66, 0.78, -0.52], 0.56, 0.009, q(2400), B.bg * 1.1, SZ.base);
+  });
+
   // ---------- re-centre, once, at the very end ----------
   steps.push(() => {
     const m = new THREE.Matrix4().makeTranslation(-CENTER.x, -CENTER.y, -CENTER.z);
@@ -1940,6 +2314,17 @@ const VERT = /* glsl */ `
   uniform float uScreenGlow;
   uniform vec3  uOrbitCenter;
   uniform vec2  uCodeBand;    // (block height in world units, scroll speed)
+  uniform float uFocus;       // distance from camera to the focal plane
+  uniform float uDof;         // circle of confusion per metre off that plane
+  uniform float uTraceAmp;    // oscilloscope swing, world units
+  uniform float uRainH;       // how far a drop falls, world units
+  uniform vec2  uPointer;     // smoothed pointer, NDC
+  uniform float uPointerOn;   // torch authority 0..1
+  uniform float uAspect;
+  uniform float uGlitch;      // burst amplitude 0..1
+  uniform vec2  uGlitchBand;  // (centre y, half height) in NDC
+  uniform float uGlitchSeed;
+  uniform float uResweep;     // 0..1 progress of a repeat scan, 1 = idle
 
   attribute float aSeed;
   attribute float aBright;
@@ -1950,6 +2335,8 @@ const VERT = /* glsl */ `
   varying float vAlpha;
   varying float vBright;
   varying float vFog;
+  varying float vCoc;
+  varying float vSplit;
 
   void main() {
     // Behaviour masks rather than branches, so every point walks the
@@ -1960,8 +2347,44 @@ const VERT = /* glsl */ `
     float isGlyph  = step(3.5, aFlag) * step(aFlag, 4.5);
     float isSky    = step(4.5, aFlag) * step(aFlag, 5.5);
     float isCode   = step(5.5, aFlag) * step(aFlag, 6.5);
+    float isTrace  = step(6.5, aFlag) * step(aFlag, 7.5);
+    float isRain   = step(7.5, aFlag) * step(aFlag, 8.5);
+    float isKey    = step(8.5, aFlag) * step(aFlag, 9.5);
 
     vec3 pos = position;
+
+    // ---- oscilloscope: a layered wave, and a sweep head that runs along
+    // it so the trace reads as being drawn rather than painted.
+    float ta = fract(aParam);
+    float tk = floor(aParam);
+    float wave = sin(ta * 18.0 + uTime * 1.9 + tk * 2.0) * 0.45
+               + sin(ta * 41.0 - uTime * 3.1 + tk) * 0.22
+               + sin(ta * 97.0 + uTime * 5.3) * 0.08;
+    pos.y += isTrace * wave * uTraceAmp;
+    float sweep = fract(uTime * 0.3 + tk * 0.5);
+    float talong = fract(ta - sweep);
+    float traceHead = exp(-talong * 5.0);
+
+    // ---- rain: stored at the top of its fall, dropped by phase.
+    float rainV = fract(aParam + uTime * 0.55);
+    pos.y -= isRain * rainV * uRainH;
+
+    // ---- the figure breathes and turns its head. No attribute: both are
+    // masks on position in the centred room (y - 1.02, z - 0.05), tight
+    // enough around the figure's own axis (x 0, z 0.28) to miss the chair.
+    float figR = length(vec2(pos.x, pos.z - 0.28));
+    float torso = smoothstep(0.34, 0.2, figR) * smoothstep(-0.2, -0.05, pos.y) * (1.0 - smoothstep(0.3, 0.4, pos.y));
+    pos.z += sin(uTime * 0.9) * 0.004 * torso;
+    pos.y += sin(uTime * 0.9) * 0.002 * torso;
+    float hmask = smoothstep(0.3, 0.36, pos.y) * smoothstep(0.26, 0.18, length(vec2(pos.x, pos.z - 0.24)));
+    float ha = 0.14 * sin(uTime * 0.23) * hmask;
+    vec2 hrel = vec2(pos.x, pos.z - 0.24);
+    pos.x = hrel.x * cos(ha) - hrel.y * sin(ha);
+    pos.z = 0.24 + hrel.x * sin(ha) + hrel.y * cos(ha);
+
+    // ---- typing: a cap lights for one tick when its hash comes up.
+    float ktick = floor(uTime * 5.5);
+    float pressed = isKey * step(0.94, fract(sin(aParam * 733.1 + ktick * 0.173) * 43758.5453));
 
     // ---- scrolling code: text runs UP the screen, as a terminal does.
     // aParam is this dot's normalised height in its block, so the block's
@@ -1986,6 +2409,16 @@ const VERT = /* glsl */ `
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     float depth = -mv.z;
 
+    // ---- screen light: the monitor casts onto the desk, keyboard, hands
+    // and chest in front of it. A plain falloff from the panel's centre in
+    // the centred room (0, 0, -0.5), skipped for the screen's own points.
+    vec3 dcast = pos - vec3(0.0, 0.0, -0.5);
+    float scast = exp(-dot(dcast * vec3(1.0, 1.3, 1.0), dcast) * 7.0) * (1.0 - isScreen) * (1.0 - isCode);
+
+    // ---- depth of field: how far this point sits off the focal plane,
+    // as a 0..1 blur amount. The sky is infinitely far and stays as is.
+    vCoc = clamp(abs(depth - uFocus) * uDof, 0.0, 1.0) * (1.0 - isSky);
+
     float base = aBright;
 
     // ---- scan-in: a soft wavefront sweeping bottom to top, with the
@@ -1995,6 +2428,9 @@ const VERT = /* glsl */ `
     float d = front - position.y;
     float revealed = smoothstep(0.0, span * 0.1, d);
     float crest = exp(-abs(d) * 26.0 / max(span, 0.001)) * 1.9;
+    // A later, fainter re-scan now and then: same wavefront, lower crest.
+    float front2 = mix(uRevealY.x - span * 0.08, uRevealY.y + span * 0.08, uResweep);
+    crest += exp(-abs(front2 - position.y) * 26.0 / max(span, 0.001)) * 0.7 * step(uResweep, 0.999);
 
     // The sky sits far above the room, so the sweep's wavefront never
     // reaches it — stars would simply never appear. They get their own
@@ -2029,6 +2465,8 @@ const VERT = /* glsl */ `
     // ---- depth fog toward black, so the room has real depth. The sky
     // is exempt: stars sit ~14m out, where fog would erase them.
     vFog = mix(1.0 - smoothstep(uFogNear, uFogFar, depth), 1.0, isSky);
+    // Rain sits beyond the glass where fog would erase it; keep it legible.
+    vFog = mix(vFog, max(vFog, 0.8), isRain);
 
     // The screen blooms as the camera closes on it, so it sits quiet in
     // the establishing frame and becomes the payoff on arrival. The code
@@ -2040,7 +2478,10 @@ const VERT = /* glsl */ `
       // Freshly-printed rows burn brighter as they come in at the bottom.
       + isCode * (0.16 + 0.5 * exp(-codeV * 5.0))
       + isStream * pulse * 1.5
-      + isGlyph * step(0.88, grand) * 0.55;
+      + isGlyph * step(0.88, grand) * 0.55
+      + isTrace * (0.2 + traceHead * 0.9)
+      + pressed * 0.9
+      + scast * (0.28 + uScreenGlow * 0.3);
 
     // Deliberately NOT multiplied by fog: fog darkens the colour
     // instead. Folding it into alpha as well made distant geometry
@@ -2052,15 +2493,38 @@ const VERT = /* glsl */ `
       * mix(1.0, step(0.18, grand), isGlyph)
       // Code fades in at the bottom edge and out at the top, which is
       // what hides the seam where a row wraps around the block.
-      * mix(1.0, smoothstep(0.0, 0.05, codeV) * (1.0 - smoothstep(0.92, 1.0, codeV)), isCode);
+      * mix(1.0, smoothstep(0.0, 0.05, codeV) * (1.0 - smoothstep(0.92, 1.0, codeV)), isCode)
+      // The trace is bright at the sweep head and faint behind it.
+      * mix(1.0, 0.25 + traceHead * 0.75, isTrace)
+      // Drops fade in at the top and out before they wrap.
+      * mix(1.0, smoothstep(0.0, 0.08, rainV) * (1.0 - smoothstep(0.88, 1.0, rainV)), isRain)
+      // Out-of-focus points spread their light over a larger disc.
+      * (1.0 - vCoc * 0.5);
 
     gl_Position = projectionMatrix * mv;
+
+    // ---- the torch: points near the pointer brighten and swell. Done in
+    // NDC after projection, so it is a screen-space light, like a cursor.
+    vec2 ndc = gl_Position.xy / max(gl_Position.w, 0.0001);
+    float pd = length((ndc - uPointer) * vec2(uAspect, 1.0));
+    float torch = exp(-pd * pd * 22.0) * uPointerOn;
+    vBright += torch * 1.2;
+    vAlpha = min(1.0, vAlpha * (1.0 + torch * 0.8));
+
+    // ---- glitch burst: a horizontal band tears sideways, each scanline
+    // row by its own amount, and the fragment splits its colour.
+    float inBand = step(abs(ndc.y - uGlitchBand.x), uGlitchBand.y) * uGlitch;
+    float rowSeed = floor((ndc.y + 1.0) * 36.0);
+    float tear = fract(sin(uGlitchSeed * 12.9898 + rowSeed * 78.233) * 43758.5453) - 0.5;
+    gl_Position.x += inBand * tear * 0.18 * gl_Position.w;
+    vSplit = inBand;
 
     float px = aSize * uSizeScale * uScale / max(depth, 0.02);
     // Floor keeps distant grain from vanishing entirely (that is what
     // holds the dense look at range); ceiling stops near points from
-    // turning into blobs on arrival.
-    gl_PointSize = clamp(px * (1.0 + crest * 0.35), 0.85, 5.0);
+    // turning into blobs on arrival — raised for defocused points, which
+    // are meant to be blobs.
+    gl_PointSize = clamp(px * (1.0 + crest * 0.35) * (1.0 + vCoc * 1.8) * (1.0 + torch * 0.7), 0.85, mix(5.0, 9.0, vCoc) + torch * 3.0);
   }
 `;
 
@@ -2069,20 +2533,30 @@ const FRAG = /* glsl */ `
 
   uniform vec3 uColor;
   uniform vec3 uHot;
+  uniform vec3 uFar;
 
   varying float vAlpha;
   varying float vBright;
   varying float vFog;
+  varying float vCoc;
+  varying float vSplit;
 
   void main() {
-    // Round, softly-edged point. Cheaper than a texture lookup.
+    // Round point. In focus it has a crisp rim; defocused it becomes a
+    // soft disc, which is the whole of the bokeh — no texture needed.
     vec2 d = gl_PointCoord - 0.5;
     float r2 = dot(d, d);
     if (r2 > 0.25) discard;
-    float soft = 1.0 - smoothstep(0.02, 0.25, r2);
+    float soft = 1.0 - smoothstep(mix(0.02, 0.0, vCoc), 0.25, r2);
 
     vec3 c = mix(uColor, uHot, clamp((vBright - 1.15) * 0.6, 0.0, 1.0));
-    c *= mix(0.58, 1.0, clamp(vBright, 0.0, 1.5)) * mix(0.32, 1.0, vFog);
+    c *= mix(0.58, 1.0, clamp(vBright, 0.0, 1.5));
+    // Fog pulls toward a deep indigo and darkens, rather than only
+    // darkening: distance reads as colour, not just as less light.
+    c = mix(uFar, c, vFog) * mix(0.42, 1.0, vFog);
+    // Inside a glitch band each point is split hot/cold down its middle,
+    // which at this density reads as chromatic aberration.
+    c = mix(c, mix(uFar * 2.2, uHot, step(0.5, gl_PointCoord.x)), vSplit * 0.75);
 
     float a = soft * vAlpha;
     // Depth writing is on for the solid pass, so a nearly-invisible
@@ -2139,6 +2613,24 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
     uCodeBand: { value: new THREE.Vector2(CODE.h, CODE.speed) },
     uColor: { value: new THREE.Color(accent) },
     uHot: { value: new THREE.Color('#efe7ff') },
+    // Where fog takes colour: a deep indigo, the dark end of the site's
+    // violet, so distant geometry recedes into the stage rather than
+    // into nothing.
+    uFar: { value: new THREE.Color('#2a1f7a') },
+    uFocus: { value: 2.7 },
+    // Blur per metre off the focal plane. A point a metre out is half
+    // blurred; the back wall, two to three metres behind the figure, is
+    // fully soft. Pulled higher the figure's own far shoulder went soft.
+    uDof: { value: 0.5 },
+    uTraceAmp: { value: 0.07 },
+    uRainH: { value: 1.62 },
+    uPointer: { value: new THREE.Vector2(0, 0) },
+    uPointerOn: { value: 0 },
+    uAspect: { value: 1 },
+    uGlitch: { value: 0 },
+    uGlitchBand: { value: new THREE.Vector2(0, 0.08) },
+    uGlitchSeed: { value: 0 },
+    uResweep: { value: 1 },
   };
 
   // Two materials over ONE shared uniforms object, so the per-frame
@@ -2189,6 +2681,11 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
   const LOOK = new THREE.Vector3(0, 1.0, 0.12).sub(CENTER);
   const LOOK_END = new THREE.Vector3(0, 1.02, 0.3).sub(CENTER);
   const lookAt = new THREE.Vector3();
+  // The focal plane follows the figure, then the SCREEN SURFACE — not the
+  // aim point, which deliberately overshoots the panel so the camera turns
+  // to face it. Focusing on the aim point left the text soft on arrival.
+  const FOCUS_END = new THREE.Vector3(0, 1.02, -0.4545).sub(CENTER);
+  const focusAt = new THREE.Vector3();
   camera.position.copy(START);
   camera.lookAt(LOOK);
 
@@ -2255,20 +2752,32 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
 
     ready = true;
     canvas.classList.add('is-ready');
-    revealStart = performance.now();
+    // Crossfade the poster out underneath (intro.css).
+    wrap.classList.add('itm-live');
+    // The poster's CSS scan-in started at first paint and runs 1.6s; the
+    // shader's reveal runs the same curve from the same instant, so by
+    // the time this canvas fades in the two are at the same phase — or
+    // both finished, which is the usual case.
+    const fcp = performance.getEntriesByName('first-contentful-paint')[0];
+    revealStart = fcp ? fcp.startTime : performance.now();
     if (visible) start();
   }
 
   // ---------- sizing ----------
+  let viewW = 1;
+  let viewH = 1;
   function resize() {
     const w = wrap.clientWidth || innerWidth;
     const h = innerHeight;
+    viewW = w;
+    viewH = h;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     // Point size in pixels must track the drawing buffer, not CSS
     // pixels, or grain gets coarser on hi-DPI screens.
     uniforms.uScale.value = (h * dpr) / (2 * Math.tan((FOV * Math.PI) / 360));
+    uniforms.uAspect.value = w / h;
   }
   resize();
   let resizeTimer = 0;
@@ -2283,14 +2792,84 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
   const wantsParallax = matchMedia('(hover: hover) and (pointer: fine)').matches;
   let pointerX = 0;
   let pointerY = 0;
+  let pointerSeen = false;
   if (wantsParallax) {
     addEventListener('pointermove', (e) => {
       pointerX = (e.clientX / innerWidth) * 2 - 1;
       pointerY = (e.clientY / innerHeight) * 2 - 1;
+      pointerSeen = true;
     }, { passive: true });
+    addEventListener('pointerleave', () => { pointerSeen = false; });
   }
   let parX = 0;
   let parY = 0;
+  // The torch follows a smoothed copy of the pointer, in NDC (y up).
+  let torchX = 0;
+  let torchY = 0;
+  let torchOn = 0;
+
+  // ---------- glitch bursts ----------
+  // A burst is three or four frames of tearing, 60–90 ms each, every
+  // 7–12 s. Never in the hand-off, where the veil owns the frame.
+  const stage = wrap.querySelector<HTMLElement>('.itm-stage');
+  let nextGlitch = 0;
+  let glitchUntil = 0;
+  let glitchStep = 0;
+  function glitch(now: number, p: number) {
+    if (now < glitchUntil) {
+      if (now >= glitchStep) {
+        glitchStep = now + rand(60, 90);
+        uniforms.uGlitchBand.value.set(rand(-0.8, 0.8), rand(0.03, 0.14));
+        uniforms.uGlitchSeed.value = Math.random() * 100;
+      }
+      uniforms.uGlitch.value = 1;
+      return;
+    }
+    if (uniforms.uGlitch.value) {
+      uniforms.uGlitch.value = 0;
+      stage?.classList.remove('is-glitch');
+    }
+    if (nextGlitch === 0) nextGlitch = now + rand(4000, 6000);
+    if (now >= nextGlitch && p < 0.8) {
+      glitchUntil = now + rand(180, 320);
+      glitchStep = 0;
+      nextGlitch = glitchUntil + rand(7000, 12000);
+      stage?.classList.add('is-glitch');
+    }
+  }
+  // A faint re-scan every ~25 s, 2.2 s long.
+  let resweepAt = 0;
+
+  // ---------- the name, out of particles ----------
+  // IntoTheMachine.astro parks the identity block's entrance (html.itm-hold)
+  // until this module decides. If the scene is up within a couple of
+  // seconds of first paint the name assembles from points first and the
+  // HTML rises in as they dissolve; otherwise the plain entrance plays.
+  let morph: NameMorph | null | undefined;
+  const nameEl = wrap.querySelector<HTMLElement>('.itm-id__name');
+  const root = document.documentElement;
+  function releaseEntrance(delaysMs: [number, number, number]) {
+    const id = wrap.querySelector<HTMLElement>('.itm-id');
+    id?.style.setProperty('--itm-d-name', delaysMs[0] + 'ms');
+    id?.style.setProperty('--itm-d-role', delaysMs[1] + 'ms');
+    id?.style.setProperty('--itm-d-cta', delaysMs[2] + 'ms');
+    root.classList.remove('itm-hold');
+    // The entrance animations began at first paint and were paused; a
+    // restart makes the new delays count from NOW, which is what lines the
+    // HTML name up with the particles letting go.
+    wrap.querySelectorAll<HTMLElement>('.itm-id__name, .itm-id__role, .itm-id__cta').forEach((el) => {
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+    });
+  }
+  function startMorph(now: number) {
+    const late = now - revealStart > 2600;
+    const text = nameEl?.textContent?.trim() || '';
+    morph = !late && nameEl && text ? createNameMorph(scene, camera, nameEl, text, accent, now) : null;
+    // The name rises exactly as the particles start to let go.
+    releaseEntrance(morph ? [3200, 3400, 3550] : [100, 250, 400]);
+  }
 
   // ---------- scroll progress, spring-smoothed ----------
   let p = 0;
@@ -2299,6 +2878,13 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
 
   const SWAY = 0.25;        // ±14° — clamped, so the figure never turns its back
   const SWAY_SPEED = 0.17;
+  // The identity block sits on the left of wide viewports, so the scene
+  // is shifted right by this fraction of the viewport HEIGHT — height,
+  // because the poster is height-fitted and must land on the same
+  // pixels. A shift lens, not a camera move: perspective is unchanged.
+  // Eased back to centre during the dolly so the screen fills the frame
+  // dead-on at the end.
+  const SHIFT_H = 0.19;
   const PAR_AZ = 0.16;      // ±9° pointer azimuth
   const PAR_POL = 0.07;
 
@@ -2333,25 +2919,39 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
     // Scan-in over 1.6s, eased.
     const rt = clamp01((now - revealStart) / 1600);
     uniforms.uReveal.value = rt * rt * (3 - 2 * rt);
+    if (resweepAt === 0) resweepAt = revealStart + 25000;
+    if (now >= resweepAt) {
+      const st = clamp01((now - resweepAt) / 2200);
+      uniforms.uResweep.value = st * st * (3 - 2 * st);
+      if (st >= 1) { resweepAt = now + 25000; uniforms.uResweep.value = 1; }
+    }
 
     // Critically-damped spring on scroll. A plain exponential lerp
     // still snaps on the first frame after a wheel burst; a spring is
     // C1-continuous, which is what makes the dolly feel like one glide.
     const target = clamp01(readProgress());
-    const omega = 2 * Math.PI * 1.5;
+    // 1.1 Hz: a wheel burst resolves over ~0.6 s, which reads as one
+    // glide rather than a nudge. Any lower and a fast scroll lags the hero.
+    const omega = 2 * Math.PI * 1.1;
     vel += (omega * omega * (target - p) - 2 * omega * vel) * dt;
     p += vel * dt;
 
     if (ready) {
       // Slow clamped sway instead of a full turntable: a visitor only
       // sees a few seconds of this, and a bounded sway guarantees the
-      // opening frame is always the readable front view.
-      group.rotation.y = SWAY * Math.sin(uniforms.uTime.value * SWAY_SPEED);
+      // opening frame is always the readable front view. It starts from
+      // zero at the reveal and eases in over six seconds, so the frame
+      // the poster was captured on is also the frame the canvas fades
+      // in on.
+      const ts = (now - revealStart) / 1000;
+      group.rotation.y = SWAY * smoothstep01(0, 6, ts) * Math.sin(ts * SWAY_SPEED);
     }
 
     // Dolly, then orbit the pointer offset around the aim point, which
     // is itself travelling toward the screen.
-    camera.position.lerpVectors(START, END, p * p);
+    // Ease-in-cubic at the start, so the first wheel tick barely moves
+    // the camera and the approach gathers pace into the screen.
+    camera.position.lerpVectors(START, END, p * p * (0.6 + 0.4 * p));
     lookAt.lerpVectors(LOOK, LOOK_END, smoothstep01(0.15, 1, p));
 
     // Parallax authority fades out on approach — the radius to the
@@ -2361,6 +2961,15 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
     parX += (pointerX * PAR_AZ * authority - parX) * Math.min(1, dt * 2.4);
     parY += (pointerY * PAR_POL * authority - parY) * Math.min(1, dt * 2.4);
 
+    // Torch: smoothed pointer, fades with the dolly like the parallax.
+    torchX += (pointerX - torchX) * Math.min(1, dt * 9);
+    torchY += (-pointerY - torchY) * Math.min(1, dt * 9);
+    torchOn += ((pointerSeen ? 1 : 0) * authority - torchOn) * Math.min(1, dt * 4);
+    uniforms.uPointer.value.set(torchX, torchY);
+    uniforms.uPointerOn.value = torchOn;
+
+    glitch(now, p);
+
     offset.copy(camera.position).sub(lookAt);
     spherical.setFromVector3(offset);
     spherical.theta += parX;
@@ -2369,10 +2978,24 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
     camera.position.copy(lookAt).add(offset);
     camera.lookAt(lookAt);
 
+    // Focus pull, figure to screen surface.
+    focusAt.lerpVectors(LOOK, FOCUS_END, smoothstep01(0.15, 1, p));
+    uniforms.uFocus.value = camera.position.distanceTo(focusAt);
+
+    // Off-centre composition while the identity block is on the left
+    // (wide viewports only — below 820px it sits at the bottom instead).
+    const shift = viewW > 820 ? SHIFT_H * viewH * (1 - smoothstep01(0, 0.6, p)) : 0;
+    camera.setViewOffset(viewW, viewH, -shift, 0, viewW, viewH);
+
     // Hand off to the violet veil at the very end.
     uniforms.uOpacity.value = 1 - Math.max(0, p - 0.9) * 10;
     // Screen bloom, held back until the approach is underway.
     uniforms.uScreenGlow.value = smoothstep01(0.3, 0.95, p) * 1.15;
+
+    // The morph samples the screen through this frame's projection, so it
+    // must be built after the view offset above is in place.
+    if (ready && morph === undefined) startMorph(now);
+    if (morph && !morph.update(now, uniforms.uScale.value / dpr)) morph = null;
 
     renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
@@ -2411,8 +3034,9 @@ if (wrap && canvas && !reduced) {
     boot(wrap, canvas);
   } catch {
     // WebGL unavailable, context creation failed, shader compile
-    // rejected — the static CSS fallback (.itm-fallback) is already in
-    // the markup and visible behind us.
+    // rejected — the poster is already in the markup and visible behind
+    // us. Let the identity block in; nothing else is going to.
     canvas.style.display = 'none';
+    document.documentElement.classList.remove('itm-hold');
   }
 }

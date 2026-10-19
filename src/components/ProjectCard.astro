@@ -11,7 +11,8 @@
 // card in CSS, so the media, the stats and the "Read the case study" affordance
 // are all deliberately non-interactive.
 // ---------------------------------------------------------------------------
-import { brandChipStyle, coverWebp, type Project } from '../data/projects';
+import { brandChipStyle, type Project } from '../data/projects';
+import ProjectDash from './ProjectDash.astro';
 
 interface Props {
   project: Project;
@@ -19,8 +20,6 @@ interface Props {
 }
 
 const { project, index } = Astro.props;
-
-const webp = coverWebp(project.cover);
 
 const href = `/work/${project.slug}/`;
 const titleId = `pc-t-${project.slug}`;
@@ -51,7 +50,7 @@ const dec = (n: number) => String(n).split('.')[1]?.length ?? 0;
 ---
 
 <section
-  class="pc-card"
+  class="pc-card hud-frame hud-frame--hover"
   id={`pc-${project.slug}`}
   data-filter-item
   data-tags={project.tags.join(' ')}
@@ -64,23 +63,21 @@ const dec = (n: number) => String(n).split('.')[1]?.length ?? 0;
   style={`--pc-i:${index}`}
 >
   <div class="pc-card__media" data-spotlight>
-    <picture>
-      {webp && <source srcset={webp} type="image/webp" />}
-      <img
-        class="pc-card__img"
-        src={project.cover}
-        alt={project.coverAlt}
-        width={project.coverWidth}
-        height={project.coverHeight}
-        loading="lazy"
-        decoding="async"
-      />
-    </picture>
+    <!-- A compact dashboard mock rendered from the project's own figures
+         stands in for a cover image: static, no observers, brand colours. -->
+    <ProjectDash project={project} variant="compact" />
+    <!-- The three findings, revealed on hover/focus. Pointer-only. -->
+    <ul class="pc-card__peek" aria-hidden="true">
+      {project.findings.map((f) => (
+        <li><b>{f.value}</b><span>{f.label}</span></li>
+      ))}
+    </ul>
     <span
       class="pc-card__badge"
       style={brandChipStyle(project.brand)}
     >{project.brand.wordmark}</span>
     {project.illustrative && <span class="pc-card__illus">Illustrative</span>}
+    <span class="pc-card__idx hud-label" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
   </div>
 
   <div class="pc-card__body">
@@ -134,3 +131,31 @@ const dec = (n: number) => String(n).split('.')[1]?.length ?? 0;
     </p>
   </div>
 </section>
+
+<style>
+  .pc-card__peek {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    margin: 0;
+    padding: 14px 16px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(10, 10, 12, 0.88);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    pointer-events: none;
+  }
+  .pc-card__peek li { display: grid; gap: 2px; }
+  .pc-card__peek b { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: #c4b5fd; }
+  .pc-card__peek span { font-size: 12px; line-height: 1.35; color: #d2d2d7; }
+  @media (hover: hover) {
+    .pc-card:hover .pc-card__peek,
+    .pc-card:focus-within .pc-card__peek { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pc-card__peek { transition: none; } }
+</style>
