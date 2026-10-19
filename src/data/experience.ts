@@ -27,12 +27,12 @@ export const experience: Role[] = [
     logo: '/images/logo-icon.png',
     intro:
       'AI, data and automation for small and mid-sized Irish businesses, co-founded with Douglas Woollam. Every engagement is scoped around a <strong>measurable outcome</strong> — hours returned or cost avoided — and run end to end: discovery, build, validation, handover.',
-    tools: 'Claude Code · Codex CLI · Claude API · Python · SQL · JavaScript/Node · Playwright · Vercel · Notion',
+    tools: 'Claude Code · Codex CLI · Claude API · MCP · Python · SQL · JavaScript/Node · Swift · Playwright · Vercel · Notion',
     points: [
-      'Built the delivery engine for the <strong>AI Opportunity Assessment</strong>: an agent that turns a discovery-call transcript into a client-branded, ROI-backed report, with an honesty check that blocks unsupported claims. First assessment delivered to a client in August 2026.',
+      'Built the delivery engine for the <strong>AI Opportunity Assessment</strong>: an agent that turns a discovery-call transcript into a client-branded, ROI-backed report, with an honesty gate that blocks any claim the client didn’t support. Delivered to the first client before launch.',
       'Built a <strong>guardrailed Instagram DM assistant</strong> on Meta’s Messenger Platform that answers customer enquiries 24/7 within strict rules, so it never gives a made-up answer.',
       'Turned <strong>28 standalone AI workflows</strong> into a shared, version-controlled skills library, and built a knowledge base that syncs Git and Notion automatically as one source of truth.',
-      'Designed the company’s products showcase, including a live demo of <strong>BlarneyKey</strong>, a free, private, offline AI dictation app for macOS.',
+      'Co-built and shipped <strong>BlarneyKey</strong>, a free, open-source macOS dictation app that runs Whisper on the Apple Neural Engine fully offline.',
     ],
     tags: ['Co-founder', 'AI agents', 'Outcome-scoped', 'Cork, Ireland'],
   },
