@@ -15,3 +15,6 @@ tools/shots/
 _source/
 # personal working drafts — not site source, and this repo is public
 LINKEDIN.md
+
+# Claude Code per-machine permissions
+.claude/settings.local.json
