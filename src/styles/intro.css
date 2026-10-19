@@ -239,6 +239,7 @@
   color: #fff;
   transform: translateY(calc(-50% - var(--itm-p) * 120px));
   opacity: calc(1 - var(--itm-p) * 2.8);
+  transition: opacity 0.12s linear, transform 0.12s linear;
 }
 .itm-id.is-gone { visibility: hidden; }
 /* Corner marks: two L brackets, top-left and bottom-right, so the block

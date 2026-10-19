@@ -339,3 +339,41 @@ html.mo-js .mo-bar__fill { width: 0; }
   .mo-scale { scale: none !important; }
   .mo-spotlight::before { display: none; }
 }
+
+/* ============================================================
+   HUD cursor ring (cursor.ts) — fine pointers, motion allowed.
+   ============================================================ */
+.hud-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--color-primary);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transition: opacity 0.25s ease, width 0.2s var(--reveal-ease), height 0.2s var(--reveal-ease), border-radius 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+.hud-cursor.is-on { opacity: 0.9; }
+/* Over a link the ring squares off into corner brackets. */
+.hud-cursor.is-link {
+  width: 36px;
+  height: 36px;
+  border-radius: 0;
+  border-color: transparent;
+  background:
+    linear-gradient(var(--color-primary), var(--color-primary)) 0 0 / 10px 1.5px no-repeat,
+    linear-gradient(var(--color-primary), var(--color-primary)) 0 0 / 1.5px 10px no-repeat,
+    linear-gradient(var(--color-primary), var(--color-primary)) 100% 0 / 10px 1.5px no-repeat,
+    linear-gradient(var(--color-primary), var(--color-primary)) 100% 0 / 1.5px 10px no-repeat,
+    linear-gradient(var(--color-primary), var(--color-primary)) 0 100% / 10px 1.5px no-repeat,
+    linear-gradient(var(--color-primary), var(--color-primary)) 0 100% / 1.5px 10px no-repeat,
+    linear-gradient(var(--color-primary), var(--color-primary)) 100% 100% / 10px 1.5px no-repeat,
+    linear-gradient(var(--color-primary), var(--color-primary)) 100% 100% / 1.5px 10px no-repeat;
+}
+.hud-cursor.is-down { width: 20px; height: 20px; }
+@media (hover: none), (prefers-reduced-motion: reduce) { .hud-cursor { display: none; } }

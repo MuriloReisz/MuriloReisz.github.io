@@ -388,5 +388,9 @@ const pageDesc = project.summary;
   .cse-hero__visual { min-width: 0; }
   @media (min-width: 1024px) { .cse-hero__visual { position: sticky; top: 84px; } }
   .cse-hero--visual :global(.cse-finding__v) { font-size: clamp(40px, 4.2vw, 56px); }
+  /* Section kickers in the HUD readout language. */
+  .cse-section :global(.cs-kicker) { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; letter-spacing: 0.12em; color: var(--color-primary); }
+  .cse-section :global(.cs-kicker)::before { content: "[ "; opacity: 0.55; }
+  .cse-section :global(.cs-kicker)::after { content: " ]"; opacity: 0.55; }
   .cse-hero--visual :global(.cse-findings) { padding-top: 30px; }
 </style>

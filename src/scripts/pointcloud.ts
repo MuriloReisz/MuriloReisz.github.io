@@ -2409,6 +2409,12 @@ const VERT = /* glsl */ `
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     float depth = -mv.z;
 
+    // ---- screen light: the monitor casts onto the desk, keyboard, hands
+    // and chest in front of it. A plain falloff from the panel's centre in
+    // the centred room (0, 0, -0.5), skipped for the screen's own points.
+    vec3 dcast = pos - vec3(0.0, 0.0, -0.5);
+    float scast = exp(-dot(dcast * vec3(1.0, 1.3, 1.0), dcast) * 7.0) * (1.0 - isScreen) * (1.0 - isCode);
+
     // ---- depth of field: how far this point sits off the focal plane,
     // as a 0..1 blur amount. The sky is infinitely far and stays as is.
     vCoc = clamp(abs(depth - uFocus) * uDof, 0.0, 1.0) * (1.0 - isSky);
@@ -2474,7 +2480,8 @@ const VERT = /* glsl */ `
       + isStream * pulse * 1.5
       + isGlyph * step(0.88, grand) * 0.55
       + isTrace * (0.2 + traceHead * 0.9)
-      + pressed * 0.9;
+      + pressed * 0.9
+      + scast * (0.28 + uScreenGlow * 0.3);
 
     // Deliberately NOT multiplied by fog: fog darkens the colour
     // instead. Folding it into alpha as well made distant geometry
@@ -2923,7 +2930,9 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
     // still snaps on the first frame after a wheel burst; a spring is
     // C1-continuous, which is what makes the dolly feel like one glide.
     const target = clamp01(readProgress());
-    const omega = 2 * Math.PI * 1.5;
+    // 1.1 Hz: a wheel burst resolves over ~0.6 s, which reads as one
+    // glide rather than a nudge. Any lower and a fast scroll lags the hero.
+    const omega = 2 * Math.PI * 1.1;
     vel += (omega * omega * (target - p) - 2 * omega * vel) * dt;
     p += vel * dt;
 
@@ -2940,7 +2949,9 @@ function boot(wrap: HTMLElement, canvas: HTMLCanvasElement) {
 
     // Dolly, then orbit the pointer offset around the aim point, which
     // is itself travelling toward the screen.
-    camera.position.lerpVectors(START, END, p * p);
+    // Ease-in-cubic at the start, so the first wheel tick barely moves
+    // the camera and the approach gathers pace into the screen.
+    camera.position.lerpVectors(START, END, p * p * (0.6 + 0.4 * p));
     lookAt.lerpVectors(LOOK, LOOK_END, smoothstep01(0.15, 1, p));
 
     // Parallax authority fades out on approach — the radius to the

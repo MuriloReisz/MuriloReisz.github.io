@@ -56,7 +56,9 @@ const items = [
 
 <style>
   .screens__media { position: relative; }
-  .screens__media img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+  .screens__media img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; transition: transform 0.6s var(--reveal-ease); }
+  .screens__slide:hover .screens__media img { transform: scale(1.03); }
+  @media (prefers-reduced-motion: reduce) { .screens__media img { transition: none; } .screens__slide:hover .screens__media img { transform: none; } }
   .screens__n {
     position: absolute;
     top: 10px;
