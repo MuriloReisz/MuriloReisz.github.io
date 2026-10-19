@@ -31,12 +31,29 @@ const series = [
 >
   <section class="tile tile--white center" id="notfound">
     <div class="inner center" data-stagger>
-      <div class="eyebrow reveal">404</div>
+      <div class="eyebrow eyebrow--hud reveal">404</div>
       <h1 class="metrics__h2" data-reveal-words>That page has moved on.</h1>
       <p class="hero__sub reveal">
         The link is broken or the page has been renamed. Nothing here is lost — the portfolio,
         the case studies and the demos are all one click away.
       </p>
+
+      <!-- A terminal that prints what actually happened: the real path that
+           was requested, the real routes, the real most-read case studies.
+           Lines print one by one (all at once under reduced motion). -->
+      <div class="nf-term hud-frame reveal" data-nf-term>
+        <p class="nf-term__line"><span class="nf-term__p">&gt;</span><span>GET <span data-nf-path>/</span></span></p>
+        <p class="nf-term__line nf-term__line--err"><span class="nf-term__p">&lt;</span><span>404 not found</span></p>
+        <p class="nf-term__line"><span class="nf-term__p">&gt;</span><span>ls /</span></p>
+        <p class="nf-term__line nf-term__line--list"><span class="nf-term__p"></span><span>
+          <a href="/">home</a> <a href="/work/">work</a> <a href="/cv/">cv</a> <a href="/playground/">playground</a> <a href="/services/">services</a> <a href="/ai-services/">ai-services</a> <a href="/privacy/">privacy</a>
+        </span></p>
+        <p class="nf-term__line"><span class="nf-term__p">&gt;</span><span>most-read</span></p>
+        {popular.map((p) => (
+          <p class="nf-term__line nf-term__line--list"><span class="nf-term__p"></span><a href={`/work/${p.slug}/`}>{p.title}</a></p>
+        ))}
+        <p class="nf-term__line"><span class="nf-term__p">&gt;</span><span class="nf-term__caret" aria-hidden="true"></span></p>
+      </div>
 
       <figure class="nf-fig reveal">
         <div
@@ -83,7 +100,60 @@ const series = [
   </section>
 </Layout>
 
+<style>
+  /* Scoped to this page: nothing here ships to the other routes. */
+  .nf-term {
+    --hud-c: rgba(167, 139, 250, 0.8);
+    width: 100%;
+    max-width: 640px;
+    margin: 26px auto 0;
+    padding: 20px 22px 18px;
+    text-align: left;
+    background: #121214;
+    color: #d2d2d7;
+    border: 1px solid rgba(167, 139, 250, 0.28);
+    box-shadow: 6px 6px 0 rgba(109, 94, 240, 0.5);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .nf-term__line {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 8px;
+    margin: 0 0 4px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .nf-term__line.is-in { opacity: 1; transform: none; }
+  .nf-term__p { color: #a78bfa; font-weight: 700; }
+  .nf-term__line--err span:last-child { color: #c4b5fd; }
+  .nf-term__line--list { color: #98989d; }
+  .nf-term__line--list a { color: #e4e1f5; text-decoration: none; border-bottom: 1px solid rgba(167, 139, 250, 0.35); margin-right: 14px; }
+  .nf-term__line--list a:hover, .nf-term__line--list a:focus-visible { color: #fff; border-bottom-color: #a78bfa; }
+  .nf-term__caret { display: inline-block; width: 0.6em; height: 1em; vertical-align: -0.15em; background: #a78bfa; animation: nf-caret 1.1s steps(2, start) infinite; }
+  @keyframes nf-caret { to { visibility: hidden; } }
+  @media (prefers-reduced-motion: reduce) {
+    .nf-term__line { transition: none; }
+    .nf-term__caret { animation: none; }
+  }
+</style>
+
 <script>
+  import { prefersReduced } from '../scripts/dom';
+
+  /* The terminal prints what happened. The path is written as text, never
+     as markup, so a hostile URL renders as characters. */
+  const term = document.querySelector<HTMLElement>('[data-nf-term]');
+  if (term) {
+    const path = term.querySelector<HTMLElement>('[data-nf-path]');
+    if (path) path.textContent = location.pathname + location.search;
+    const lines = Array.from(term.querySelectorAll<HTMLElement>('.nf-term__line'));
+    if (prefersReduced()) lines.forEach((l) => l.classList.add('is-in'));
+    else lines.forEach((l, i) => setTimeout(() => l.classList.add('is-in'), 350 + i * 140));
+  }
+
   /* Reshuffle the chart on demand. widgets.ts already watches data-series with a
      MutationObserver, so rewriting the attribute is the whole implementation —
      it redraws with its own animation, and this page ships no chart code of its

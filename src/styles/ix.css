@@ -442,3 +442,57 @@ html.ix-noscroll { overflow: hidden; }
   .ix-range:hover::-webkit-slider-thumb,
   .ix-range:active::-webkit-slider-thumb { transform: none; }
 }
+
+/* ============================================================
+   HUD — the intro's readout language, carried through the site.
+   Labels are bracketed mono; frames are four corner marks drawn as
+   backgrounds (no extra DOM, no layout). .hud-frame--hover grows the
+   marks in on hover/focus; reduced motion shows them static.
+   ============================================================ */
+.hud-label {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.hud-label::before { content: "[ "; opacity: 0.55; }
+.hud-label::after { content: " ]"; opacity: 0.55; }
+.hud-label--dark { color: var(--color-primary-on-dark); }
+/* An .eyebrow that trades its blinking square for brackets. */
+.eyebrow--hud::before {
+  content: "[ ";
+  width: auto;
+  height: auto;
+  background: none;
+  animation: none;
+  opacity: 0.55;
+}
+.eyebrow--hud::after { content: " ]"; opacity: 0.55; }
+
+.hud-frame {
+  --hud-c: color-mix(in srgb, var(--color-primary) 75%, transparent);
+  --hud-s: 10px;
+  background-image:
+    linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+    linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+    linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+    linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c));
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0, 100% 0, 100% 0, 0 100%, 0 100%, 100% 100%, 100% 100%;
+  background-size:
+    var(--hud-s) 1.5px, 1.5px var(--hud-s),
+    var(--hud-s) 1.5px, 1.5px var(--hud-s),
+    var(--hud-s) 1.5px, 1.5px var(--hud-s),
+    var(--hud-s) 1.5px, 1.5px var(--hud-s);
+  transition: background-size 0.22s var(--reveal-ease);
+}
+.hud-frame--hover { --hud-s: 0px; }
+.hud-frame--hover:hover,
+.hud-frame--hover:focus-within,
+.hud-frame--hover:focus-visible { --hud-s: 12px; }
+@media (prefers-reduced-motion: reduce) {
+  .hud-frame { transition: none; }
+  .hud-frame--hover { --hud-s: 10px; }
+}

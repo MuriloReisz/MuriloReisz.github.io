@@ -43,6 +43,20 @@
 /* ============================================================
    STAT BAND — four headline numbers, dark tile
    ============================================================ */
+.hm-statband__value::before { content: "> "; opacity: 0.4; }
+/* A rule that draws itself under each figure as the band reveals. */
+.hm-statband__item::after {
+  content: "";
+  display: block;
+  height: 2px;
+  margin-top: 14px;
+  background: linear-gradient(90deg, var(--color-primary-on-dark), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s var(--reveal-ease) 0.25s;
+}
+.hm-statband__item.is-visible::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) { .hm-statband__item::after { transform: none; transition: none; } }
 .hm-statband__grid {
   list-style: none;
   margin: 0;
@@ -414,6 +428,16 @@
 .hm-fw {
   background: var(--color-black);
   padding: 84px 0 92px;
+  position: relative;
+  isolation: isolate;
+}
+.hm-fw::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(167, 139, 250, 0.035) 0 1px, transparent 1px 4px);
 }
 
 .hm-fw__inner {
@@ -444,6 +468,10 @@
   font-size: 12px;
   color: #6c6c72;
 }
+.hm-fw__eyebrow::before,
+.hm-fw__count::before { content: "[ "; opacity: 0.55; }
+.hm-fw__eyebrow::after,
+.hm-fw__count::after { content: " ]"; opacity: 0.55; }
 
 .hm-fw__h2 {
   font-family: var(--font-display);
@@ -520,6 +548,45 @@
 
 .hm-fw__card:hover .hm-fw__scan,
 .hm-fw__card:focus-visible .hm-fw__scan { opacity: 1; }
+
+/* HUD corners on a dark card, and a one-pass scan sweep on hover: a bright
+   line that travels down the card once, like the intro's scan-in. */
+.hm-fw__card { --hud-c: rgba(167, 139, 250, 0.85); }
+.hm-fw__card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 2px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, #c4b5fd 30%, #fff 50%, #c4b5fd 70%, transparent);
+  box-shadow: 0 0 12px 2px rgba(167, 139, 250, 0.45);
+}
+.hm-fw__card:hover::after,
+.hm-fw__card:focus-visible::after { animation: hm-sweep 0.9s var(--reveal-ease) forwards; }
+@keyframes hm-sweep {
+  0%   { top: -2px; opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+/* The real destination, shown dim beside the CTA on hover — the one piece
+   of "telemetry" that is simply true. */
+.hm-fw__cta::after {
+  content: attr(data-path);
+  display: block;
+  margin-top: 4px;
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #6c6c72;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.hm-fw__card:hover .hm-fw__cta::after,
+.hm-fw__card:focus-visible .hm-fw__cta::after { opacity: 0.9; }
 
 /* ---------- card contents ---------- */
 .hm-fw__top {
@@ -636,6 +703,9 @@
   .hm-fw__card:hover,
   .hm-fw__card:focus-visible { transform: none; }
   .hm-fw__scan { transition: none; }
+  .hm-fw__card:hover::after,
+  .hm-fw__card:focus-visible::after { animation: none; }
+  .hm-fw__cta::after { transition: none; }
 }
 
 /* Chip count, appended to the tool filter chips on the home page. */

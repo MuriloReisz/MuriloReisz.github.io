@@ -1,0 +1,304 @@
+---
+// ---------------------------------------------------------------------------
+// ProjectDash — a dashboard rendered from the write-up, not a screenshot.
+//
+// hero    the case-study's opening visual: the four impact slots counting
+//         up, a main panel showing whatever the project can show honestly
+//         (measured before/after pairs → a measured series → the approach as
+//         a flow), the stack as a sources rail, and a status line of the
+//         figures that are real numbers. Nothing is padded: no series means
+//         no chart, no counts means no status line.
+// compact the cover of a project card: static text, no counters, no
+//         observers, so a grid of ten never animates while scrolling.
+//
+// It is labelled as a mock in the header rail on purpose.
+// ---------------------------------------------------------------------------
+import { brandChipStyle, type Project } from '../data/projects';
+import { dashMode, numericMetrics, rampVars } from '../data/caseVisuals';
+import ProjectFlow from './ProjectFlow.astro';
+
+interface Props {
+  project: Project;
+  variant?: 'hero' | 'compact';
+}
+
+const { project, variant = 'hero' } = Astro.props;
+const p = project;
+const mode = dashMode(p);
+const hero = variant === 'hero';
+const numeric = numericMetrics(p);
+
+const slots = [
+  { kicker: 'Value', m: p.impact.value },
+  { kicker: 'Time', m: p.impact.time },
+  { kicker: 'Effort', m: p.impact.effort },
+  { kicker: 'Quality', m: p.impact.quality },
+];
+const dec = (n: number) => String(n).split('.')[1]?.length ?? 0;
+
+const series = p.chart?.series ?? [];
+const chartKind = series.length >= 6 ? 'line' : 'bar';
+const chartSeries = JSON.stringify(series.map((s) => ({ label: s.label, value: s.value })));
+const chartDec = series.some((s) => !Number.isInteger(s.value)) ? '1' : '0';
+const seriesMax = Math.max(1, ...series.map((s) => s.value));
+
+const fmt = (n: number) => (Number.isInteger(n) ? String(n) : String(Number(n.toFixed(2))));
+const width = (v: number, max: number) => (max <= 0 || v <= 0 ? 0 : Math.max(1.5, (v / max) * 100));
+const pairs = p.beforeAfter.slice(0, hero ? 4 : 2);
+---
+
+<section
+  class:list={['pdash', hero ? 'pdash--hero hud-frame' : 'pdash--compact']}
+  style={`${brandChipStyle(p.brand)}; ${rampVars(p)}`}
+  data-stagger={hero ? '' : undefined}
+  aria-label={`${p.title}: dashboard mock rendered from the write-up`}
+>
+  <header class="pdash__bar">
+    <span class="pdash__wm">{p.brand.wordmark}</span>
+    <span class="pdash__period">{p.period}</span>
+    <span class="pdash__tag">{hero ? 'Mock · rendered from this write-up' : 'Mock'}</span>
+  </header>
+
+  {hero ? (
+    <ul class="pdash__tiles">
+      {slots.map(({ kicker, m }) => (
+        <li class="pdash__tile reveal">
+          <span class="pdash__kicker">{kicker}</span>
+          {m.count !== undefined ? (
+            <span class="pdash__n" data-counter-to={String(m.count)} data-counter-prefix={m.prefix} data-counter-suffix={m.suffix} data-counter-dec={String(dec(m.count))}>{m.value}</span>
+          ) : (
+            <span class="pdash__n">{m.value}</span>
+          )}
+          <span class="pdash__l">{m.label}</span>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="pdash__big">
+      <span class="pdash__n">{p.findings[0].value}</span>
+      <span class="pdash__l">{p.findings[0].label}</span>
+    </p>
+  )}
+
+  <div class:list={['pdash__main', `pdash__main--${mode}`, hero && 'reveal']}>
+    {mode === 'pairs' && (
+      <dl class="pdash__pairs">
+        {pairs.map((row) => {
+          const max = Math.max(row.before, row.after);
+          return (
+            <div class="pdash__pair">
+              <dt class="pdash__pk">{row.metric}</dt>
+              <dd class="pdash__pv">
+                <span class="pdash__pside">
+                  <i class="pdash__pl">before</i>
+                  {hero ? (
+                    <span class="pdash__track mo-bar" data-bar-to={String(width(row.before, max))} aria-hidden="true"><span class="mo-bar__fill pdash__fill pdash__fill--before"></span></span>
+                  ) : (
+                    <span class="pdash__track" aria-hidden="true"><span class="pdash__fill pdash__fill--before" style={`width:${width(row.before, max)}%`}></span></span>
+                  )}
+                  <b>{fmt(row.before)} {row.unit}</b>
+                </span>
+                <span class="pdash__pside">
+                  <i class="pdash__pl">after</i>
+                  {hero ? (
+                    <span class="pdash__track mo-bar" data-bar-to={String(width(row.after, max))} aria-hidden="true"><span class="mo-bar__fill pdash__fill pdash__fill--after"></span></span>
+                  ) : (
+                    <span class="pdash__track" aria-hidden="true"><span class="pdash__fill pdash__fill--after" style={`width:${width(row.after, max)}%`}></span></span>
+                  )}
+                  <b>{fmt(row.after)} {row.unit}</b>
+                </span>
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
+    )}
+
+    {mode === 'series' && hero && (
+      <div
+        class="pdash__chart"
+        data-chart={chartKind}
+        data-series={chartSeries}
+        data-chart-title={`${p.chart!.title} (${p.chart!.unit})`}
+        data-chart-color={p.brand.accent}
+        data-chart-dec={chartDec}
+      ></div>
+    )}
+    {mode === 'series' && !hero && (
+      <div class="pdash__mini" aria-hidden="true">
+        {series.slice(-12).map((s) => <span class="pdash__minibar" style={`height:${Math.max(4, (s.value / seriesMax) * 100)}%`}></span>)}
+      </div>
+    )}
+
+    {mode === 'flow' && (hero ? <ProjectFlow project={p} column /> : <ProjectFlow project={p} compact />)}
+  </div>
+
+  {hero && (
+    <aside class="pdash__rail reveal" aria-label="Stack">
+      <span class="pdash__kicker">Sources &amp; tools</span>
+      <ul class="pdash__stack">
+        {p.stack.map((s) => <li>{s}</li>)}
+      </ul>
+    </aside>
+  )}
+
+  {hero && numeric.length > 0 && (
+    <footer class="pdash__status reveal">
+      {numeric.map((m) => (
+        <span class="pdash__stat"><b>{m.value}</b> {m.label}</span>
+      ))}
+    </footer>
+  )}
+</section>
+
+<style>
+  .pdash {
+    --pa: var(--chip-a, var(--color-primary));
+    --pb: var(--chip-a2, var(--color-primary));
+    --hud-c: color-mix(in srgb, var(--pa) 80%, transparent);
+    /* ix-chart labels and the mono helpers read --color-ink; this panel is
+       always dark, in both themes. */
+    --color-ink: #f5f5f7;
+    --color-ink-80: #d2d2d7;
+    --color-ink-48: #98989d;
+    --color-hairline: rgba(255, 255, 255, 0.14);
+    position: relative;
+    display: grid;
+    gap: 14px;
+    padding: 16px 18px 16px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--pa) 18%, transparent), transparent 60%),
+      repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 4px),
+      #121214;
+    color: #f5f5f7;
+    border: 1px solid color-mix(in srgb, var(--pa) 40%, transparent);
+    box-shadow: 6px 6px 0 color-mix(in srgb, var(--pa) 45%, transparent);
+    font-family: var(--font-text);
+  }
+  .pdash--hero {
+    grid-template-columns: minmax(0, 1fr) 150px;
+    grid-template-areas: "bar bar" "tiles tiles" "main rail" "status status";
+  }
+  .pdash--compact {
+    position: absolute;
+    inset: 0;
+    gap: 8px;
+    padding: 12px 14px;
+    box-shadow: none;
+    border: 0;
+    overflow: hidden;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: "bar" "big" "main";
+  }
+  .pdash--compact .pdash__bar { padding-bottom: 6px; font-size: 9.5px; }
+  .pdash--compact .pdash__big { grid-area: big; }
+  .pdash--compact .pdash__main { grid-area: main; display: flex; flex-direction: column; justify-content: flex-end; }
+  .pdash--compact .pdash__pairs { gap: 6px; }
+  .pdash--compact .pdash__pk { font-size: 10.5px; }
+  .pdash--compact .pdash__pside { font-size: 10px; grid-template-columns: 38px minmax(0, 1fr) auto; gap: 6px; }
+  .pdash--compact .pdash__pl { font-size: 8.5px; }
+  .pdash--compact .pdash__track { height: 5px; }
+  .pdash__bar {
+    grid-area: bar;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+    border-bottom: 1px solid color-mix(in srgb, var(--pa) 35%, transparent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .pdash__wm { font-weight: 700; color: var(--pb); }
+  .pdash__period { color: #98989d; }
+  .pdash__tag { margin-left: auto; color: #98989d; }
+  .pdash__tag::before { content: "[ "; opacity: 0.55; }
+  .pdash__tag::after { content: " ]"; opacity: 0.55; }
+
+  .pdash__tiles {
+    grid-area: tiles;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .pdash__tile {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px 12px;
+    min-height: 92px;
+    background: rgba(255, 255, 255, 0.035);
+    border-top: 2px solid var(--pa);
+  }
+  .pdash__kicker {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pb);
+  }
+  .pdash__n {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2vw, 26px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+  }
+  .pdash__l { font-size: 11.5px; line-height: 1.35; color: #a1a1a6; }
+  .pdash__big { margin: 0; display: flex; flex-direction: column; gap: 3px; }
+  .pdash__big .pdash__n { font-size: clamp(24px, 3vw, 34px); }
+
+  .pdash__main { grid-area: main; min-width: 0; }
+  .pdash__chart { aspect-ratio: 640 / 300; min-height: 150px; }
+  .pdash__chart :global(.ix-chart__title) { color: #d2d2d7; }
+
+  .pdash__pairs { margin: 0; display: grid; gap: 10px; }
+  .pdash__pair { display: grid; gap: 5px; }
+  .pdash__pk { font-size: 12px; font-weight: 600; color: #d2d2d7; }
+  .pdash__pv { margin: 0; display: grid; gap: 4px; }
+  .pdash__pside { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 8px; font-size: 11.5px; }
+  .pdash__pl { font-style: normal; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #98989d; }
+  .pdash__track { display: block; height: 7px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+  .pdash__fill { display: block; height: 100%; }
+  .pdash__fill--before { background: rgba(255, 255, 255, 0.35); }
+  .pdash__fill--after { background: linear-gradient(90deg, var(--pa), var(--pb)); }
+  .pdash__pside b { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+
+  .pdash__mini { display: flex; align-items: flex-end; gap: 4px; height: 100%; min-height: 48px; }
+  .pdash__minibar { flex: 1 1 0; background: linear-gradient(180deg, var(--pb), var(--pa)); opacity: 0.9; }
+
+  .pdash__rail { grid-area: rail; display: flex; flex-direction: column; gap: 8px; padding-left: 14px; border-left: 1px solid rgba(255, 255, 255, 0.1); }
+  .pdash__stack { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .pdash__stack li { font-family: var(--font-mono); font-size: 10.5px; line-height: 1.35; color: #d2d2d7; }
+  .pdash__stack li::before { content: "› "; color: var(--pb); }
+
+  .pdash__status {
+    grid-area: status;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #a1a1a6;
+  }
+  .pdash__stat b { color: #fff; font-weight: 700; }
+
+  @media (max-width: 640px) {
+    .pdash--hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "bar" "tiles" "main" "rail" "status"; }
+    .pdash__tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pdash__rail { padding-left: 0; border-left: 0; }
+    .pdash__stack { flex-direction: row; flex-wrap: wrap; gap: 4px 12px; }
+  }
+</style>

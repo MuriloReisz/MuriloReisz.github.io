@@ -42,7 +42,7 @@ const dec = (n: number) => String(n).split('.')[1]?.length ?? 0;
 ---
 
 <a
-  class="hm-fw__card reveal"
+  class="hm-fw__card hud-frame hud-frame--hover reveal"
   href={`/work/${project.slug}/`}
   data-tags={project.tags.join(' ')}
   aria-label={`Read the ${project.title} case study`}
@@ -78,5 +78,5 @@ const dec = (n: number) => String(n).split('.')[1]?.length ?? 0;
   </span>
 
   <span class="hm-fw__rule" aria-hidden="true"></span>
-  <span class="hm-fw__cta">Read the case study <span aria-hidden="true">›</span></span>
+  <span class="hm-fw__cta" data-path={`/work/${project.slug}/`}>Read the case study <span aria-hidden="true">›</span></span>
 </a>

@@ -2,119 +2,156 @@
 // IntoTheMachine — the site's cold open: a procedural point-cloud
 // impression of a person at a desk (no real 3D scan — coded from
 // primitive shapes in src/scripts/pointcloud.ts), rendered with
-// Three.js. It auto-rotates continuously; scrolling through the tall
-// .itm-wrap track dollies the camera toward the monitor while a violet
-// veil fades in, so the visitor appears to fly through the screen and
-// land on the real hero underneath.
+// Three.js. Scrolling through the .itm-wrap track dollies the camera
+// toward the monitor while a violet veil fades in, so the visitor
+// appears to fly through the screen and land on the real hero.
+//
+// Three modes, decided before first paint by the inline script below:
+//   (none)  desktop: poster paints first, Three.js takes over when ready.
+//   lite    phones / coarse pointers: the poster plus a CSS scan-in and a
+//           slow breathe, no Three.js at all. The poster IS a render of the
+//           same scene, so the phone sees the same picture at a fraction of
+//           the cost — the 528 KB library and a 200k-point build were the
+//           heaviest thing on a first mobile visit.
+//   skip    already seen, or prefers-reduced-motion: display:none.
+//
+// The identity block (.itm-id) is NOT decoration: it is what makes the
+// first viewport pass the five-second test — name, role, two real CTAs —
+// so it sits outside the aria-hidden scene and is keyboard-reachable.
 //
 // Three.js is ~528 KB, so it is loaded by a *dynamic* import from a
-// component-scoped <script> rather than a static one. That means it is only
-// fetched when the intro is actually going to play: not on other pages, not
-// under prefers-reduced-motion, and not for a visitor who has already seen it
-// or skipped it. A static <script src> would have downloaded it every time
-// regardless, which is what used to happen on every single homepage visit.
+// component-scoped <script> and only when the intro will actually play:
+// not on other pages, not in lite or skip mode.
 //
-// If WebGL is unavailable the empty .itm-fallback panel underneath (sat behind
-// the canvas) is what's left — plain black, same as the canvas's own
-// background.
+// If WebGL is unavailable the poster underneath is simply what stays.
 import '../styles/intro.css';
-import { site } from '../data/site';
+import { site, bookingFor } from '../data/site';
 import { projects } from '../data/projects';
-import { techStack } from '../data/extras';
+
+const { href: bookHref, attrs: bookAttrs } = bookingFor('/#contact');
 
 // The HUD readout. Every line is derived from real site data or is a plain
 // statement of fact about how this page is built — it used to read
 // "Commits Today: 14 / Bugs Fixed: 231 / Last Deploy: 2 min ago", which looks
 // like a live telemetry feed and was invented. A decorative HUD is fine; one
 // that fabricates activity metrics is not, on a site whose whole pitch is
-// numbers you can trust.
+// numbers you can trust. (It also said "Framework: none" for a while, which
+// was simply wrong — this is an Astro site.)
 const stats = [
-  `Case Studies: ${projects.length}`,
-  `Tools In Use: ${techStack.length}`,
-  'Framework: none',
-  'Renderer: WebGL point cloud',
-  'Geometry: procedural, no 3D scan',
+  `Case studies: ${projects.length}`,
+  'Built with: Astro + Three.js',
+  'Scene: procedural point cloud, no 3D scan',
   'Analytics: none',
-  `Location: ${site.location}`,
 ];
 ---
 
-<!-- Pre-paint skip decision. Inline and synchronous, ahead of the section, for
-     the same reason the theme script in Layout.astro is: deciding after paint
-     would show 240vh of black cold open and then yank it away. -->
+<!-- Pre-paint mode decision. Inline and synchronous, ahead of the section,
+     for the same reason the theme script in Layout.astro is: deciding after
+     paint would show the cold open and then yank it away. -->
 <script is:inline>
   (function () {
     try {
+      var root = document.documentElement;
       var seen = localStorage.getItem('itm:seen');
       var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (seen || reduced) document.documentElement.setAttribute('data-itm', 'skip');
+      var lite = matchMedia('(max-width: 820px), (pointer: coarse)').matches;
+      if (seen || reduced) root.setAttribute('data-itm', 'skip');
+      else if (lite) root.setAttribute('data-itm', 'lite');
     } catch (e) {
       /* Private browsing can throw on localStorage. Play the intro; it is the
          graceful direction to fail in. */
     }
   })();
 </script>
+<!-- No JS at all: the track would be a static poster with "scroll to enter"
+     and nothing to enter. The hero is right there instead. -->
+<noscript><style>.itm-wrap { display: none; }</style></noscript>
 
-<section class="itm-wrap" data-into-pc aria-hidden="true" role="presentation">
+<section class="itm-wrap" data-into-pc aria-label="Introduction">
   <div class="itm-stage">
-    <div class="itm-stats">
-      {stats.map((s) => <p class="itm-stat">{s}</p>)}
+    <!-- Everything decorative lives in here, hidden from assistive tech. -->
+    <div class="itm-scene" aria-hidden="true">
+      <div class="itm-poster"></div>
+      <div class="itm-scanline"></div>
+      <canvas class="itm-canvas"></canvas>
+      <div class="itm-scrim"></div>
+      <div class="itm-veil"></div>
+
+      <div class="itm-hud">
+        <p class="itm-clock" data-itm-clock>&nbsp;</p>
+        {stats.map((s) => <p class="itm-stat">{s}</p>)}
+      </div>
+
+      <p class="itm-hint">Scroll to enter <span>&#8595;</span></p>
     </div>
 
-    <div class="itm-fallback"></div>
+    <!-- The five-second answer. Real links, real text, reachable by keyboard. -->
+    <div class="itm-id" data-itm-id>
+      <p class="itm-id__eyebrow">{site.location} &middot; ex-Apple EMEIA</p>
+      <p class="itm-id__name">{site.name}</p>
+      <p class="itm-id__role">
+        {site.role}<span class="itm-id__caret" aria-hidden="true"></span>
+        <span class="itm-id__firm">Co-founder of Cork AI Consulting &middot; open to business</span>
+      </p>
+      <div class="itm-id__cta">
+        <a class="pill pill--primary" href="/work/" data-itm-cta>See my work</a>
+        <a class="pill pill--ghost-dark" href={bookHref} {...bookAttrs} data-itm-cta>Let&rsquo;s work together</a>
+      </div>
+    </div>
 
-    <canvas class="itm-canvas"></canvas>
-
-    <div class="itm-veil"></div>
-
-    <p class="itm-clock" data-itm-clock aria-hidden="true">&nbsp;</p>
-
-    <p class="itm-caption">
-      {site.name} &nbsp;|&nbsp; {site.role}
-      <br />
-      GitHub &nbsp;|&nbsp; LinkedIn &nbsp;|&nbsp; Email
-    </p>
-
-    <p class="itm-hint">Scroll to enter <span aria-hidden="true">&#8595;</span></p>
-
-    <!-- Not aria-hidden like the rest of the stage: this is the one thing in
-         here a visitor may genuinely need to operate. -->
-    <button class="itm-skip" type="button" data-itm-skip aria-hidden="false">Skip intro</button>
+    <button class="itm-skip" type="button" data-itm-skip>Skip intro</button>
   </div>
 </section>
 
 <script>
-  /* Load Three.js only if the intro is going to run. The skip attribute is set
-     by the inline script above, before this module is evaluated. */
+  /* Load Three.js only if the intro is going to run on the GPU. The mode
+     attribute is set by the inline script above, before this module runs. */
   const root = document.documentElement;
-  const wrap = document.querySelector('.itm-wrap');
+  const wrap = document.querySelector<HTMLElement>('.itm-wrap');
+  const mode = root.getAttribute('data-itm');
+
+  const markSeen = () => { try { localStorage.setItem('itm:seen', '1'); } catch {} };
 
   /** Take the intro off the page and remember not to show it again. */
-  function skipIntro(scroll: boolean) {
+  function skipIntro() {
     root.setAttribute('data-itm', 'skip');
-    try { localStorage.setItem('itm:seen', '1'); } catch {}
-    if (scroll) {
-      /* The tall track has just collapsed, so the hero is already at the top of
-         the document — jump there rather than animating through nothing. */
-      window.scrollTo({ top: 0, behavior: 'auto' });
-    }
+    markSeen();
+    /* The tall track has just collapsed, so the hero is already at the top of
+       the document — jump there rather than animating through nothing. */
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }
 
-  if (wrap && root.getAttribute('data-itm') !== 'skip') {
-    import('../scripts/pointcloud.ts');
+  if (wrap && mode !== 'skip') {
+    if (mode !== 'lite') {
+      /* Park the identity block's entrance until the scene is up, so the
+         name can assemble out of particles first (nameMorph.ts). A hard
+         ceiling releases it regardless, in case the module never arrives. */
+      root.classList.add('itm-hold');
+      setTimeout(() => root.classList.remove('itm-hold'), 3500);
+      import('../scripts/pointcloud.ts').catch(() => root.classList.remove('itm-hold'));
+    }
 
-    document.querySelector('[data-itm-skip]')?.addEventListener('click', () => skipIntro(true));
+    document.querySelector('[data-itm-skip]')?.addEventListener('click', skipIntro);
+    /* Taking a CTA from the intro counts as having seen it: coming back to
+       the home page afterwards should land on the hero, not replay it. */
+    document.querySelectorAll('[data-itm-cta]').forEach((a) => a.addEventListener('click', markSeen));
 
-    /* Mark it seen once the visitor has scrolled through the portal, so a
-       returning visitor lands straight on the hero. Scrolling past it counts as
-       having watched it; leaving early does not. */
-    const seenAt = () => {
+    const id = wrap.querySelector<HTMLElement>('[data-itm-id]');
+    const stage = wrap.querySelector<HTMLElement>('.itm-stage');
+    const onScroll = () => {
       const r = wrap.getBoundingClientRect();
-      if (r.bottom <= window.innerHeight * 1.05) {
-        try { localStorage.setItem('itm:seen', '1'); } catch {}
-        removeEventListener('scroll', seenAt);
-      }
+      const p = r.height > innerHeight ? -r.top / (r.height - innerHeight) : 1;
+      /* The identity block fades out early in the fly-through (intro.css).
+         Faded is not gone: its links would still be hit-testable under the
+         veil, so take them out of the way once they are invisible. Same for
+         the whole stage once it has faded over the hero. */
+      id?.classList.toggle('is-gone', p > 0.36);
+      stage?.classList.toggle('is-done', p >= 0.995);
+      /* Scrolling through the portal marks it seen, so a returning visitor
+         lands straight on the hero. Leaving early does not. */
+      if (r.bottom <= innerHeight * 1.05) markSeen();
     };
-    addEventListener('scroll', seenAt, { passive: true });
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
 </script>

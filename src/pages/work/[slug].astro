@@ -6,8 +6,12 @@
 // -------------------------------------------------------------------------
 import Layout from '../../layouts/Layout.astro';
 import BeforeAfter from '../../components/BeforeAfter.astro';
-import ImpactBand from '../../components/ImpactBand.astro';
-import { brandChipStyle, coverWebp, projects, type Project } from '../../data/projects';
+import ProjectDash from '../../components/ProjectDash.astro';
+import ProjectFlow from '../../components/ProjectFlow.astro';
+import AgentTrace from '../../components/AgentTrace.astro';
+import ScreensStrip from '../../components/ScreensStrip.astro';
+import { brandChipStyle, projects, type Project } from '../../data/projects';
+import { hexRamp } from '../../data/caseVisuals';
 
 export function getStaticPaths() {
   const total = projects.length;
@@ -33,8 +37,6 @@ interface Props {
 
 const { project, prev, next, index, total } = Astro.props as Props;
 
-const coverWebpSrc = coverWebp(project.cover);
-
 const path = `/work/${project.slug}/`;
 const shareUrl = Astro.site ? new URL(path, Astro.site).href : Astro.url.href;
 
@@ -52,36 +54,17 @@ const chartMax = Math.max(...series.map((p) => p.value));
 
 const lbGroup = `case-${project.slug}`;
 
-/** A 6-step ramp from the brand accent toward its softer tone and out to a
-    near-white version, so the interactive chart's CSS --c1..--c6 stay in
-    this project's colourway however many bars/segments it draws. */
-function hexRamp(from: string, via: string): string[] {
-  const STEPS = 6;
-  const rgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-  const rgb1 = rgb(from);
-  const rgb2 = rgb(via);
-  return Array.from({ length: STEPS }, (_, i) => {
-    const t = i / (STEPS - 1);
-    // First half glides toward the softer accent, second half fades toward white.
-    const tone = t < 0.4 ? t / 0.4 : 1;
-    const fade = t < 0.4 ? 0 : (t - 0.4) / 0.6;
-    const channels = rgb1.map((c1, idx) => {
-      const c = c1 + (rgb2[idx] - c1) * tone;
-      return Math.round(c + (255 - c) * fade * 0.85);
-    });
-    return `#${channels.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
-  });
-}
 const chartRamp = hexRamp(project.brand.accent, project.brand.accent2);
 const chartRampVars = chartRamp.map((c, i) => `--c${i + 1}:${c}`).join('; ');
 
 const sections = [
   { id: 'cs-problem', label: 'The problem' },
   { id: 'cs-approach', label: 'The approach' },
+  ...(project.trace ? [{ id: 'cs-trace', label: 'A run' }] : []),
   { id: 'cs-results', label: 'What changed' },
   ...(project.beforeAfter.length ? [{ id: 'cs-delta', label: 'Before & after' }] : []),
   ...(chart ? [{ id: 'cs-chart', label: 'The numbers' }] : []),
-  ...(project.gallery.length ? [{ id: 'cs-gallery', label: 'Screens' }] : []),
+  { id: 'cs-screens', label: 'Screens' },
   { id: 'cs-stack', label: 'Stack & role' },
   ...(project.faq.length ? [{ id: 'cs-faq', label: 'Questions' }] : []),
 ];
@@ -128,7 +111,8 @@ const pageDesc = project.summary;
 
     <div class="reader__content reader__case cse-case">
       <article id="csBody" class="cse-article">
-        <header class="cse-hero" data-stagger>
+        <header class="cse-hero cse-hero--visual" data-stagger>
+          <div class="cse-hero__text">
           <div class="cse-brandrow reveal">
             <p class="eyebrow">{project.eyebrow} · {project.org}</p>
             <span
@@ -175,27 +159,13 @@ const pageDesc = project.summary;
             ))}
           </ul>
 
-          <ImpactBand project={project} />
+          </div>
 
-          <figure class="cs-figure cs-figure--full cse-cover reveal" data-parallax="0.05" data-parallax-max="24">
-            <!-- data-lightbox-src points the viewer at the WebP too, or opening
-                 it would pull the ~3x larger PNG the <picture> just avoided. -->
-            <picture>
-              {coverWebpSrc && <source srcset={coverWebpSrc} type="image/webp" />}
-              <img
-                class="cs-figure__img"
-                src={project.cover}
-                alt={project.coverAlt}
-                width={project.coverWidth}
-                height={project.coverHeight}
-                loading="lazy"
-                decoding="async"
-                data-lightbox-group={lbGroup}
-                data-lightbox-src={coverWebpSrc ?? project.cover}
-              />
-            </picture>
-            <figcaption>{project.summary}</figcaption>
-          </figure>
+          <!-- The opening visual: a dashboard rendered from this write-up
+               (ProjectDash), which also carries the four impact slots. -->
+          <div class="cse-hero__visual reveal" data-parallax="0.04" data-parallax-max="16">
+            <ProjectDash project={project} variant="hero" />
+          </div>
         </header>
 
         <nav class="cse-toc" data-toc aria-label="On this page">
@@ -230,7 +200,17 @@ const pageDesc = project.summary;
               </li>
             ))}
           </ol>
+          <ProjectFlow project={project} />
         </section>
+
+        {project.trace && (
+          <section class="cs-section cse-section" id="cs-trace" data-toc-target>
+            <p class="cs-kicker">{step('cs-trace')} — A run</p>
+            <h2 class="cs-h">What one run looks like.</h2>
+            <p class="cs-p">The steps above, played as the agent would walk them. A reading of the write-up, not a recording of a real run.</p>
+            <AgentTrace project={project} />
+          </section>
+        )}
 
         <section class="cs-section cse-section" id="cs-results" data-toc-target>
           <p class="cs-kicker">{step('cs-results')} — Outcome</p>
@@ -280,36 +260,12 @@ const pageDesc = project.summary;
         </section>
         )}
 
-        {project.gallery.length > 0 && (
-          <section class="cs-section cse-section" id="cs-gallery" data-toc-target>
-            <p class="cs-kicker">{step('cs-gallery')} — Screens</p>
-            <h2 class="cs-h">What it looks like in use.</h2>
-            <div class="cs-gallery cse-gallery" data-carousel>
-              <div class="cs-gallery__track carousel__track">
-                {project.gallery.map((g) => (
-                  <figure class="cs-gallery__slide">
-                    <div class="cs-gallery__media">
-                      <img
-                        src={g.src}
-                        alt={g.alt}
-                        width={g.width}
-                        height={g.height}
-                        loading="lazy"
-                        decoding="async"
-                        data-lightbox-group={lbGroup}
-                      />
-                    </div>
-                    <figcaption class="cs-gallery__cap"><p class="cs-p">{g.caption}</p></figcaption>
-                  </figure>
-                ))}
-              </div>
-              <div class="carousel__nav">
-                <button class="carousel__btn carousel__prev" type="button" aria-label="Previous screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg></button>
-                <button class="carousel__btn carousel__next" type="button" aria-label="Next screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg></button>
-              </div>
-            </div>
-          </section>
-        )}
+        <section class="cs-section cse-section" id="cs-screens" data-toc-target>
+          <p class="cs-kicker">{step('cs-screens')} — Screens</p>
+          <h2 class="cs-h">What it looks like.</h2>
+          <p class="cs-p">Generated from the write-up rather than captured from a client's screen — the shape of the thing, not a leaked one.</p>
+          <ScreensStrip project={project} group={lbGroup} />
+        </section>
 
         <section class="cs-section cse-section" id="cs-stack" data-toc-target>
           <p class="cs-kicker">{step('cs-stack')} — Stack &amp; role</p>
@@ -418,3 +374,19 @@ const pageDesc = project.summary;
     </div>
   </div>
 </Layout>
+
+<script src="../../scripts/case.ts"></script>
+
+<style>
+  /* Hero as two columns on wide screens: the write-up left, the dashboard
+     mock right. The findings get display size now that the band under
+     them is gone. */
+  .cse-hero--visual { gap: 28px; }
+  @media (min-width: 1024px) {
+    .cse-hero--visual { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: start; gap: 44px; }
+  }
+  .cse-hero__visual { min-width: 0; }
+  @media (min-width: 1024px) { .cse-hero__visual { position: sticky; top: 84px; } }
+  .cse-hero--visual :global(.cse-finding__v) { font-size: clamp(40px, 4.2vw, 56px); }
+  .cse-hero--visual :global(.cse-findings) { padding-top: 30px; }
+</style>

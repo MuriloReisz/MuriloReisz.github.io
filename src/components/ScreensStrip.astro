@@ -1,0 +1,75 @@
+---
+// ---------------------------------------------------------------------------
+// ScreensStrip — the cover and the gallery as one horizontal strip.
+//
+// The cover used to sit alone under the hero and the gallery far below it;
+// with the dashboard mock as the hero visual, the generated images read
+// better side by side as "screens". Every item opens the existing lightbox
+// (widgets.ts, [data-lightbox-group]) and keeps its width/height, so the
+// strip never shifts as images arrive. Illustrative projects keep their chip.
+// ---------------------------------------------------------------------------
+import { coverWebp, type Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  group: string;
+}
+
+const { project, group } = Astro.props;
+const webp = coverWebp(project.cover);
+const items = [
+  { src: project.cover, webp, alt: project.coverAlt, caption: project.summary, width: project.coverWidth, height: project.coverHeight },
+  ...project.gallery.map((g) => ({ src: g.src, webp: null as string | null, alt: g.alt, caption: g.caption, width: g.width, height: g.height })),
+];
+---
+
+<div class="cs-gallery cse-gallery screens" data-carousel>
+  <div class="cs-gallery__track carousel__track">
+    {items.map((g, i) => (
+      <figure class="cs-gallery__slide screens__slide">
+        <div class="cs-gallery__media screens__media">
+          <picture>
+            {g.webp && <source srcset={g.webp} type="image/webp" />}
+            <img
+              src={g.src}
+              alt={g.alt}
+              width={g.width}
+              height={g.height}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              data-lightbox-group={group}
+              data-lightbox-src={g.webp ?? g.src}
+            />
+          </picture>
+          <span class="screens__n" aria-hidden="true">{String(i + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}</span>
+          {project.illustrative && <span class="cse-illus screens__illus">Illustrative</span>}
+        </div>
+        <figcaption class="cs-gallery__cap"><p class="cs-p">{g.caption}</p></figcaption>
+      </figure>
+    ))}
+  </div>
+  <div class="carousel__nav">
+    <button class="carousel__btn carousel__prev" type="button" aria-label="Previous screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg></button>
+    <button class="carousel__btn carousel__next" type="button" aria-label="Next screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg></button>
+  </div>
+</div>
+
+<style>
+  .screens__media { position: relative; }
+  .screens__media img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+  .screens__n {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 3px 8px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #c4b5fd;
+    background: rgba(10, 10, 12, 0.72);
+  }
+  .screens__n::before { content: "[ "; opacity: 0.55; }
+  .screens__n::after { content: " ]"; opacity: 0.55; }
+  .screens__illus { position: absolute; top: 10px; left: 10px; }
+</style>
