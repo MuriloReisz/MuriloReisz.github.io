@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif">
+<rect width="1600" height="1000" fill="#fcf4f2"/>
+<text x="100" y="150" font-size="34" font-weight="600" fill="#d97757">Skills Library</text>
+<text x="90" y="560" font-size="420" font-weight="800" letter-spacing="-14" fill="#d97757">28</text>
+<text x="100" y="660" font-size="54" font-weight="700" fill="#1d1d1f">AI workflows, one library</text>
+<text x="100" y="730" font-size="36" fill="#555">Versioned in Git, synced to Notion</text>
+<rect x="100" y="820" width="249" height="72" rx="36" fill="#fff"/>
+<text x="122" y="868" font-size="32" fill="#1d1d1f">Claude Code</text>
+<rect x="365" y="820" width="211" height="72" rx="36" fill="#fff"/>
+<text x="387" y="868" font-size="32" fill="#1d1d1f">Codex CLI</text>
+<rect x="592" y="820" width="97" height="72" rx="36" fill="#fff"/>
+<text x="614" y="868" font-size="32" fill="#1d1d1f">MCP</text>
+<rect x="705" y="820" width="97" height="72" rx="36" fill="#fff"/>
+<text x="727" y="868" font-size="32" fill="#1d1d1f">Git</text>
+</svg>

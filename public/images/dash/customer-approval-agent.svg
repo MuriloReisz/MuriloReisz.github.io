@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif">
+<rect width="1600" height="1000" fill="#111114"/>
+<circle cx="1350" cy="150" r="420" fill="#2f6fdd" opacity=".18"/>
+<text x="100" y="150" font-size="34" font-weight="600" fill="#82a9eb">Approval Pipeline</text>
+<text x="100" y="270" font-size="86" font-weight="800" letter-spacing="-2" fill="#fff">Rules, not reviewers</text>
+<rect x="100" y="420" width="440" height="300" rx="32" fill="#1f1f24"/>
+<text x="140" y="545" font-size="46" font-weight="800" fill="#fff">Snowflake</text>
+<text x="140" y="610" font-size="30" fill="#a1bef0" opacity="1">Governed tables</text>
+<rect x="580" y="420" width="440" height="300" rx="32" fill="#2f6fdd"/>
+<text x="620" y="545" font-size="46" font-weight="800" fill="#fff">Business rules</text>
+<text x="620" y="610" font-size="30" fill="#ffffff" opacity="0.8">Encoded in code</text>
+<rect x="1060" y="420" width="440" height="300" rx="32" fill="#1f1f24"/>
+<text x="1100" y="545" font-size="46" font-weight="800" fill="#fff">Approve / reject</text>
+<text x="1100" y="610" font-size="30" fill="#a1bef0" opacity="1">Edge cases flagged</text>
+<text x="100" y="860" font-size="36" font-weight="600" fill="#fff" opacity=".7">Python · Playwright · Snowflake · Claude Code</text>
+</svg>

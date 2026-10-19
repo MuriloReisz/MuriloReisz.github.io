@@ -16,7 +16,7 @@ import { site } from './site';
     reader or defensible on a call — this section exists precisely because the
     invented client testimonials it replaced were not. */
 export interface ProofItem {
-  /** Short kicker, e.g. "Day job" or "Live now". */
+  /** Short kicker, e.g. "Co-founder" or "Live now". */
   kind: string;
   headline: string;
   body: string;
@@ -72,10 +72,10 @@ export interface TechItem {
 
 export const proof: ProofItem[] = [
   {
-    kind: 'Day job',
-    headline: 'Analytics inside a large sales organisation',
+    kind: 'Apple · 2025–26',
+    headline: 'Agent pipelines inside Apple EMEIA Sales',
     body:
-      'My day job is building and running the reporting and internal systems a large, multi-region sales organisation depends on — the same problem most of my clients have at a smaller scale. Employer details on request.',
+      'A year on Apple’s EMEIA Sales Business Process Re-engineering & Systems team, building the automation and Snowflake/Tableau reporting behind multi-billion-dollar sales programmes — the same problem most of my clients have at a smaller scale.',
     verify: { label: 'See my history on LinkedIn', href: site.socials.linkedin },
   },
   {
@@ -85,10 +85,11 @@ export const proof: ProofItem[] = [
       'An architectural practice and a professional-services firm, both under confidentiality agreements. Sector and outcome are all I publish; I can go into specifics on a call.',
   },
   {
-    kind: 'Credential',
-    headline: 'Microsoft PL-300 certified',
+    kind: 'Co-founder',
+    headline: 'Cork AI Consulting',
     body:
-      'Power BI Data Analyst Associate — the exam covers modelling, DAX and governance rather than just chart-building.',
+      'I co-run an AI and automation consultancy for Irish SMEs. Our first AI Opportunity Assessment was delivered to a client in August 2026.',
+    verify: { label: 'Visit corkaiconsulting.ie', href: 'https://corkaiconsulting.ie' },
   },
   {
     kind: 'Commitment',
@@ -109,24 +110,24 @@ export const referenceNote =
 export const skills: Skill[] = [
   // Analytics
   { name: 'Tableau', level: 93, group: 'Analytics' },
-  { name: 'Power BI & DAX', level: 87, group: 'Analytics' },
   { name: 'Analytical SQL', level: 91, group: 'Analytics' },
+  { name: 'Power BI & DAX', level: 84, group: 'Analytics' },
   { name: 'Excel & Power Query', level: 85, group: 'Analytics' },
   { name: 'Statistics & experiment design', level: 74, group: 'Analytics' },
 
   // Engineering
-  { name: 'Python (pandas, Polars)', level: 89, group: 'Engineering' },
-  { name: 'PostgreSQL & BigQuery', level: 84, group: 'Engineering' },
-  { name: 'dbt & dimensional modelling', level: 79, group: 'Engineering' },
-  { name: 'Airflow & orchestration', level: 71, group: 'Engineering' },
-  { name: 'Web automation (Playwright)', level: 82, group: 'Engineering' },
+  { name: 'Python (pandas, NumPy)', level: 89, group: 'Engineering' },
+  { name: 'Snowflake & BigQuery', level: 86, group: 'Engineering' },
+  { name: 'ETL / ELT & data modelling', level: 84, group: 'Engineering' },
+  { name: 'Browser automation (Playwright)', level: 88, group: 'Engineering' },
+  { name: 'n8n, RPA & workflow automation', level: 82, group: 'Engineering' },
 
   // AI & ML
-  { name: 'scikit-learn & gradient boosting', level: 81, group: 'AI & ML' },
-  { name: 'Time-series forecasting', level: 77, group: 'AI & ML' },
-  { name: 'Retrieval-augmented generation', level: 83, group: 'AI & ML' },
-  { name: 'Prompt & evaluation design', level: 78, group: 'AI & ML' },
-  { name: 'MLOps & model monitoring', level: 66, group: 'AI & ML' },
+  { name: 'Agentic workflows (Claude Code, MCP)', level: 90, group: 'AI & ML' },
+  { name: 'Claude & OpenAI APIs, tool use', level: 86, group: 'AI & ML' },
+  { name: 'Prompt, evaluation & guardrail design', level: 84, group: 'AI & ML' },
+  { name: 'Retrieval-augmented generation', level: 80, group: 'AI & ML' },
+  { name: 'scikit-learn & forecasting', level: 77, group: 'AI & ML' },
 
   // Delivery
   { name: 'Stakeholder workshops', level: 88, group: 'Delivery' },
@@ -137,19 +138,16 @@ export const skills: Skill[] = [
 // ------------------------------------------------------------
 //  CREDENTIALS
 //
-//  One entry so far. Add more here (name, issuer, year, blurb) and
+//  Mirrors the CV. Add more here (name, issuer, year, blurb) and
 //  they render automatically in the Education & Languages section
 //  on the homepage. Nothing goes on the CV that hasn't actually
 //  been earned — anything still in progress belongs in `learning`.
 // ------------------------------------------------------------
 
 export const certs: Cert[] = [
-  {
-    name: 'Power BI Data Analyst Associate (PL-300)',
-    issuer: 'Microsoft',
-    blurb:
-      'Data modelling, DAX and report design for governed, production Power BI reporting.',
-  },
+  { name: 'Python for Data Science', issuer: 'Alura', year: 2023, blurb: 'Pandas, NumPy and visualisation for analysis.' },
+  { name: 'Google Looker Studio', issuer: 'Alura', year: 2023, blurb: 'Dashboard design and data sources in Looker Studio.' },
+  { name: 'Business Agility', issuer: 'Alura', year: 2023, blurb: 'Agile ways of working beyond software teams.' },
 ];
 
 // ------------------------------------------------------------
@@ -194,30 +192,32 @@ export const stats: StatItem[] = [
 export const techStack: TechItem[] = [
   { name: 'Python', kind: 'lang' },
   { name: 'SQL', kind: 'lang' },
-  { name: 'TypeScript', kind: 'lang' },
+  { name: 'JavaScript / Node', kind: 'lang' },
   { name: 'DAX', kind: 'lang' },
+
+  { name: 'Claude Code', kind: 'ai' },
+  { name: 'Claude API', kind: 'ai' },
+  { name: 'Codex CLI', kind: 'ai' },
+  { name: 'MCP', kind: 'ai' },
+  { name: 'LangChain', kind: 'ai' },
+  { name: 'scikit-learn', kind: 'ai' },
 
   { name: 'Tableau', kind: 'bi' },
   { name: 'Power BI', kind: 'bi' },
   { name: 'Looker Studio', kind: 'bi' },
-  { name: 'Excel', kind: 'bi' },
 
+  { name: 'Snowflake', kind: 'cloud' },
   { name: 'BigQuery', kind: 'cloud' },
   { name: 'PostgreSQL', kind: 'cloud' },
-  { name: 'Snowflake', kind: 'cloud' },
+  { name: 'Supabase', kind: 'cloud' },
   { name: 'Google Cloud', kind: 'cloud' },
-  { name: 'Azure', kind: 'cloud' },
 
-  { name: 'scikit-learn', kind: 'ai' },
-  { name: 'Prophet', kind: 'ai' },
-  { name: 'Hugging Face', kind: 'ai' },
-  { name: 'LangChain', kind: 'ai' },
-
-  { name: 'dbt', kind: 'tool' },
+  { name: 'Playwright', kind: 'tool' },
+  { name: 'n8n', kind: 'tool' },
   { name: 'Airflow', kind: 'tool' },
   { name: 'Git', kind: 'tool' },
   { name: 'Docker', kind: 'tool' },
-  { name: 'Playwright', kind: 'tool' },
+  { name: 'Vercel', kind: 'tool' },
 ];
 
 // ------------------------------------------------------------

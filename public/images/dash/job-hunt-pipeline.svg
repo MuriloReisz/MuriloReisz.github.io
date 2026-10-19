@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" font-family="Inter, -apple-system, Helvetica, Arial, sans-serif">
+<rect width="1600" height="1000" fill="#f2f2fc"/>
+<text x="100" y="150" font-size="34" font-weight="600" fill="#5b5bd6">job-hunt</text>
+<text x="90" y="560" font-size="340" font-weight="800" letter-spacing="-14" fill="#5b5bd6">1,350</text>
+<text x="100" y="660" font-size="54" font-weight="700" fill="#1d1d1f">roles from 71 companies</text>
+<text x="100" y="730" font-size="36" fill="#555">154 scored hot, every CV verified</text>
+<rect x="100" y="820" width="154" height="72" rx="36" fill="#fff"/>
+<text x="122" y="868" font-size="32" fill="#1d1d1f">Python</text>
+<rect x="270" y="820" width="135" height="72" rx="36" fill="#fff"/>
+<text x="292" y="868" font-size="32" fill="#1d1d1f">Typer</text>
+<rect x="421" y="820" width="154" height="72" rx="36" fill="#fff"/>
+<text x="443" y="868" font-size="32" fill="#1d1d1f">SQLite</text>
+<rect x="591" y="820" width="249" height="72" rx="36" fill="#fff"/>
+<text x="613" y="868" font-size="32" fill="#1d1d1f">python-docx</text>
+</svg>

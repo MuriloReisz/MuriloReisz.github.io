@@ -10,6 +10,7 @@ import TechMarquee from '../components/TechMarquee.astro';
 import ActivityHeatmap from '../components/ActivityHeatmap.astro';
 import Proof from '../components/Proof.astro';
 import { certs, learning } from '../data/extras';
+import { experience, education, languages } from '../data/experience';
 
 // The rotating line beside the static role. First phrase is the no-JS fallback;
 // motion2.ts reads data-typing-words and injects its own .u-sr copy.
@@ -83,15 +84,15 @@ const { href: bookHref, attrs: bookAttrs } = bookingFor('/#contact');
       <div class="about-v2__text" data-stagger>
         <div class="eyebrow" data-reveal-chars>About</div>
         <h2 class="about-v2__lead reveal">Hi, I’m {site.name}</h2>
-        <p class="about-v2__intro reveal">I’m a <strong>Data &amp; AI Specialist</strong> who turns messy, real-world data into clear decisions — dashboards, models, and automation that leaders can act on.</p>
-        <p class="about-v2__intro reveal">I run client engagements end to end through <strong>Cork AI Consulting</strong>, the consultancy I co-founded, and take on <strong>freelance AI &amp; automation</strong> work alongside it.</p>
-        <p class="about-v2__intro reveal">I’ve spent countless hours on <strong>agentic AI &amp; automation</strong> — building scripts and data products that drive decisions, save time, and cut cost. Example work is showcased across this site and on GitHub.</p>
+        <p class="about-v2__intro reveal">I’m a <strong>data and AI specialist</strong> who turns messy operational data and manual processes into systems people rely on every day — ETL pipelines, dashboards, predictive models and, more recently, <strong>AI agents</strong>.</p>
+        <p class="about-v2__intro reveal">Nearly four years in, across <strong>Apple’s EMEIA Sales</strong> systems team, a Brazilian data team and independent clients. At Apple I built the automation and reporting behind multi-billion-dollar sales programmes.</p>
+        <p class="about-v2__intro reveal">Today I co-run <strong>Cork AI Consulting</strong>, helping Irish businesses find where time and money leak, fix the process, then automate it with AI that is safe, measurable and handed over properly — explained to non-technical teams in any of five languages.</p>
         <div class="about-v2__achv-h reveal">Notable achievements</div>
       </div>
       <ul class="about-v2__list" data-stagger>
         <li class="reveal"><span class="about-v2__n" data-counter-to="80" data-counter-prefix="−" data-counter-suffix="%">−80%</span> manual effort for freelance clients by engineering custom <strong>Python &amp; RPA</strong> automation — from consultation through to end-to-end deployment.</li>
         <li class="reveal"><span class="about-v2__n">Terabytes</span> of data engineered into <strong>Google BigQuery</strong> through scalable, governed ETL pipelines from disparate sources.</li>
-        <li class="reveal"><span class="about-v2__n">Region</span>-wide sales visibility delivered through interactive <strong>Tableau dashboards</strong> and Playwright automation for a multinational sales organisation.</li>
+        <li class="reveal"><span class="about-v2__n">Region</span>-wide sales visibility delivered through interactive <strong>Tableau dashboards</strong> and Playwright automation across Apple’s EMEIA sales programmes.</li>
         <li class="reveal"><span class="about-v2__n" data-counter-to="5" data-counter-suffix=" languages">5 languages</span> spoken fluently, leading stakeholder management across multicultural, multi-regional teams.</li>
       </ul>
     </div>
@@ -110,11 +111,11 @@ const { href: bookHref, attrs: bookAttrs } = bookingFor('/#contact');
           <span class="hm-fw__eyebrow">Featured work</span>
           <span class="hm-fw__count">{featured.length} of {projects.length}</span>
         </div>
-        <h2 class="hm-fw__h2">Reporting, automation and the data underneath it.</h2>
+        <h2 class="hm-fw__h2">AI agents, automation and the data underneath it.</h2>
         <p class="hm-fw__sub">
-          Two engagements, each written up in full &mdash; the automation and BI
-          work I do for clients directly, and an AI conversion pipeline built
-          through the consultancy I co-founded. The problem, the approach, and what
+          Real systems, each written up in full &mdash; AI agents built through the
+          consultancy I co-founded, automation shipped inside Apple’s EMEIA sales
+          team, and products I run myself. The problem, the approach, and what
           actually moved.
         </p>
         <div class="toolfilter" role="group" aria-label="Filter projects by tool">
@@ -140,7 +141,7 @@ const { href: bookHref, attrs: bookAttrs } = bookingFor('/#contact');
 
       <p class="hm-fw__more reveal">
         <a class="hm-fw__morelink" href="/work/">See all {projects.length} projects &rsaquo;</a>
-        &nbsp;&mdash;&nbsp;forecasting, anomaly detection, cloud pipelines, Power BI models.
+        &nbsp;&mdash;&nbsp;AI agents, browser automation, data pipelines and dashboards.
       </p>
     </div>
   </section>
@@ -158,100 +159,58 @@ const { href: bookHref, attrs: bookAttrs } = bookingFor('/#contact');
       <div class="eyebrow reveal">Experience</div>
       <h2 class="exp__h2 reveal">Where the work happened.</h2>
       <div class="exp__list" data-stagger>
-
-        <div class="exp__item reveal">
-          <div class="exp__when">
-            <div class="exp__role">AI &amp; Data Consultant</div>
-            <div class="exp__dates">Sep 2026 — Present · Cork, Ireland</div>
-          </div>
-          <div class="exp__body">
-            <div class="exp__head">
-              <span class="exp__logo exp__logo--fill" aria-hidden="true">
-                <img src="/images/logo-icon.png" alt="" width="46" height="46" loading="lazy" />
-              </span>
-              <div class="exp__org">Cork AI Consulting · Cork, Ireland</div>
+        {experience.slice(0, 2).map((r, i) => (
+            <div class={`exp__item${i === 0 ? ' reveal' : ''}`}>
+              <div class="exp__when">
+                <div class="exp__role" set:html={r.role} />
+                <div class="exp__dates">{r.dates} · {r.place}</div>
+              </div>
+              <div class="exp__body">
+                <div class="exp__head">
+                  {r.logo && (
+                    <span class="exp__logo exp__logo--fill" aria-hidden="true">
+                      <img src={r.logo} alt="" width="46" height="46" loading="lazy" />
+                    </span>
+                  )}
+                  <div class="exp__org">{r.org} · {r.place}</div>
+                </div>
+                {r.intro && <p class="exp__intro" set:html={r.intro} />}
+                {r.tools && <p class="exp__tools"><strong>Tools:</strong> {r.tools}</p>}
+                <ul class="exp__points">{r.points.map((pt) => <li set:html={pt} />)}</ul>
+                <div class="exp__tags">{r.tags.map((t) => <span class="tag" set:html={t} />)}</div>
+              </div>
             </div>
-            <p class="exp__intro">The consultancy I co-founded with Douglas Woollam, delivering <strong>AI, data and automation</strong> work to small and mid-sized Irish businesses — scoped around a measurable outcome rather than a day rate. I run every engagement end to end: discovery, build, validation, and a handover that leaves the client owning what they paid for.</p>
-            <p class="exp__tools"><strong>Tools:</strong> Python · Claude API · FastAPI · SQL · BigQuery · Cloud Run · Power BI</p>
-            <ul class="exp__points">
-              <li>Scope engagements around a <strong>measurable business outcome</strong> — hours returned, cost avoided, turnaround reduced — agreed before any build starts.</li>
-              <li>Design and ship <strong>AI-assisted automation</strong> where the model is allowed to decline: confidence floors, validation gates and a human path, because a confident wrong answer costs more than no answer.</li>
-              <li>Hand over with documentation, version control and a named owner, so the client is not dependent on me to keep it running.</li>
-            </ul>
-            <div class="exp__tags"><span class="tag">AI &amp; automation</span><span class="tag">Outcome-scoped</span><span class="tag">Own consultancy</span><span class="tag">Cork, Ireland</span></div>
-          </div>
-        </div>
+        ))}
 
         <div class="exp__more" id="expMore">
           <div class="exp__more-inner">
-          <div class="exp__item">
-            <div class="exp__when">
-              <div class="exp__role">Freelance Data &amp; Automation Engineer</div>
-              <div class="exp__dates">Oct 2024 — Present · Remote</div>
-            </div>
-            <div class="exp__body">
-              <div class="exp__head">
-                <span class="exp__logo exp__logo--fill reveal" aria-hidden="true">
-                  <img src="/images/logo-icon.png" alt="" width="46" height="46" loading="lazy" />
-                </span>
-                <div class="exp__org">Freelance · Remote</div>
+          {experience.slice(2).map((r) => (
+            <div class="exp__item">
+              <div class="exp__when">
+                <div class="exp__role" set:html={r.role} />
+                <div class="exp__dates">{r.dates}</div>
               </div>
-              <ul class="exp__points">
-                <li>Manage the full project lifecycle for multiple clients — from consultation and stakeholder engagement to architecting and deploying <strong>end-to-end data &amp; automation solutions</strong>.</li>
-                <li>Engineer custom automation with <strong>Python and RPA</strong>, streamlining complex processes and <strong>reducing manual effort by up to 80%</strong>.</li>
-                <li>Perform exploratory data analysis and statistical modelling to surface KPIs and predictive insight for forecasting; version control with Git / GitHub / GitLab.</li>
-              </ul>
-              <div class="exp__tags"><span class="tag">−80% manual effort</span><span class="tag">Python · RPA</span><span class="tag">End-to-end delivery</span></div>
-            </div>
-          </div>
-
-          <div class="exp__item">
-            <div class="exp__when">
-              <div class="exp__role">Data Analyst</div>
-              <div class="exp__dates">Nov 2022 — Oct 2024</div>
-            </div>
-            <div class="exp__body">
-              <div class="exp__head">
-                <span class="exp__logo exp__logo--fill reveal" aria-hidden="true">
-                  <img src="/images/logos/porto.png" alt="" width="46" height="46" loading="lazy" />
-                </span>
-                <div class="exp__org">Porto · São Paulo, Brazil</div>
+              <div class="exp__body">
+                <div class="exp__head">
+                  {r.logo && (
+                    <span class="exp__logo exp__logo--fill reveal" aria-hidden="true">
+                      <img src={r.logo} alt="" width="46" height="46" loading="lazy" />
+                    </span>
+                  )}
+                  <div class="exp__org">{r.org} · {r.place}</div>
+                </div>
+                <ul class="exp__points">{r.points.map((pt) => <li set:html={pt} />)}</ul>
+                <div class="exp__tags">{r.tags.map((t) => <span class="tag" set:html={t} />)}</div>
               </div>
-              <ul class="exp__points">
-                <li>Engineered and maintained scalable <strong>ETL pipelines processing terabytes</strong> of data from disparate sources into <strong>Google BigQuery</strong>, ensuring integrity and data governance.</li>
-                <li>Delivered dynamic <strong>BI dashboards</strong> that guided strategic decisions, and drove process improvements with low-code apps (AppSheet) and AI automation (n8n).</li>
-                <li>Automated extraction from legacy systems (RPA) and external sites (web scraping), and optimised BigQuery performance with complex SQL and stored procedures.</li>
-              </ul>
-              <div class="exp__tags"><span class="tag">Terabytes → BigQuery</span><span class="tag">ETL · SQL</span><span class="tag">n8n · AppSheet</span></div>
             </div>
-          </div>
-
-          <div class="exp__item">
-            <div class="exp__when">
-              <div class="exp__role">IT Assistant</div>
-              <div class="exp__dates">Dec 2021 — May 2022</div>
-            </div>
-            <div class="exp__body">
-              <div class="exp__head">
-                <span class="exp__logo exp__logo--fill reveal" aria-hidden="true">
-                  <img src="/images/logos/marcelo-tostes.png" alt="" width="46" height="46" loading="lazy" />
-                </span>
-                <div class="exp__org">Marcelo Tostes Advogados · São Paulo, Brazil</div>
-              </div>
-              <ul class="exp__points">
-                <li>First point of contact for all IT issues, providing timely hardware and software support to a busy legal office.</li>
-                <li>Managed system maintenance, network configuration and software updates to keep workstations stable and secure.</li>
-              </ul>
-              <div class="exp__tags"><span class="tag">IT support</span><span class="tag">Systems &amp; networks</span></div>
-            </div>
-          </div>
+          ))}
           </div>
         </div>
       </div>
 
       <div class="exp__toggle-wrap reveal">
         <button class="exp__toggle" type="button" id="expToggle" aria-expanded="false" aria-controls="expMore">
-          <span class="exp__toggle-label">Show 3 earlier roles</span>
+          <span class="exp__toggle-label">Show {experience.length - 2} earlier roles</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
         </button>
       </div>
@@ -268,15 +227,16 @@ const { href: bookHref, attrs: bookAttrs } = bookingFor('/#contact');
       <div class="cred reveal">
         <div class="cred__badge"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"></path><path d="M22 10v6"></path></svg></div>
         <div>
-          <div class="cred__name">BSc — Analysis &amp; Development of Systems</div>
-          <div class="cred__meta">FIAP · São Paulo · 2022–2024</div>
+          <div class="cred__name" set:html={education.name} />
+          <div class="cred__meta">{education.meta}</div>
+          <div class="cred__meta" set:html={education.note} />
         </div>
       </div>
       <div class="cred reveal">
         <div class="cred__badge"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"></path></svg></div>
         <div>
           <div class="cred__name">Fluent in 5 languages</div>
-          <div class="cred__meta">Portuguese (native) · English C2 · Spanish C1 · French &amp; Italian B2</div>
+          <div class="cred__meta">{languages}</div>
         </div>
       </div>
       {certs.map((c) => (

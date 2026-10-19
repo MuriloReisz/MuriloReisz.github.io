@@ -110,7 +110,8 @@ export interface Project {
   problem: string[];
   approach: { title: string; body: string }[];
   results: string[];
-  chart: { title: string; unit: string; series: ChartPoint[] };
+  /** Optional: only projects with a real measured series get a chart. */
+  chart?: { title: string; unit: string; series: ChartPoint[] };
   gallery: GalleryItem[];
   faq: { q: string; a: string }[];
   links: { label: string; href: string; external: boolean }[];
@@ -122,6 +123,424 @@ export interface Project {
 const GH = 'https://github.com/MuriloReisz';
 
 export const projects: Project[] = [
+  // ---------------------------------------------------------------- 03
+  // Cork AI Consulting's own delivery tooling. Facts are the CV's: what it
+  // does, and that the first assessment shipped in August 2026. No client
+  // detail, and no outcome figures until a client has signed one off.
+  {
+    slug: 'ai-opportunity-assessment',
+    title: 'AI Opportunity Assessment Engine',
+    eyebrow: 'CLAUDE API · AGENTS · PYTHON',
+    org: 'Cork AI Consulting',
+    brand: { wordmark: 'Assessment Engine', accent: '#0f8a6c', accent2: '#3fb894' },
+    period: '2026',
+    year: 2026,
+    readMinutes: 4,
+    tags: ['ml', 'automation', 'python'],
+    summary:
+      'An agent that turns a discovery-call transcript into a client-branded, ROI-backed report — with an honesty check that blocks any claim the call didn’t support.',
+    lead:
+      'Cork AI Consulting sells one entry product: a paid AI Opportunity Assessment that finds where a business loses time and money and prices the fix. Writing each report by hand was slow and its quality depended on the writer. I built the engine that drafts it from the call itself, and a gate that refuses to let it overclaim.',
+    cover: '/images/dash/ai-opportunity-assessment.svg',
+    coverAlt:
+      'Architecture diagram: discovery-call transcript flows into extraction, opportunity sizing and an honesty gate before rendering a client-branded report.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: 'Aug 2026', label: 'first assessment delivered to a paying client' },
+      { value: 'Transcript → report', label: 'one pipeline, client-branded output' },
+      { value: 'Honesty gate', label: 'unsupported claims are blocked, not softened' },
+    ],
+    impact: {
+      value: { value: 'ROI-backed', label: 'Every opportunity priced', note: 'Each recommendation carries hours returned and cost, traced to what was said on the call.' },
+      time: { value: 'Agent-drafted', label: 'Report drafting', note: 'Drafting moved from a manual write-up to an agent run plus human review.' },
+      effort: { value: 'Co-founder build', label: 'Built in-house', note: 'Designed and built as part of setting up the consultancy’s delivery.' },
+      quality: { value: '0', count: 0, label: 'Unsupported claims shipped', note: 'A claim without a source line in the transcript fails the gate and goes back for review.' },
+    },
+    beforeAfter: [],
+    stack: ['Claude API', 'Claude Code', 'Python', 'Structured outputs', 'HTML/PDF rendering', 'Git'],
+    role: 'Co-founder — design and build',
+    duration: 'Summer 2026, in production since August',
+    problem: [
+      'A good assessment needs two things that pull against each other: it has to be specific enough that the owner recognises their own business, and conservative enough that every number survives a sceptical accountant.',
+      'Written by hand, reports were slow and their quality depended on who wrote them. Written naively by an LLM, they read well and invent savings. Neither is acceptable for a product whose whole promise is honesty.',
+    ],
+    approach: [
+      { title: 'Extract before writing', body: 'The transcript is first turned into structured facts — processes, volumes, hours, tools, pain points — each tied to the line it came from. Nothing downstream is allowed to use a fact without that citation.' },
+      { title: 'Size opportunities conservatively', body: 'Each candidate automation is priced from the client’s own stated volumes and a deliberately conservative hourly cost, so the headline number is a floor rather than a pitch.' },
+      { title: 'An honesty gate with teeth', body: 'A separate check reads the draft against the extracted facts and blocks any claim that has no source. Failing claims are removed or sent back for a human decision — never quietly reworded.' },
+      { title: 'Client-branded, human-reviewed', body: 'The report renders in the client’s colours and logo, and a consultant reviews it before it is sent. The agent does the drafting; a person signs it.' },
+    ],
+    results: [
+      'First assessment delivered to a client in August 2026.',
+      'Report drafting moved from a manual write-up to an agent run plus a human review.',
+      'Every figure in a delivered report can be traced back to something the client actually said.',
+    ],
+    gallery: [],
+    faq: [
+      { q: 'Why not just let the model write the report?', a: 'Because it will. Fluent, specific and wrong is the worst possible output for an ROI document. Separating extraction, sizing and checking is what makes the output defensible.' },
+      { q: 'Does client data leave the engagement?', a: 'Transcripts are processed for that client’s report only and are not reused across clients.' },
+    ],
+    links: [
+      { label: 'Cork AI Consulting ↗', href: 'https://corkaiconsulting.ie', external: true },
+    ],
+    featured: true,
+    tone: 'white',
+    reverse: false,
+  },
+
+  // ---------------------------------------------------------------- 04
+  // Apple EMEIA. Mechanics only, exactly as the CV states them: no programme
+  // name, no internal system, no figures beyond the CV's own wording.
+  {
+    slug: 'customer-approval-agent',
+    title: 'Customer-Approval Agent Pipeline',
+    eyebrow: 'PLAYWRIGHT · SNOWFLAKE · CLAUDE CODE',
+    org: 'Apple · EMEIA Sales',
+    brand: { wordmark: 'Approval Pipeline', accent: '#2f6fdd', accent2: '#5a9af0' },
+    period: '2025 — 2026',
+    year: 2026,
+    readMinutes: 4,
+    tags: ['automation', 'python', 'sql', 'tableau', 'ml'],
+    summary:
+      'An automated pipeline that approves or rejects customers against sales-programme business rules — replacing hours of daily manual review and sharply cutting false rejections.',
+    lead:
+      'On Apple’s EMEIA Sales Business Process Re-engineering & Systems team, programme eligibility was checked by hand: people opening records, cross-referencing systems and applying rules from memory. I co-built the pipeline that does it automatically, and the dashboards that show leadership how the programmes are performing.',
+    cover: '/images/dash/customer-approval-agent.svg',
+    coverAlt:
+      'Architecture diagram: scheduled Playwright collection feeds Snowflake, a rules engine with an agent-assisted review step decides approve or reject, and Tableau reports the results.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: 'Hours daily', label: 'of manual review eliminated' },
+      { value: 'Fewer false rejections', label: 'rules applied the same way every time' },
+      { value: 'Multi-billion', label: 'dollar sales programmes supported across EMEIA' },
+    ],
+    impact: {
+      value: { value: 'Multi-$bn', label: 'Programmes supported', note: 'The pipeline and dashboards served sales programmes run and tracked by Account Executives and senior leadership.' },
+      time: { value: 'Hours / day', label: 'Manual review removed', note: 'Daily eligibility checks moved from people to a scheduled run.' },
+      effort: { value: 'Co-built', label: 'Team delivery', note: 'Built with the BPR & Systems team, Nov 2025 – Oct 2026.' },
+      quality: { value: '1 ruleset', label: 'Same rules, every record', note: 'Business rules live in code, so two reviewers can no longer reach two answers.' },
+    },
+    beforeAfter: [],
+    stack: ['Python (Pandas, Playwright, Selenium)', 'Snowflake', 'SQL', 'Claude Code', 'Tableau', 'Excel'],
+    role: 'Data Analyst — co-built the pipeline, built the dashboards',
+    duration: 'November 2025 – October 2026',
+    problem: [
+      'Customer eligibility for sales programmes was decided by people reading records and applying business rules by hand. It took hours every day, it scaled with volume, and different reviewers reached different answers — so eligible customers were sometimes rejected.',
+      'The data needed for the decision was spread across web tools without convenient exports, which is why the work had stayed manual.',
+    ],
+    approach: [
+      { title: 'Collect with browser automation', body: 'Playwright workflows gather and validate the data a reviewer used to collect by hand, on a schedule, with checks that fail loudly rather than load partial data.' },
+      { title: 'Land it in Snowflake', body: 'Everything lands in Snowflake, so decisions and reporting work from the same governed tables.' },
+      { title: 'Rules in code, agent for the edges', body: 'Programme business rules are encoded explicitly. Claude Code was used to build and maintain the pipeline quickly and to handle the awkward cases the rules alone could not.' },
+      { title: 'Visible to leadership', body: 'Tableau dashboards on live Snowflake data show sales performance, KPIs and underperforming regions, so the people running the programmes see the effect directly.' },
+    ],
+    results: [
+      'Hours of daily manual review eliminated.',
+      'False rejections sharply reduced, because every record is judged against the same rules.',
+      'Playwright workflows replaced manual data collection, validation and reporting for the team.',
+      'Predictive scripts on programme sales data supported forecasting and targeted outreach to historical customers.',
+    ],
+    gallery: [],
+    faq: [
+      { q: 'Can you share the dashboards or data?', a: 'No — they are Apple’s. This write-up describes the approach only; I am happy to go deeper on the engineering on a call.' },
+    ],
+    links: [
+      { label: 'LinkedIn ↗', href: 'https://www.linkedin.com/in/murilo-reis-data/', external: true },
+    ],
+    featured: true,
+    tone: 'dark',
+    reverse: true,
+  },
+
+  // ---------------------------------------------------------------- 05
+  {
+    slug: 'instagram-dm-assistant',
+    title: 'Guardrailed Instagram DM Assistant',
+    eyebrow: 'META MESSENGER PLATFORM · LLM · GUARDRAILS',
+    org: 'Cork AI Consulting',
+    brand: { wordmark: 'DM Assistant', accent: '#c13584', accent2: '#e1306c' },
+    period: '2026',
+    year: 2026,
+    readMinutes: 3,
+    tags: ['ml', 'automation', 'cloud'],
+    summary:
+      'A 24/7 assistant that answers customer enquiries in Instagram DMs within strict rules — and hands over to a person rather than ever making an answer up.',
+    lead:
+      'Small businesses lose sales in their DMs: questions arrive at night and on weekends, and a slow reply is a lost customer. A chatbot that improvises is worse than no reply. This assistant answers only from approved facts and escalates everything else.',
+    cover: '/images/dash/instagram-dm-assistant.svg',
+    coverAlt:
+      'Architecture diagram: Instagram DM webhook goes to an assistant constrained by an approved knowledge base and rules; answers within scope are sent, everything else is escalated to the owner.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: '24/7', label: 'replies to customer enquiries' },
+      { value: 'Rules-bound', label: 'answers only from approved facts' },
+      { value: 'Human handover', label: 'when a question is out of scope' },
+    ],
+    impact: {
+      value: { value: '24/7', label: 'Always answering', note: 'Enquiries get a reply at any hour, not the next working day.' },
+      time: { value: 'Routine DMs', label: 'Handled automatically', note: 'Opening hours, prices, availability — the questions owners answer twenty times a week.' },
+      effort: { value: 'Meta platform', label: 'Built on official APIs', note: 'Uses Meta’s Messenger Platform for Instagram, within its policies.' },
+      quality: { value: '0', count: 0, label: 'Made-up answers allowed', note: 'If the approved facts don’t cover it, the assistant says so and passes it to a person.' },
+    },
+    beforeAfter: [],
+    stack: ['Meta Messenger Platform (Instagram)', 'Claude API', 'JavaScript / Node', 'Webhooks', 'Vercel'],
+    role: 'Co-founder — design and build',
+    duration: '2026',
+    problem: [
+      'Owners of small businesses answer the same DM questions over and over, usually outside working hours. Replies are slow, and enquiries go cold.',
+      'Generic AI chatbots fix the speed and break the trust: they guess, and a confident wrong price or opening time costs more than a slow right one.',
+    ],
+    approach: [
+      { title: 'A closed book, not an open one', body: 'The assistant answers from an approved set of business facts and rules. It is not allowed to fill gaps from general knowledge.' },
+      { title: 'Refusal as a feature', body: 'Out-of-scope or uncertain questions get a polite holding reply and are escalated to the owner, with the conversation attached.' },
+      { title: 'Official platform only', body: 'Built on Meta’s Messenger Platform webhooks and messaging APIs — no scraping or unofficial clients.' },
+    ],
+    results: [
+      'Customer enquiries answered 24/7 within strict rules.',
+      'Out-of-scope questions reach the owner instead of getting an invented answer.',
+    ],
+    gallery: [],
+    faq: [
+      { q: 'What stops it hallucinating?', a: 'It only answers from approved content, and anything it cannot ground in that content is escalated instead of answered.' },
+    ],
+    links: [],
+    featured: false,
+    tone: 'parchment',
+    reverse: false,
+  },
+
+  // ---------------------------------------------------------------- 06
+  {
+    slug: 'agent-skills-library',
+    title: 'Agent Skills Library & Knowledge Sync',
+    eyebrow: 'CLAUDE CODE · CODEX · GIT · NOTION',
+    org: 'Cork AI Consulting',
+    brand: { wordmark: 'Skills Library', accent: '#d97757', accent2: '#e8a17f' },
+    period: '2026',
+    year: 2026,
+    readMinutes: 3,
+    tags: ['ml', 'automation'],
+    summary:
+      '28 standalone AI workflows turned into one shared, version-controlled skills library — plus a knowledge base that keeps Git and Notion in sync as a single source of truth.',
+    lead:
+      'A two-founder consultancy runs on prompts, scripts and agent workflows. Ours had grown into 28 separate ones, living in different folders and tools, so every improvement helped one person once. I turned them into a library both of us — and every coding agent we use — load the same way.',
+    cover: '/images/dash/agent-skills-library.svg',
+    coverAlt:
+      'Diagram: 28 scattered workflows consolidated into a versioned skills library used by Claude Code and Codex, with a knowledge base synced between Git and Notion.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: '28 → 1', count: 28, label: 'workflows consolidated into one library' },
+      { value: 'Git ⇄ Notion', label: 'synced automatically, one source of truth' },
+      { value: 'Multi-agent', label: 'same skills for Claude Code and Codex' },
+    ],
+    impact: {
+      value: { value: '28', count: 28, label: 'Workflows turned into skills', note: 'Each one versioned, documented and reusable by both founders.' },
+      time: { value: 'Shared', label: 'Improvements compound', note: 'A fix to one skill reaches everyone and every agent on the next pull.' },
+      effort: { value: 'Internal', label: 'Built for our own delivery', note: 'The tooling the consultancy runs on, day to day.' },
+      quality: { value: 'Versioned', label: 'Reviewed like code', note: 'Skills live in Git, so changes are visible, reviewable and reversible.' },
+    },
+    beforeAfter: [],
+    stack: ['Claude Code', 'Codex CLI', 'MCP', 'Git / GitHub', 'Notion API', 'Node', 'Markdown'],
+    role: 'Co-founder — design and build',
+    duration: '2026',
+    problem: [
+      'Agent workflows multiply quickly. Without structure they end up duplicated, slightly different on each machine, and impossible to improve together.',
+      'The company’s knowledge was split between Git, where the agents work, and Notion, where people work — so one of them was always out of date.',
+    ],
+    approach: [
+      { title: 'One library, one format', body: 'Every workflow became a skill with the same structure — purpose, inputs, steps, guardrails — so any agent can discover and run it.' },
+      { title: 'Version-controlled like code', body: 'Skills live in a shared Git repository. Changes are reviewed, history is kept, and nothing is lost when a laptop is replaced.' },
+      { title: 'Git and Notion kept in sync', body: 'An automatic sync keeps the knowledge base consistent across both, so people and agents read the same truth.' },
+    ],
+    results: [
+      '28 standalone AI workflows consolidated into one shared skills library.',
+      'A knowledge base that syncs Git and Notion automatically as one source of truth.',
+    ],
+    gallery: [],
+    faq: [],
+    links: [],
+    featured: false,
+    tone: 'white',
+    reverse: true,
+  },
+
+  // ---------------------------------------------------------------- 07
+  // Murilo's own reselling business — his data, his product, so it can be
+  // shown in full.
+  {
+    slug: 'vinted-tracker',
+    title: 'Vinted Tracker — Reselling Analytics & AI Sales Agent',
+    eyebrow: 'PYTHON · STREAMLIT · SQLITE · LLM',
+    org: 'Own product',
+    brand: { wordmark: 'Vinted Tracker', accent: '#007782', accent2: '#2fa5ad' },
+    period: '2026',
+    year: 2026,
+    readMinutes: 4,
+    tags: ['python', 'sql', 'ml', 'automation'],
+    summary:
+      'A local-first analytics app for my own vintage reselling business: inventory, P&L, market research, and an AI agent that drafts listings from photos.',
+    lead:
+      'I resell vintage, streetwear and shoes on Vinted. Spreadsheets stopped working once stock ran into the hundreds, so I built the tool I wanted: every item from purchase to sale, true profit after fees, and an agent that turns a handful of photos into a ready-to-list draft.',
+    cover: '/images/dash/vinted-tracker.svg',
+    coverAlt:
+      'Diagram of the Vinted Tracker app: inventory and sales in SQLite feed P&L, analytics and market research pages, and a sales agent turns photos into listing drafts.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: '780+', count: 780, suffix: '+', label: 'automated tests, every page in both themes' },
+      { value: '194', count: 194, label: 'orders tracked across 183 inventory items' },
+      { value: 'Local-first', label: 'SQLite on disk, no data leaves the machine' },
+    ],
+    impact: {
+      value: { value: '194', count: 194, label: 'Orders in the ledger', note: 'Across 183 items, with purchase cost, fees and shipping per item — true profit, not revenue.' },
+      time: { value: 'Photo → draft', label: 'Listing workflow', note: 'The agent drafts the listing from photos; I review and publish in Vinted’s own form.' },
+      effort: { value: 'Solo', label: 'Designed, built, used daily', note: 'Product, data model, UI and agent — all mine.' },
+      quality: { value: '780+', count: 780, suffix: '+', label: 'Tests', note: 'Every page is rendered in Streamlit’s real runtime, light and dark, empty and seeded DB.' },
+    },
+    beforeAfter: [],
+    stack: ['Python', 'Streamlit', 'SQLite', 'Pandas', 'LLM vision API', 'pytest'],
+    role: 'Owner — product, engineering and data',
+    duration: '2026, ongoing',
+    problem: [
+      'Reselling looks profitable until fees, shipping and slow-moving stock are counted. With hundreds of items, a spreadsheet could no longer say what was actually making money.',
+      'Listing is the bottleneck: photographing, writing and pricing each item by hand takes longer than sourcing it.',
+    ],
+    approach: [
+      { title: 'One record per item, purchase to sale', body: 'Inventory, costs, fees and sales live in SQLite, so every chart is computed from the same ledger.' },
+      { title: 'Analytics that answer real questions', body: 'P&L, sell-through, time-to-sale and category performance — what to buy more of and what to stop buying.' },
+      { title: 'An assisted sales agent', body: 'The agent drafts title, description and suggested price from photos. Publishing stays manual in Vinted’s own form — no reverse-engineered writes.' },
+      { title: 'Tested like production software', body: '780+ tests, including rendering every page in Streamlit’s real runtime in both themes against seeded and empty databases.' },
+    ],
+    results: [
+      '194 orders and 183 items in one ledger — a single source of truth for stock, cost and profit.',
+      'Listing drafts produced from photos, reviewed and published by me.',
+      '780+ automated tests guarding every page and calculation.',
+    ],
+    gallery: [],
+    faq: [
+      { q: 'Does it post to Vinted automatically?', a: 'No, deliberately. The agent drafts; I confirm and publish in Vinted’s own sell form.' },
+    ],
+    links: [],
+    featured: true,
+    tone: 'parchment',
+    reverse: false,
+  },
+
+  // ---------------------------------------------------------------- 08
+  {
+    slug: 'job-hunt-pipeline',
+    title: 'Truthful Job-Search Pipeline',
+    eyebrow: 'PYTHON · SQLITE · CLI · AGENTS',
+    org: 'Personal project',
+    brand: { wordmark: 'job-hunt', accent: '#5b5bd6', accent2: '#8e8ef0' },
+    period: '2026',
+    year: 2026,
+    readMinutes: 3,
+    tags: ['python', 'sql', 'automation', 'ml'],
+    summary:
+      'A personal pipeline that collects roles from official job-board APIs, scores them Hot/Warm/Cold, tracks them in SQLite, and builds a tailored CV per role — verified so it can never invent anything.',
+    lead:
+      'Job searching is a data problem: many sources, inconsistent formats, and a CV that should be tailored every time. I built a pipeline that does the collecting and scoring, and a CV builder with a verifier that checks every title, date and number against a single source profile.',
+    cover: '/images/dash/job-hunt-pipeline.svg',
+    coverAlt:
+      'Diagram: Greenhouse, Lever, Ashby and Workday feeds flow into a scorer and SQLite tracker, then a CV builder with a verification step outputs a tailored PDF and DOCX.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: '1,350', count: 1350, label: 'roles collected from 71 companies' },
+      { value: '154 hot', count: 154, suffix: ' hot', label: 'of 1,245 scored roles flagged as strong matches' },
+      { value: 'Verified CVs', label: 'every claim checked against one source profile' },
+    ],
+    impact: {
+      value: { value: 'Tailored', label: 'CV per role', note: 'PDF and DOCX generated per application, with a gaps note.' },
+      time: { value: '1,245', count: 1245, label: 'Roles scored automatically', note: '154 hot, 658 warm, 433 cold — no manual triage.' },
+      effort: { value: 'Solo', label: 'Personal tool', note: 'Typer CLI, SQLite and an HTML dashboard.' },
+      quality: { value: '0', count: 0, label: 'Invented claims', note: 'A verifier rejects any title, date, number or skill not in the source profile.' },
+    },
+    beforeAfter: [],
+    stack: ['Python', 'Typer', 'SQLite', 'Greenhouse / Lever / Ashby APIs', 'python-docx', 'Headless Chrome'],
+    role: 'Sole developer',
+    duration: '2026',
+    problem: [
+      'Relevant roles are scattered across dozens of company career sites, each with its own format.',
+      'Tailoring a CV per role is slow, and AI tools happily “improve” a CV by inventing experience.',
+    ],
+    approach: [
+      { title: 'Official sources only', body: 'Greenhouse, Lever and Ashby public APIs, Workday career feeds and pasted links — no LinkedIn or Indeed scraping.' },
+      { title: 'Score, then track', body: 'Each role is scored Hot/Warm/Cold against my profile and tracked in SQLite through to application status.' },
+      { title: 'A CV builder that cannot lie', body: 'Tailored CVs are generated from one source profile, and a verifier checks every title, date, number and skill before output.' },
+    ],
+    results: [
+      '1,350 roles collected from 71 companies; 1,245 scored — 154 hot, 658 warm, 433 cold.',
+      'A tailored, verified CV and gaps note for each application.',
+    ],
+    gallery: [],
+    faq: [],
+    links: [],
+    featured: false,
+    tone: 'white',
+    reverse: true,
+  },
+
+  // ---------------------------------------------------------------- 09
+  {
+    slug: 'blarneykey',
+    title: 'BlarneyKey — Private, Offline AI Dictation for macOS',
+    eyebrow: 'SWIFT · WHISPER · ON-DEVICE AI',
+    org: 'Cork AI Consulting',
+    brand: { wordmark: 'BlarneyKey', accent: '#1f8a4c', accent2: '#4cb878' },
+    period: '2026',
+    year: 2026,
+    readMinutes: 3,
+    tags: ['ml', 'automation'],
+    summary:
+      'Push-to-talk dictation for the Mac that runs Whisper on the Neural Engine — no network, no subscription, nothing leaves the machine.',
+    lead:
+      'Cloud dictation sends every word you say to someone else’s server, and charges monthly for it. Douglas and I built BlarneyKey to prove the opposite: fast, accurate speech-to-text that runs entirely on the Mac, free, and open on GitHub.',
+    cover: '/images/dash/blarneykey.svg',
+    coverAlt:
+      'Diagram: hold a hotkey, audio is captured locally, transcribed by Whisper on the Apple Neural Engine, and typed into the active app — with no network step.',
+    coverWidth: 1600,
+    coverHeight: 1000,
+    findings: [
+      { value: '0', count: 0, label: 'bytes of audio sent over the network' },
+      { value: '€0', label: 'free, no subscription' },
+      { value: 'Open source', label: 'public on GitHub' },
+    ],
+    impact: {
+      value: { value: '€0', label: 'Cost to the user', note: 'Free, with no account and no subscription.' },
+      time: { value: 'Push-to-talk', label: 'Hold, speak, release', note: 'Text lands in whatever app has focus.' },
+      effort: { value: 'Co-built', label: 'With Douglas Woollam', note: 'Shipped as part of the Cork AI Consulting products showcase.' },
+      quality: { value: '100%', count: 100, suffix: '%', label: 'On-device', note: 'Whisper runs on the Apple Neural Engine; the app works offline.' },
+    },
+    beforeAfter: [],
+    stack: ['Swift', 'SwiftUI', 'Whisper', 'Apple Neural Engine', 'macOS'],
+    role: 'Co-builder, with Douglas Woollam',
+    duration: '2026, shipped',
+    problem: [
+      'Dictation is one of the most useful everyday AI tools, and most options send your voice to the cloud and bill you monthly — a poor fit for anyone handling client or personal information.',
+    ],
+    approach: [
+      { title: 'On-device by design', body: 'Whisper runs locally on the Apple Neural Engine, so speed comes from the hardware and privacy is a property of the architecture, not a policy.' },
+      { title: 'One gesture', body: 'Hold a key, speak, release: the transcript is typed into the active app, with no window to manage.' },
+      { title: 'Open and free', body: 'Published publicly on GitHub so anyone can read exactly what it does.' },
+    ],
+    results: [
+      'Shipped as a free macOS app with a public repository.',
+      'Featured as a live demo in the Cork AI Consulting products showcase.',
+    ],
+    gallery: [],
+    faq: [],
+    links: [{ label: 'Source on GitHub ↗', href: 'https://github.com/AirDoogle/blarneykey', external: true }],
+    featured: false,
+    tone: 'parchment',
+    reverse: false,
+  },
+
   // ---------------------------------------------------------------- 01
   {
     slug: 'freelance-automation-bi',
@@ -260,7 +679,7 @@ export const projects: Project[] = [
       { label: 'See it on GitHub ↗', href: GH, external: true },
       { label: 'Read the case study', href: '/work/freelance-automation-bi', external: false },
     ],
-    featured: true,
+    featured: false,
     tone: 'parchment',
     reverse: true,
   },
@@ -409,156 +828,9 @@ export const projects: Project[] = [
     links: [
       { label: 'Read the case study', href: '/work/drawing-to-cad-automation', external: false },
     ],
-    featured: true,
+    featured: false,
     tone: 'dark-3',
     reverse: false,
-  },
-
-  // ---------------------------------------------------------------- 03
-  // Cork AI Consulting — anonymised composite, as above.
-  {
-    slug: 'document-intake-triage',
-    title: 'Document Intake & Triage Service',
-    eyebrow: 'AI · AUTOMATION · CLOUD',
-    org: 'Cork AI Consulting · professional services firm',
-    brand: { wordmark: 'IntakeLens', accent: '#0e7490', accent2: '#67e8f9' },
-    period: '2026',
-    year: 2026,
-    readMinutes: 6,
-    tags: ['ml', 'automation', 'cloud'],
-    summary:
-      'Inbound client documents read, classified, key fields extracted and routed to the right queue — with a confidence floor and a human path.',
-    lead:
-      'A professional services firm received client documents through four channels and keyed the same two dozen fields out of them by hand. I built an intake service that classifies each document, extracts its fields, and routes it — but only when it is confident. Below the floor it goes to a person, because in this business a misfiled document is a compliance problem, not an inconvenience.',
-    cover: '/images/dash/document-intake-triage.png',
-    coverAlt:
-      'Screenshot of the Document Intake & Triage Service: three headline metric cards above a bar chart of median intake turnaround, 60 hours at Baseline down to 3 by Wk 7.',
-    coverWidth: 1600,
-    coverHeight: 1000,
-    findings: [
-      { value: '−95%', count: 95, prefix: '−', suffix: '%', label: 'median intake turnaround, 60 hours to 3' },
-      { value: '94.5%', count: 94.5, suffix: '%', label: 'field-extraction accuracy above the confidence floor' },
-      { value: '100%', count: 100, suffix: '%', label: 'of low-confidence documents routed to a human' },
-    ],
-    impact: {
-      value: {
-        value: '€21k',
-        count: 21,
-        prefix: '€',
-        suffix: 'k',
-        label: 'Annualised administrative cost returned',
-        note: '12 hours a week at a conservative €34/hour loaded cost, redeployed to client-facing work.',
-      },
-      time: {
-        value: '12h',
-        count: 12,
-        suffix: 'h',
-        label: 'Administrative hours returned each week',
-        note: 'Time previously spent opening, classifying and re-keying inbound documents.',
-      },
-      effort: {
-        value: '7 weeks',
-        label: 'Effort to build',
-        note: 'Cork AI Consulting — channel mapping, extraction model, routing service and staff handover.',
-      },
-      quality: {
-        value: '94.5%',
-        count: 94.5,
-        suffix: '%',
-        label: 'Field-extraction accuracy',
-        note: 'On documents above the confidence floor. Everything below it reaches a person on first touch.',
-      },
-    },
-    beforeAfter: [
-      { metric: 'Median intake turnaround', before: 60, after: 3, unit: 'hours', better: 'lower' },
-      { metric: 'Administrative hours per week on intake', before: 15, after: 3, unit: 'hours', better: 'lower' },
-      { metric: 'Fields keyed by hand per document', before: 26, after: 2, unit: 'fields', better: 'lower' },
-    ],
-    illustrative: true,
-    stack: ['Python (spaCy, pdfplumber, scikit-learn)', 'Claude API', 'FastAPI', 'PostgreSQL', 'Cloud Run'],
-    role: 'Cork AI Consulting — founder & lead consultant, sole delivery',
-    duration: '7 weeks',
-    problem: [
-      'Documents arrived by email, through a web form, by post as scans, and occasionally by hand. Whoever opened one classified it, keyed roughly two dozen fields into the practice management system, and moved it to a queue. Nothing about that work needed a qualified person, but all of it needed a careful one.',
-      'The cost was turnaround as much as labour. A document that arrived on Friday afternoon might not be in a queue until Tuesday, and the firm had no way to see what was sitting unprocessed — the backlog only existed in individual inboxes.',
-    ],
-    approach: [
-      {
-        title: 'Made the channels one channel',
-        body:
-          'All four intake routes now land in a single queue with the source recorded. That alone made the backlog visible for the first time, and it is the change staff mentioned first.',
-      },
-      {
-        title: 'Classify, then extract',
-        body:
-          'A document type is settled before any field extraction is attempted, because the fields worth extracting depend on it. Classification is cheap and auditable; extraction is the expensive part and only runs against a known schema.',
-      },
-      {
-        title: 'A confidence floor with a human path',
-        body:
-          'Every extracted field carries a confidence. Below the floor, the document routes to a person with the uncertain fields highlighted rather than being filed on a guess. The floor was set from the firm’s own tolerance for a misfiling, not from a default.',
-      },
-      {
-        title: 'Auditable by design',
-        body:
-          'Every decision, its confidence, and any human correction is logged against the document. Corrections feed the weekly review, and the log is what let the firm sign off on the service at all.',
-      },
-    ],
-    results: [
-      'Median intake turnaround fell from around 60 hours to 3, and a Friday document is now in the right queue on Friday.',
-      'Field-extraction accuracy of 94.5% above the confidence floor, with every below-floor document reaching a person on first touch.',
-      'Hand-keyed fields per document fell from 26 to 2 — the two that genuinely need a judgement call.',
-      'The backlog became a number on a screen instead of an unknown quantity spread across four inboxes.',
-    ],
-    chart: {
-      title: 'Median intake turnaround',
-      unit: 'hours',
-      series: [
-        { label: 'Baseline', value: 60 },
-        { label: 'Wk 2', value: 41 },
-        { label: 'Wk 3', value: 26 },
-        { label: 'Wk 4', value: 15 },
-        { label: 'Wk 5', value: 8 },
-        { label: 'Wk 6', value: 4.5 },
-        { label: 'Wk 7', value: 3 },
-      ],
-    },
-    gallery: [
-      {
-        src: '/images/gallery/document-intake-triage-1.png',
-        alt: 'Extraction review screen showing a document alongside its extracted fields, each with a confidence indicator',
-        caption: 'The review screen. Fields below the confidence floor are highlighted, so a person reads the two that are uncertain rather than all twenty-six.',
-        width: 1400,
-        height: 800,
-      },
-      {
-        src: '/images/gallery/document-intake-triage-2.png',
-        alt: 'Unified intake queue showing documents from all four channels with age, type and routing status',
-        caption: 'One queue, four channels, with age on the face of it. Making the backlog visible changed behaviour before the model did.',
-        width: 1400,
-        height: 800,
-      },
-    ],
-    faq: [
-      {
-        q: 'Why a confidence floor rather than always routing to a human for review?',
-        a: 'Reviewing everything reproduces the original cost. The floor concentrates human attention on the documents where it changes the outcome, and it is set from the firm’s own tolerance for a misfiling rather than from a model default.',
-      },
-      {
-        q: 'What about client confidentiality?',
-        a: 'Documents stay inside the firm’s own cloud tenancy, access is logged per document, and retention follows their existing policy. That constraint shaped the architecture from the first week rather than being retrofitted.',
-      },
-      {
-        q: 'How do you know the accuracy figure holds?',
-        a: 'It is measured on a held-out sample, not on the training data, and every human correction in the live log is a fresh test case. Accuracy is re-reported weekly rather than claimed once at launch.',
-      },
-    ],
-    links: [
-      { label: 'Read the case study', href: '/work/document-intake-triage', external: false },
-    ],
-    featured: false,
-    tone: 'white',
-    reverse: true,
   },
 
   // ---------------------------------------------------------------- 04
@@ -702,891 +974,6 @@ export const projects: Project[] = [
     reverse: false,
   },
 
-  // ---------------------------------------------------------------- 05
-  {
-    slug: 'retail-demand-forecast',
-    title: 'Demand Forecasting for an Irish Retail Group',
-    eyebrow: 'PYTHON · ML · POWER BI',
-    org: 'Grocery & convenience group, Munster',
-    brand: { wordmark: 'ShelfPulse', accent: '#e8871e', accent2: '#f5b962' },
-    period: '2025',
-    year: 2025,
-    readMinutes: 7,
-    tags: ['python', 'ml', 'sql', 'powerbi'],
-    summary:
-      'SKU-level weekly forecasting across 34 stores, replacing a spreadsheet that ordered on last year’s numbers plus a feeling.',
-    lead:
-      'A 34-store grocery and convenience group in Munster ordered fresh stock from last year’s sales and a manager’s judgement. Waste was running at 6.4% of fresh revenue and availability on the top hundred lines at 93%. I built a SKU-store-week forecast and wired it into the ordering sheet buyers already used.',
-    cover: '/images/dash/retail-demand-forecast.png',
-    coverAlt:
-      'Screenshot of the Demand Forecasting for an Irish Retail Group dashboard: three headline metric cards above a line chart of weekly forecast error (MAPE), 22.4 % MAPE at W1 down to 15.5 by W12.',
-    coverWidth: 1600,
-    coverHeight: 1000,
-    findings: [
-      { value: '−31%', count: 31, prefix: '−', suffix: '%', label: 'forecast error (MAPE) versus the previous method' },
-      { value: '€214k', count: 214, prefix: '€', suffix: 'k', label: 'annualised fresh waste avoided across 34 stores' },
-      { value: '11.4k', count: 11.4, suffix: 'k', label: 'SKU-store-week forecasts produced every Thursday' },
-    ],
-    impact: {
-      value: {
-        value: '€214k',
-        count: 214,
-        prefix: '€',
-        suffix: 'k',
-        label: 'Annualised fresh waste avoided',
-        note: 'Across 34 stores, from ordering closer to true demand.',
-      },
-      time: {
-        value: '6h',
-        count: 6,
-        suffix: 'h',
-        label: 'Buyer hours returned each week',
-        note: 'Thursday ordering moved from a manual spreadsheet pass to reviewing a generated proposal.',
-      },
-      effort: {
-        value: '14 weeks',
-        label: 'Effort to build',
-        note: 'Lead analyst — modelling, pipeline and buyer rollout across the estate.',
-      },
-      quality: {
-        value: '−31%',
-        count: 31,
-        prefix: '−',
-        suffix: '%',
-        label: 'Forecast error (MAPE)',
-        note: 'Against the previous method, measured on held-out weeks.',
-      },
-    },
-    beforeAfter: [
-      { metric: 'Weekly forecast error (MAPE)', before: 22.4, after: 15.5, unit: '%', better: 'lower' },
-      { metric: 'Fresh waste as a share of fresh revenue', before: 6.4, after: 4.1, unit: '%', better: 'lower' },
-      { metric: 'Availability on the top hundred lines', before: 93.1, after: 97.6, unit: '%', better: 'higher' },
-      { metric: 'Buyer overrides', before: 41, after: 8, unit: '% of lines', better: 'lower' },
-    ],
-    illustrative: true,
-    stack: ['Python (Pandas, scikit-learn, LightGBM)', 'SQL', 'Power BI', 'Azure Blob Storage', 'Excel'],
-    role: 'Lead analyst — modelling, pipeline and buyer rollout',
-    duration: '14 weeks',
-    problem: [
-      'Fresh ordering was done store by store in a shared spreadsheet seeded with the same week from the previous year. It handled a normal week acceptably and everything else badly: a bank holiday, a heatwave, a competitor opening nearby or a promotion two aisles away all produced the same wrong answer. Waste sat at 6.4% of fresh revenue while availability on the top hundred lines hovered around 93%.',
-      'There was no shortage of data — four years of till-level history existed — but it had never been joined to promotions, weather or the store calendar, so none of the drivers were usable.',
-    ],
-    approach: [
-      {
-        title: 'Built the feature history first',
-        body:
-          'Four years of till data joined to the promotions calendar, Met Éireann daily observations, school and bank-holiday calendars, and each store’s own trading pattern. Every feature is computed as it would have been known on the Thursday of ordering — no leakage from the future.',
-      },
-      {
-        title: 'Gradient boosting, per category',
-        body:
-          'One LightGBM model per fresh category rather than one global model or one model per SKU. Categories share seasonality and promotional response; individual SKUs do not have enough history to learn it alone. A seasonal-naïve forecast was kept as the benchmark throughout.',
-      },
-      {
-        title: 'Backtested on rolling origins',
-        body:
-          'Twelve rolling forecast origins across two years, scored on MAPE and on waste and lost-sales cost — because a model that is symmetrically accurate is not necessarily the cheapest one to order from.',
-      },
-      {
-        title: 'Delivered into the buyer’s existing sheet',
-        body:
-          'The forecast lands as a suggested order quantity in the sheet buyers already opened, with a confidence band and an override box. Overrides are logged and fed back into the next review — the model earns trust rather than demanding it.',
-      },
-    ],
-    results: [
-      'Weekly forecast error fell from 22.4% to 15.5% MAPE, a 31% relative improvement over the previous-year method, and held through two bank-holiday weeks.',
-      'Fresh waste dropped from 6.4% to 4.1% of fresh revenue — around €214k avoided on an annualised basis across the estate.',
-      'Availability on the top hundred lines rose from 93.1% to 97.6%.',
-      'Buyer overrides settled at 8% of lines by week ten, down from 41% in the first fortnight.',
-    ],
-    chart: {
-      title: 'Weekly forecast error (MAPE)',
-      unit: '% MAPE',
-      series: [
-        { label: 'W1', value: 22.4 },
-        { label: 'W2', value: 21.8 },
-        { label: 'W3', value: 21.1 },
-        { label: 'W4', value: 19.6 },
-        { label: 'W5', value: 18.9 },
-        { label: 'W6', value: 18.2 },
-        { label: 'W7', value: 17.4 },
-        { label: 'W8', value: 16.8 },
-        { label: 'W9', value: 16.3 },
-        { label: 'W10', value: 15.9 },
-        { label: 'W11', value: 15.7 },
-        { label: 'W12', value: 15.5 },
-      ],
-    },
-    gallery: [
-      {
-        src: '/images/gallery/retail-demand-forecast-1.png',
-        alt: 'Forecast accuracy breakdown by fresh category, comparing the model against the seasonal-naïve benchmark',
-        caption: 'Accuracy by category against the seasonal-naïve benchmark. Bakery gained most; loose produce needed a separate weather feature.',
-        width: 1400,
-        height: 800,
-      },
-      {
-        src: '/images/gallery/retail-demand-forecast-2.png',
-        alt: 'Store-level waste and availability view used in the weekly ordering review',
-        caption: 'The weekly review page — waste and availability side by side, because improving one at the other’s expense is easy and pointless.',
-        width: 1400,
-        height: 800,
-      },
-    ],
-    faq: [
-      {
-        q: 'Why not one model per SKU?',
-        a: 'Most fresh SKUs have too little clean history to learn seasonality or promotional lift on their own. Pooling within a category gives the model enough signal while keeping the response curves meaningfully different between, say, bakery and chilled meats.',
-      },
-      {
-        q: 'How are promotions handled?',
-        a: 'As explicit features — mechanic, depth, position in the leaflet and whether a substitute line is also on promotion. Cannibalisation between neighbouring lines was the single biggest accuracy gain after weather.',
-      },
-      {
-        q: 'What happens on a week the model has never seen?',
-        a: 'The confidence band widens and the sheet flags the line for a human decision. A forecast that knows it is uncertain is far more useful to a buyer than one that does not.',
-      },
-    ],
-    links: [
-      { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/retail-demand-forecast', external: false },
-    ],
-    featured: false,
-    tone: 'white',
-    reverse: true,
-  },
-
-  // ---------------------------------------------------------------- 06
-  {
-    slug: 'churn-early-warning',
-    title: 'Subscription Churn Early-Warning Scoring',
-    eyebrow: 'PYTHON · ML · CLOUD',
-    org: 'B2B SaaS, Dublin',
-    brand: { wordmark: 'ChurnRadar', accent: '#4361ee', accent2: '#7b93f5' },
-    period: '2025',
-    year: 2025,
-    readMinutes: 6,
-    tags: ['python', 'ml', 'cloud'],
-    summary:
-      'A daily churn score for 8,400 B2B accounts that gives customer success three weeks of warning instead of a renewal-week surprise.',
-    lead:
-      'Churn at a Dublin B2B SaaS company was discovered at renewal or not at all: 1.9% of its 8,400 accounts left every month, and customer success had capacity to work about 60 a week with no defensible way to choose which 60. I built a daily churn score, calibrated it so the probability means what it says, and shipped it as a ranked worklist.',
-    cover: '/images/dash/churn-early-warning.png',
-    coverAlt:
-      'Screenshot of the Subscription Churn Early-Warning Scoring dashboard: three headline metric cards above a line chart of monthly logo churn in the worked cohort, 1.9 % of accounts at Jan down to 1.39 by Oct.',
-    coverWidth: 1600,
-    coverHeight: 1000,
-    findings: [
-      { value: '23 days', count: 23, suffix: ' days', label: 'median warning ahead of a churn event' },
-      { value: '0.81', count: 0.81, label: 'ROC AUC on the held-out quarter, calibrated' },
-      { value: '−27%', count: 27, prefix: '−', suffix: '%', label: 'logo churn in the cohort worked from the score' },
-    ],
-    impact: {
-      value: {
-        value: '43',
-        count: 43,
-        label: 'Accounts retained each month',
-        note: 'Monthly logo churn of 0.51pp across 8,400 accounts, held over two quarters against a matched control.',
-      },
-      time: {
-        value: '23 days',
-        count: 23,
-        suffix: ' days',
-        label: 'Median warning before a churn event',
-        note: 'Against effectively zero under the previous renewal-desk process.',
-      },
-      effort: {
-        value: '9 weeks',
-        label: 'Effort to build',
-        note: 'Consulting data scientist — feature design, modelling and deployment.',
-      },
-      quality: {
-        value: '0.81',
-        count: 0.81,
-        label: 'ROC AUC, calibrated',
-        note: 'On a fully held-out quarter, with calibration error under 4pp across all deciles.',
-      },
-    },
-    beforeAfter: [
-      { metric: 'Monthly logo churn in the worked cohort', before: 1.9, after: 1.39, unit: '%', better: 'lower' },
-      { metric: 'Median days of warning before churn', before: 0, after: 23, unit: 'days', better: 'higher' },
-      { metric: 'Accounts worked from a defensible ranking', before: 0, after: 60, unit: 'per week', better: 'higher' },
-    ],
-    illustrative: true,
-    stack: ['Python (Pandas, scikit-learn, XGBoost)', 'BigQuery', 'Cloud Run', 'dbt', 'Looker Studio'],
-    role: 'Consulting data scientist — feature design, modelling, deployment',
-    duration: '9 weeks',
-    problem: [
-      'Churn was treated as a renewal-desk problem. An account manager saw a contract 30 days out, made a call, and discovered the champion had left four months earlier. Meanwhile the product emitted a rich event stream that nobody had turned into a leading indicator.',
-      'The team had also tried a rules-based health score, which failed in a specific and instructive way: it fired on almost every enterprise account because it keyed off absolute usage rather than change relative to that account’s own norm.',
-    ],
-    approach: [
-      {
-        title: 'Features relative to the account’s own baseline',
-        body:
-          'Every behavioural feature is expressed as a deviation from that account’s trailing 90-day norm — seat activation, weekly active users, depth of feature use, support-ticket sentiment and admin logins. A large account going quiet is the signal, not a small account being small.',
-      },
-      {
-        title: 'A defensible label and no leakage',
-        body:
-          'Churn is defined as non-renewal or a downgrade past 40% of contract value, dated at notice rather than expiry. All features are computed as of the score date, and anything touched by the renewal process itself is excluded — it predicts beautifully and tells you nothing.',
-      },
-      {
-        title: 'Calibrated, then thresholded on cost',
-        body:
-          'XGBoost with isotonic calibration, so a 0.7 score genuinely means roughly seven in ten. The intervention threshold was then chosen against the team’s real weekly capacity and the cost of a wasted call versus a lost account.',
-      },
-      {
-        title: 'Shipped as a worklist, with reasons',
-        body:
-          'A Cloud Run job scores every account nightly and writes a ranked list with the top three contributing drivers per account. Customer success get a queue and an explanation, not a black-box number.',
-      },
-    ],
-    results: [
-      'Median warning ahead of a churn event is 23 days, against effectively zero under the renewal-desk process.',
-      'ROC AUC of 0.81 on a fully held-out quarter, with calibration error under 4 percentage points across all deciles.',
-      'Logo churn in the worked cohort fell 27% against a matched control over two quarters.',
-      'Precision at the team’s working capacity of 60 accounts a week is 0.46 — roughly one in two calls reaches an account that would otherwise have left.',
-    ],
-    chart: {
-      title: 'Monthly logo churn in the worked cohort',
-      unit: '% of accounts',
-      series: [
-        { label: 'Jan', value: 1.9 },
-        { label: 'Feb', value: 1.9 },
-        { label: 'Mar', value: 1.8 },
-        { label: 'Apr', value: 1.7 },
-        { label: 'May', value: 1.6 },
-        { label: 'Jun', value: 1.5 },
-        { label: 'Jul', value: 1.45 },
-        { label: 'Aug', value: 1.4 },
-        { label: 'Sep', value: 1.38 },
-        { label: 'Oct', value: 1.39 },
-      ],
-    },
-    gallery: [
-      {
-        src: '/images/gallery/churn-early-warning-1.png',
-        alt: 'Model evaluation page showing the calibration curve and precision at the team’s working capacity',
-        caption: 'Calibration and precision-at-capacity. The threshold was set from this page and the team’s weekly headcount, not from a default of 0.5.',
-        width: 1400,
-        height: 800,
-      },
-      {
-        src: '/images/gallery/churn-early-warning-2.png',
-        alt: 'Per-account driver breakdown showing the three largest contributors to a risk score',
-        caption: 'Per-account drivers. A score without a reason gets ignored on the second week.',
-        width: 1400,
-        height: 800,
-      },
-    ],
-    faq: [
-      {
-        q: 'Why did the previous rules-based health score fail?',
-        a: 'It measured absolute usage, so every large account looked healthy and every small one looked at risk. Normalising each feature against the account’s own trailing baseline fixed that — though it does depend on a product event stream. On billing data alone, three weeks of warning is not available.',
-      },
-      {
-        q: 'How do you know the 27% reduction was the model?',
-        a: 'The worked cohort was compared against a matched control held back from the worklist for two quarters — matched on contract value, tenure and segment. Without a control, any improvement is just a good quarter.',
-      },
-    ],
-    links: [
-      { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/churn-early-warning', external: false },
-    ],
-    featured: false,
-    tone: 'parchment',
-    reverse: false,
-  },
-
-  // ---------------------------------------------------------------- 07
-  {
-    slug: 'finance-close-automation',
-    title: 'Month-End Close Automation',
-    eyebrow: 'AUTOMATION · PYTHON · SQL',
-    org: 'Manufacturing group, five entities',
-    brand: { wordmark: 'CloseFlow', accent: '#1f7a54', accent2: '#4caf82' },
-    period: '2025',
-    year: 2025,
-    readMinutes: 6,
-    tags: ['automation', 'python', 'excel', 'sql'],
-    summary:
-      'A nine-day month-end close cut to three, by automating the reconciliation and consolidation steps rather than asking people to work faster.',
-    lead:
-      'Nine working days and two late nights — that was month-end for a manufacturing group with five legal entities. Nothing was broken exactly: 61 individually reasonable manual steps, chained together with no way to run any of them twice safely. I rebuilt the pipeline so the close is a checklist with a status board rather than a relay race.',
-    cover: '/images/dash/finance-close-automation.png',
-    coverAlt:
-      'Screenshot of the Month-End Close Automation dashboard: three headline metric cards above a bar chart of working days to close, by cycle, 9 working days at Baseline down to 3 by Cycle 6.',
-    coverWidth: 1600,
-    coverHeight: 1000,
-    findings: [
-      { value: '9 → 3', label: 'working days to close, across five entities' },
-      { value: '−142h', count: 142, prefix: '−', suffix: 'h', label: 'manual finance effort per close cycle' },
-      { value: '61', count: 61, label: 'manual steps replaced by 9 idempotent jobs' },
-    ],
-    impact: {
-      value: {
-        value: '€60k',
-        count: 60,
-        prefix: '€',
-        suffix: 'k',
-        label: 'Annualised finance cost returned',
-        note: '1,704 hours a year across twelve close cycles, at a conservative €35/hour loaded cost.',
-      },
-      time: {
-        value: '142h',
-        count: 142,
-        suffix: 'h',
-        label: 'Manual hours saved per close',
-        note: 'Across five entities — the close itself fell from nine working days to three.',
-      },
-      effort: {
-        value: '12 weeks',
-        label: 'Effort to build',
-        note: 'Consulting automation engineer — process mapping, build and handover to the finance team.',
-      },
-      quality: {
-        value: '9 jobs',
-        count: 9,
-        suffix: ' jobs',
-        label: 'Idempotent jobs replacing 61 manual steps',
-        note: 'Re-runnable without double-posting. Eleven duplicated steps were deleted rather than automated.',
-      },
-    },
-    beforeAfter: [
-      { metric: 'Working days to close', before: 9, after: 3, unit: 'days', better: 'lower' },
-      { metric: 'Manual finance hours per close cycle', before: 190, after: 48, unit: 'hours', better: 'lower' },
-      { metric: 'Manual steps in the close process', before: 61, after: 9, unit: 'steps', better: 'lower' },
-    ],
-    illustrative: true,
-    stack: ['Python (Pandas, openpyxl)', 'SQL Server', 'Excel', 'Power Automate', 'Git'],
-    role: 'Consulting automation engineer — process mapping, build, handover',
-    duration: '12 weeks',
-    problem: [
-      'The close depended on 61 manual steps spread across five entities and four people. Intercompany balances were reconciled by exporting two ledgers to Excel and eyeballing them; the consolidation workbook was a 40-tab file whose formulas nobody was willing to touch; and if a step was run twice, it double-posted. That last property is why nobody dared restart anything, so a single error cost half a day.',
-      'The team had asked for more headcount. What they actually needed was for the repeatable 80% to stop consuming the judgement-based 20%.',
-    ],
-    approach: [
-      {
-        title: 'Mapped and timed all 61 steps',
-        body:
-          'Two weeks shadowing a live close, recording each step’s owner, duration, inputs and failure mode. Eleven steps turned out to be duplicated between entities and four produced output nobody read — those were deleted before a line of code was written.',
-      },
-      {
-        title: 'Made every job idempotent',
-        body:
-          'Each automated step writes to a staging table keyed on entity and period, then swaps atomically. Re-running a job is always safe, which is what finally made restarting a failed close a non-event instead of a crisis.',
-      },
-      {
-        title: 'Automated reconciliation with a tolerance ledger',
-        body:
-          'Intercompany and bank reconciliations run in Python against both ledgers, with materiality thresholds agreed with the controller. Matches clear silently; breaks land in a queue with both source rows attached, so the accountant starts from the exception rather than the export.',
-      },
-      {
-        title: 'Replaced the 40-tab workbook',
-        body:
-          'Consolidation logic moved into version-controlled SQL with a test per elimination rule. The workbook survives as a formatted output only — it no longer contains any logic, so no one has to be afraid of it.',
-      },
-    ],
-    results: [
-      'Close time fell from 9 working days to 3 over six cycles, with no cycle regressing.',
-      'Around 142 hours of manual finance effort removed per cycle, redeployed onto variance analysis and forecasting.',
-      'Reconciliation breaks are now surfaced on day one rather than discovered on day six; average break count per close fell from 38 to 9 as upstream causes became visible.',
-      'No late nights in any of the six cycles since go-live.',
-    ],
-    chart: {
-      title: 'Working days to close, by cycle',
-      unit: 'working days',
-      series: [
-        { label: 'Baseline', value: 9 },
-        { label: 'Cycle 1', value: 8 },
-        { label: 'Cycle 2', value: 7 },
-        { label: 'Cycle 3', value: 5 },
-        { label: 'Cycle 4', value: 4 },
-        { label: 'Cycle 5', value: 3.5 },
-        { label: 'Cycle 6', value: 3 },
-      ],
-    },
-    gallery: [
-      {
-        src: '/images/gallery/finance-close-automation-1.png',
-        alt: 'Reconciliation exception queue showing unmatched intercompany rows with both source ledgers side by side',
-        caption: 'The exception queue. Matched items clear silently; the accountant only ever sees the breaks, with both source rows attached.',
-        width: 1400,
-        height: 800,
-      },
-      {
-        src: '/images/gallery/finance-close-automation-2.png',
-        alt: 'Process map of the close before and after automation, showing manual steps replaced by scheduled jobs',
-        caption: 'Before and after. Eleven duplicated steps and four unread outputs were deleted rather than automated.',
-        width: 1400,
-        height: 800,
-      },
-    ],
-    faq: [
-      {
-        q: 'Did anything stay manual on purpose?',
-        a: 'Yes — accruals, provisions and anything requiring judgement. The goal was to give those steps more room, not to pretend a script can make an estimate.',
-      },
-      {
-        q: 'How is the audit trail handled?',
-        a: 'Every job logs its inputs, row counts and the period it wrote to, and the staging-then-swap pattern means each posted figure traces back to an immutable run. Auditors get a run log rather than a reconstruction.',
-      },
-    ],
-    links: [
-      { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/finance-close-automation', external: false },
-    ],
-    featured: false,
-    tone: 'dark',
-    reverse: true,
-  },
-
-  // ---------------------------------------------------------------- 08
-  {
-    slug: 'logistics-control-tower',
-    title: 'Live Logistics Control Tower',
-    eyebrow: 'POWER BI · SQL · CLOUD',
-    org: '3PL operator, Cork & Rotterdam',
-    brand: { wordmark: 'RouteWatch', accent: '#1d4ed8', accent2: '#5b7fe8' },
-    period: '2026',
-    year: 2026,
-    readMinutes: 6,
-    tags: ['powerbi', 'sql', 'cloud'],
-    summary:
-      'One live view across four carriers and two hubs, so a delayed consignment is a phone call the same morning instead of a claim three weeks later.',
-    lead:
-      'Customers were the exception-detection system at a third-party logistics operator running 2,300 consignments a week out of Cork and Rotterdam, across four carrier systems that knew nothing of each other. I built a control tower that ingests all four feeds, reconciles them onto one consignment spine and puts the exceptions on a screen the operations floor actually watches.',
-    cover: '/images/dash/logistics-control-tower.png',
-    coverAlt:
-      'Screenshot of the Live Logistics Control Tower: three headline metric cards above a line chart of on-time-in-full delivery, 88.9 % OTIF at Wk 1 up to 98.3 by Wk 19.',
-    coverWidth: 1600,
-    coverHeight: 1000,
-    findings: [
-      { value: '+9.4pp', count: 9.4, prefix: '+', suffix: 'pp', label: 'on-time-in-full delivery over two quarters' },
-      { value: '4 → 1', label: 'carrier systems reconciled onto one consignment spine' },
-      { value: '11 min', count: 11, suffix: ' min', label: 'data latency, against a previous 24-hour lag' },
-    ],
-    impact: {
-      value: {
-        value: '+9.4pp',
-        count: 9.4,
-        prefix: '+',
-        suffix: 'pp',
-        label: 'On-time-in-full delivery',
-        note: '88.9% to 98.3% over two quarters, on a reconciled measure rather than carrier self-reporting.',
-      },
-      time: {
-        value: '10h',
-        count: 10,
-        suffix: 'h',
-        label: 'Operations hours returned each week',
-        note: 'The daily bridging spreadsheet is no longer rebuilt by hand.',
-      },
-      effort: {
-        value: '10 weeks',
-        label: 'Effort to build',
-        note: 'Consulting analyst — data model, ingestion, dashboard and floor rollout.',
-      },
-      quality: {
-        value: '11 min',
-        count: 11,
-        suffix: ' min',
-        label: 'End-to-end data latency',
-        note: 'Against a previous 24-hour spreadsheet cycle, so a stuck consignment surfaces the same shift.',
-      },
-    },
-    beforeAfter: [
-      { metric: 'On-time-in-full delivery', before: 88.9, after: 98.3, unit: '%', better: 'higher' },
-      { metric: 'End-to-end data latency', before: 1440, after: 11, unit: 'minutes', better: 'lower' },
-      { metric: 'Carrier systems to reconcile by hand', before: 4, after: 1, unit: 'systems', better: 'lower' },
-    ],
-    illustrative: true,
-    stack: ['Power BI', 'SQL Server', 'Azure Data Factory', 'Azure SQL', 'Python'],
-    role: 'Consulting analyst — data model, ingestion, dashboard, floor rollout',
-    duration: '10 weeks',
-    problem: [
-      'Four carriers, four portals, four different status vocabularies and four different ideas of what a delivery date means. Operations kept a spreadsheet to bridge them, rebuilt once a day, which meant a consignment could sit stuck for 20 hours before anyone noticed. On-time-in-full was reported at 88.9% but calculated from carrier self-reporting, so nobody quite trusted it.',
-      'The commercial cost was concentrated in a small number of lanes and a small number of accounts — but with the data fragmented, nobody could prove which.',
-    ],
-    approach: [
-      {
-        title: 'One consignment spine',
-        body:
-          'A single conforming table keyed on the internal consignment ID, with carrier references as attributes. Every carrier’s status vocabulary maps into one nine-state model agreed with the ops managers, and unmappable statuses raise an alert instead of defaulting to “in transit”.',
-      },
-      {
-        title: 'Incremental ingestion every ten minutes',
-        body:
-          'Azure Data Factory pulls each carrier feed on a ten-minute cadence with watermark-based incremental loads and a dead-letter table for rows that fail validation. Two of the four had no API, so those are driven by a scheduled Python job against their export endpoint.',
-      },
-      {
-        title: 'Exceptions defined by dwell, not by status',
-        body:
-          'A consignment is an exception when it has sat in one state longer than that lane’s 90th-percentile dwell time — so the definition adapts per lane rather than assuming a Rotterdam trunk behaves like a Cork city delivery.',
-      },
-      {
-        title: 'Built for a wall, then for a desk',
-        body:
-          'The primary view is a floor display: exception count, worst lanes, oldest consignment. The analytical drill-down for account reviews sits behind it, sharing exactly the same measures.',
-      },
-    ],
-    results: [
-      'On-time-in-full rose from 88.9% to 98.3% over two quarters — the first reconciled week came out level with the carrier-reported baseline, so the gain is not an artefact of the new measure.',
-      'Data latency fell from a 24-hour spreadsheet cycle to 11 minutes end to end.',
-      'Two lanes were shown to generate 61% of all exceptions; renegotiating one carrier’s cut-off time removed most of them.',
-      'Customer-raised exception queries fell by roughly half, because operations now make the call first.',
-    ],
-    chart: {
-      title: 'On-time-in-full delivery',
-      unit: '% OTIF',
-      series: [
-        { label: 'Wk 1', value: 88.9 },
-        { label: 'Wk 3', value: 89.4 },
-        { label: 'Wk 5', value: 91.2 },
-        { label: 'Wk 7', value: 93.0 },
-        { label: 'Wk 9', value: 94.6 },
-        { label: 'Wk 11', value: 95.8 },
-        { label: 'Wk 13', value: 96.9 },
-        { label: 'Wk 15', value: 97.6 },
-        { label: 'Wk 17', value: 98.0 },
-        { label: 'Wk 19', value: 98.3 },
-      ],
-    },
-    gallery: [
-      {
-        src: '/images/gallery/logistics-control-tower-1.png',
-        alt: 'Lane performance view ranking trunk and delivery lanes by exception rate and average dwell time',
-        caption: 'Lane performance. Two lanes accounted for 61% of exceptions — invisible while the data sat in four portals.',
-        width: 1400,
-        height: 800,
-      },
-      {
-        src: '/images/gallery/logistics-control-tower-2.png',
-        alt: 'Floor display layout showing exception count, worst lanes and the oldest open consignment',
-        caption: 'The floor display. Three numbers, readable from across the room, refreshing every ten minutes.',
-        width: 1400,
-        height: 800,
-      },
-    ],
-    faq: [
-      {
-        q: 'Why ten minutes and not real time?',
-        a: 'Two of the four carriers only publish updates in batches anyway, so sub-minute polling would have bought latency the source data does not have. Ten minutes is comfortably inside the window in which an operator can still act.',
-      },
-      {
-        q: 'What happens to a status nobody has mapped?',
-        a: 'It lands in the dead-letter table and raises an alert. Defaulting an unknown status to “in transit” is how a stuck consignment stays invisible, so the model refuses to guess.',
-      },
-    ],
-    links: [
-      { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/logistics-control-tower', external: false },
-    ],
-    featured: false,
-    tone: 'white',
-    reverse: false,
-  },
-
-  // ---------------------------------------------------------------- 09
-  {
-    slug: 'clinic-nlp-triage',
-    title: 'NLP Triage of Inbound Clinic Enquiries',
-    eyebrow: 'PYTHON · NLP · AUTOMATION',
-    org: 'Private clinic group, Leinster',
-    brand: { wordmark: 'TriageLens', accent: '#0f9d84', accent2: '#4fc9ae' },
-    period: '2026',
-    year: 2026,
-    readMinutes: 7,
-    tags: ['python', 'ml', 'automation'],
-    summary:
-      'Classifying and routing 1,900 inbound enquiries a week, with a hard rule that anything clinical or uncertain goes to a human immediately.',
-    lead:
-      'A private clinic group in Leinster received about 1,900 enquiries a week by email and web form into one shared inbox. Reception read every one to decide where it went; urgent items waited behind appointment-change requests. I built a triage classifier that routes the routine 70% automatically and escalates anything clinical or uncertain to a person straight away — deliberately not the other way round.',
-    cover: '/images/dash/clinic-nlp-triage.png',
-    coverAlt:
-      'Screenshot of the NLP Triage of Inbound Clinic Enquiries dashboard: three headline metric cards above a line chart of median first-response time on routine enquiries, 6.2 hours at Wk 1 down to 1.6 by Wk 12.',
-    coverWidth: 1600,
-    coverHeight: 1000,
-    findings: [
-      { value: '−74%', count: 74, prefix: '−', suffix: '%', label: 'median first-response time on routine enquiries' },
-      { value: '96.2%', count: 96.2, suffix: '%', label: 'routing accuracy on the held-out sample' },
-      { value: '100%', count: 100, suffix: '%', label: 'of clinical-flag enquiries routed to a human' },
-    ],
-    impact: {
-      value: {
-        value: '€13k',
-        count: 13,
-        prefix: '€',
-        suffix: 'k',
-        label: 'Annualised reception cost moved to patient-facing work',
-        note: '14 hours a week at a conservative €18/hour loaded cost — redeployed, not removed.',
-      },
-      time: {
-        value: '14h',
-        count: 14,
-        suffix: 'h',
-        label: 'Reception hours returned each week',
-        note: 'Time previously spent sorting an undifferentiated shared inbox.',
-      },
-      effort: {
-        value: '11 weeks',
-        label: 'Effort to build',
-        note: 'Consulting data scientist — labelling design, model and the routing service.',
-      },
-      quality: {
-        value: '96.2%',
-        count: 96.2,
-        suffix: '%',
-        label: 'Routing accuracy',
-        note: 'On a held-out sample of 600 enquiries. Every clinical flag reached a human on first touch.',
-      },
-    },
-    beforeAfter: [
-      { metric: 'Median first-response time on routine enquiries', before: 6.2, after: 1.6, unit: 'hours', better: 'lower' },
-      { metric: 'Reception hours sorting the inbox each week', before: 18, after: 4, unit: 'hours', better: 'lower' },
-      { metric: 'Enquiries triaged without a human first pass', before: 0, after: 89, unit: '%', better: 'higher' },
-    ],
-    illustrative: true,
-    stack: ['Python (spaCy, scikit-learn, sentence-transformers)', 'FastAPI', 'PostgreSQL', 'Microsoft Graph API'],
-    role: 'Consulting data scientist — labelling design, model, routing service',
-    duration: '11 weeks',
-    problem: [
-      'One shared inbox, nine intents and a strictly first-in-first-out reading order. A prescription query about worsening symptoms sat behind fourteen requests to move an appointment, because nobody could tell them apart without opening each one. Median first response on routine enquiries was 6.2 hours; on the enquiries that mattered most it was no better, which was the real problem.',
-      'Any solution had to be conservative by construction. In a clinical setting the cost of misrouting an urgent enquiry is not symmetrical with the cost of a receptionist reading one extra email, and the design had to encode that rather than optimise a single accuracy number.',
-    ],
-    approach: [
-      {
-        title: 'Defined the intents with reception, not for them',
-        body:
-          'Nine intents drawn from a sample of 3,000 historical enquiries, labelled by two reception staff with a third resolving disagreements. Inter-annotator agreement was measured before any modelling began — if two humans cannot agree on a label, no model will learn it.',
-      },
-      {
-        title: 'A clinical-flag layer that runs first',
-        body:
-          'Before classification, a high-recall rule and embedding layer screens for symptom, medication, safeguarding and distress language. Anything it touches goes to a human queue immediately and is never auto-routed, whatever the classifier subsequently says.',
-      },
-      {
-        title: 'Classification with an abstain threshold',
-        body:
-          'A linear classifier over sentence embeddings, tuned for precision rather than accuracy. Below the confidence threshold the model abstains and the enquiry goes to the general human queue — abstention is a valid, logged outcome, not a failure.',
-      },
-      {
-        title: 'Routing as a reversible service',
-        body:
-          'A FastAPI service applies a queue label via the Graph API and writes an audit row. Every routing decision is visible, reversible by reception in one click, and every reversal is reviewed weekly as training signal.',
-      },
-    ],
-    results: [
-      'Median first-response time on routine enquiries fell from 6.2 hours to 1.6 hours — a 74% reduction — and urgent items no longer queue behind them.',
-      'Routing accuracy of 96.2% on a held-out sample of 600 enquiries, measured on the 89% the model did not abstain on.',
-      'Every enquiry caught by the clinical-flag layer reached a human on first touch across the twelve-week evaluation, with no auto-routing exceptions.',
-      'Reception time spent sorting the inbox fell by around 14 hours a week and moved to patient-facing work.',
-    ],
-    chart: {
-      title: 'Median first-response time on routine enquiries',
-      unit: 'hours',
-      series: [
-        { label: 'Wk 1', value: 6.2 },
-        { label: 'Wk 2', value: 6.0 },
-        { label: 'Wk 3', value: 5.4 },
-        { label: 'Wk 4', value: 4.5 },
-        { label: 'Wk 5', value: 3.7 },
-        { label: 'Wk 6', value: 3.0 },
-        { label: 'Wk 7', value: 2.5 },
-        { label: 'Wk 8', value: 2.1 },
-        { label: 'Wk 9', value: 1.9 },
-        { label: 'Wk 10', value: 1.7 },
-        { label: 'Wk 11', value: 1.6 },
-        { label: 'Wk 12', value: 1.6 },
-      ],
-    },
-    gallery: [
-      {
-        src: '/images/gallery/clinic-nlp-triage-1.png',
-        alt: 'Intent confusion matrix across the nine enquiry categories, with the abstain band shown separately',
-        caption: 'Confusion across the nine intents, with abstentions counted separately — a model that declines to answer is behaving correctly here.',
-        width: 1400,
-        height: 800,
-      },
-      {
-        src: '/images/gallery/clinic-nlp-triage-2.png',
-        alt: 'Routing audit log showing each decision, its confidence and any reversal made by reception',
-        caption: 'The audit log. Every decision is reversible in one click, and every reversal feeds the weekly review.',
-        width: 1400,
-        height: 800,
-      },
-    ],
-    faq: [
-      {
-        q: 'How do you handle patient data safely?',
-        a: 'Processing runs inside the clinic’s own tenancy, no enquiry text leaves it, and the training corpus was pseudonymised before labelling. Retention on the audit log matches the clinic’s existing policy rather than adding a new one.',
-      },
-      {
-        q: 'Why let the model abstain instead of forcing a best guess?',
-        a: 'Because a wrong route costs more than an unrouted enquiry. Abstention keeps precision high on the queues that are automated and puts the genuinely ambiguous cases where they belong — in front of a person.',
-      },
-      {
-        q: 'Is anything ever auto-answered?',
-        a: 'No. The system routes and prioritises; it does not reply. Every patient response is written by a human.',
-      },
-    ],
-    links: [
-      { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/clinic-nlp-triage', external: false },
-    ],
-    featured: false,
-    tone: 'dark-3',
-    reverse: true,
-  },
-
-  // ---------------------------------------------------------------- 10
-  {
-    slug: 'energy-anomaly-detection',
-    title: 'Anomaly Detection on Building Energy Telemetry',
-    eyebrow: 'PYTHON · ML · CLOUD',
-    org: 'Commercial property portfolio, 62 buildings',
-    brand: { wordmark: 'GridWatch', accent: '#c2410c', accent2: '#f0834a' },
-    period: '2026',
-    year: 2026,
-    readMinutes: 7,
-    tags: ['python', 'ml', 'cloud', 'sql'],
-    summary:
-      'Unsupervised detection across 1,480 meters that finds a failing plant item in hours instead of at the quarterly bill.',
-    lead:
-      'Every one of 1,480 half-hourly meters across a 62-building commercial portfolio was recording, and nothing was reading them. A fault surfaced when a quarterly bill looked high — typically 60 to 90 days after a chiller had started running through the night. I built unsupervised anomaly detection on the telemetry that raises a ranked, costed alert to the facilities team within hours.',
-    cover: '/images/dash/energy-anomaly-detection.png',
-    coverAlt:
-      'Screenshot of the Anomaly Detection on Building Energy Telemetry dashboard: three headline metric cards above a bar chart of median time to detect an energy anomaly, 1512 hours at Baseline down to 4.2 by Wk 14.',
-    coverWidth: 1600,
-    coverHeight: 1000,
-    findings: [
-      { value: '€318k', count: 318, prefix: '€', suffix: 'k', label: 'annualised energy waste identified across the portfolio' },
-      { value: '4.2 h', count: 4.2, suffix: ' h', label: 'median detection time, from 60+ days' },
-      { value: '1,480', count: 1480, label: 'half-hourly meters monitored continuously' },
-    ],
-    impact: {
-      value: {
-        value: '€318k',
-        count: 318,
-        prefix: '€',
-        suffix: 'k',
-        label: 'Annualised energy waste identified',
-        note: 'Across a portfolio of 62 buildings, ranked by euros per day so the queue is worked in cost order.',
-      },
-      time: {
-        value: '4.2h',
-        count: 4.2,
-        suffix: 'h',
-        label: 'Median time to detect an anomaly',
-        note: 'From a baseline of 60-plus days, when a fault surfaced only in a quarterly bill review.',
-      },
-      effort: {
-        value: '13 weeks',
-        label: 'Effort to build',
-        note: 'Consulting data scientist — detection design, deployment and facilities-management handover.',
-      },
-      quality: {
-        value: '68%',
-        count: 68,
-        suffix: '%',
-        label: 'Alert precision',
-        note: 'Up from 21% at launch, once cause codes from closed alerts fed back into the model.',
-      },
-    },
-    beforeAfter: [
-      { metric: 'Median time to detect an energy anomaly', before: 1512, after: 4.2, unit: 'hours', better: 'lower' },
-      { metric: 'Alert precision', before: 21, after: 68, unit: '%', better: 'higher' },
-      { metric: 'Meters monitored continuously', before: 0, after: 1480, unit: 'meters', better: 'higher' },
-    ],
-    illustrative: true,
-    stack: ['Python (Pandas, scikit-learn, statsmodels)', 'BigQuery', 'Cloud Functions', 'SQL', 'Looker Studio'],
-    role: 'Consulting data scientist — detection design, deployment, FM handover',
-    duration: '13 weeks',
-    problem: [
-      'Half-hourly data existed for every meter and was effectively unread. With 1,480 series there was no realistic way for a facilities team to eyeball them, and the few thresholds someone had configured were static — so they fired constantly in January and never in June. Most alerts were ignored, which is the normal end state for an alert nobody trusts.',
-      'The failures being missed were mundane and expensive: schedules left on after a bank holiday, a stuck valve, simultaneous heating and cooling, a chiller cycling all night in an empty building.',
-    ],
-    approach: [
-      {
-        title: 'A baseline per meter, not per portfolio',
-        body:
-          'Each meter gets its own expected profile from a seasonal-trend decomposition conditioned on day type, occupancy schedule and heating and cooling degree days. Anomaly means departure from that meter’s own expectation, which is the only definition that survives a portfolio this varied.',
-      },
-      {
-        title: 'Two detectors, deliberately different',
-        body:
-          'A residual-based statistical detector catches sustained level shifts; an isolation forest over shape features catches profile changes that leave the daily total unchanged — the overnight-running case that a total-consumption check misses entirely.',
-      },
-      {
-        title: 'Ranked by euros, not by z-score',
-        body:
-          'Every alert carries an estimated cost per day using the site’s actual tariff and standing charges. The facilities team works a list ordered by money, which is what made them work the list at all.',
-      },
-      {
-        title: 'Closed the loop on outcomes',
-        body:
-          'Each alert is closed with a cause code by the engineer who attended. Those codes tune the detectors and, after ten weeks, let false positives be suppressed by pattern rather than by raising a global threshold.',
-      },
-    ],
-    results: [
-      'Median detection time fell from over 60 days to 4.2 hours from the onset of an anomaly.',
-      '€318k of annualised waste identified in the first two quarters, of which €241k was remediated within the period.',
-      'Alert precision improved from 21% at launch to 68% by week twelve as cause codes fed back into the detectors.',
-      'The single largest find was a chiller running unoccupied overnight in one building for an estimated 11 weeks, at roughly €640 a week.',
-    ],
-    chart: {
-      title: 'Median time to detect an energy anomaly',
-      unit: 'hours',
-      series: [
-        { label: 'Baseline', value: 1512 },
-        { label: 'Wk 2', value: 720 },
-        { label: 'Wk 4', value: 264 },
-        { label: 'Wk 6', value: 96 },
-        { label: 'Wk 8', value: 36 },
-        { label: 'Wk 10', value: 12 },
-        { label: 'Wk 12', value: 6 },
-        { label: 'Wk 14', value: 4.2 },
-      ],
-    },
-    gallery: [
-      {
-        src: '/images/gallery/energy-anomaly-detection-1.png',
-        alt: 'Half-hourly consumption for one meter plotted against its learned baseline, with the anomalous overnight period shaded',
-        caption: 'One meter against its own baseline. The overnight shoulder is the chiller — invisible in the daily total, obvious in the profile.',
-        width: 1400,
-        height: 800,
-      },
-      {
-        src: '/images/gallery/energy-anomaly-detection-2.png',
-        alt: 'Open alert queue ranked by estimated cost per day with cause codes from closed alerts',
-        caption: 'The alert queue, ordered by euros per day. Cause codes from closed alerts are what lifted precision from 21% to 68%.',
-        width: 1400,
-        height: 800,
-      },
-    ],
-    faq: [
-      {
-        q: 'Why unsupervised rather than a trained fault classifier?',
-        a: 'There were no labelled faults to train on — that was the whole problem. Unsupervised detection plus engineer-supplied cause codes bootstraps the labels, and a supervised layer becomes viable once enough have accumulated.',
-      },
-      {
-        q: 'How is weather accounted for?',
-        a: 'Heating and cooling degree days are covariates in each meter’s baseline, so a cold snap raises the expectation instead of raising 1,480 alerts.',
-      },
-      {
-        q: 'What stopped this becoming another ignored alert feed?',
-        a: 'Ranking by cost and closing every alert with a cause code. An alert with a euro figure attached gets attended; a z-score does not.',
-      },
-    ],
-    links: [
-      { label: 'See it on GitHub ↗', href: GH, external: true },
-      { label: 'Read the case study', href: '/work/energy-anomaly-detection', external: false },
-    ],
-    featured: false,
-    tone: 'parchment',
-    reverse: false,
-  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -1603,7 +990,7 @@ export const featured: Project[] = projects.filter((p) => p.featured);
  * we send a lost visitor" — so changing the featured flag quietly changed the
  * 404, and for a while that meant the 404 recommended invented case studies.
  */
-const POPULAR_SLUGS = ['freelance-automation-bi', 'drawing-to-cad-automation', 'ocean-drones'] as const;
+const POPULAR_SLUGS = ['ai-opportunity-assessment', 'customer-approval-agent', 'vinted-tracker'] as const;
 
 export const popular: Project[] = POPULAR_SLUGS.map((slug) => {
   const found = projects.find((p) => p.slug === slug);

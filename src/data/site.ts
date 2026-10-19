@@ -7,10 +7,10 @@
 export const site = {
   brand: 'Murilo Reis',                 // company / personal brand (updated below via logo choice)
   name: 'Murilo Reis',                  // your full name
-  role: 'Data & AI Specialist',         // headline role
+  role: 'Co-Founder · Data & AI Consultant', // headline role, as on the CV
   location: 'Cork City, Ireland',
   tagline:
-    'Dashboards, machine-learning models, and data pipelines that turn raw data into decisions leaders can act on.',
+    'AI agents, automation and data pipelines that turn messy operational data and manual processes into systems people rely on every day.',
 
   email: 'muriloarielreisz@gmail.com',
   phone: '+353 87 384 1528',
@@ -21,7 +21,8 @@ export const site = {
   },
 
   // CV / résumé download (served from /public)
-  resume: '/Murilo-Reis-CV.docx',
+  resume: '/Murilo-Reis-CV.pdf',
+  resumeDocx: '/Murilo-Reis-CV.docx',
 
   // Booking + chat integrations.
   //

@@ -682,7 +682,7 @@ addEventListener('keydown', (e) => {
    visitor expects to be spoken to — and the only honest place to point out
    that the network tab really is empty. */
 console.log(
-  '%cMURILO REIS%c  Data & AI Specialist · Cork City, Ireland\n' +
+  '%cMURILO REIS%c  Co-Founder · Data & AI Consultant · Cork City, Ireland\n' +
     '%cThis page ships no analytics. Check the network tab — that claim is falsifiable.\n' +
     'Built with Astro and no UI framework. Charts, palette and demos are all hand-rolled.\n' +
     'Curious? Press ⌘K and type "blueprint". Hiring? muriloarielreisz@gmail.com',

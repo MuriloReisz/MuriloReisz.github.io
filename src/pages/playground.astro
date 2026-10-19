@@ -16,10 +16,8 @@ import '../styles/playground.css';
 import { projectBySlug } from '../data/projects';
 import RoiCalculator from '../components/RoiCalculator.astro';
 
-const churn = projectBySlug('churn-early-warning');
-const forecast = projectBySlug('retail-demand-forecast');
 const automation = projectBySlug('freelance-automation-bi');
-const logistics = projectBySlug('logistics-control-tower');
+const approval = projectBySlug('customer-approval-agent');
 
 /* The KPI explorer reuses the series demos.ts already ships. */
 const kpis = [
@@ -152,7 +150,8 @@ const stages = [
       </div>
 
       <p class="pg-demo__foot reveal">
-        The same pattern as the <a class="textlink" href={`/work/${logistics?.slug}/`}>logistics control tower</a> —
+        The same pattern as the Tableau reporting in the
+        <a class="textlink" href={`/work/${approval?.slug}/`}>customer-approval pipeline</a> —
         one screen a leadership team can actually run a meeting from.
       </p>
     </div>
@@ -263,9 +262,6 @@ const stages = [
         </div>
       </div>
 
-      <p class="pg-demo__foot reveal">
-        Read the full build in the <a class="textlink" href={`/work/${churn?.slug}/`}>churn early-warning case study</a>.
-      </p>
     </div>
   </section>
 
@@ -319,10 +315,6 @@ const stages = [
         <p class="ix-status" data-forecast-status></p>
       </div>
 
-      <p class="pg-demo__foot reveal">
-        The production version of this sits in the
-        <a class="textlink" href={`/work/${forecast?.slug}/`}>retail demand-forecast case study</a>.
-      </p>
     </div>
   </section>
 
